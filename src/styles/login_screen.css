@@ -1,0 +1,214 @@
+/* src/index.css */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #e0f2f7; /* Light blue-50 equivalent */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+  
+  .login-container {
+    background-color: #fff; /* White */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-xl equivalent */
+    border-radius: 0.5rem; /* rounded-lg equivalent */
+    padding: 2rem; /* p-8 equivalent */
+    width: 100%; /* w-full equivalent */
+    max-width: 28rem; /* max-w-md equivalent (adjust as needed) */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .login-title {
+    font-size: 1.5rem; /* text-2xl equivalent */
+    font-weight: bold; /* font-bold */
+    color: #1e88e5; /* blue-600 equivalent */
+    text-align: center; /* text-center */
+    margin-bottom: 1.5rem; /* mb-6 equivalent */
+  }
+  
+  .error-message {
+    background-color: #ffebee; /* red-100 equivalent */
+    border: 1px solid #ef5350; /* border-red-400 equivalent */
+    color: #b71c1c; /* text-red-700 equivalent */
+    padding: 0.75rem 1rem; /* px-4 py-3 equivalent */
+    border-radius: 0.25rem; /* rounded equivalent */
+    margin-bottom: 1rem; /* mb-4 equivalent */
+    position: relative; /* relative */
+  }
+  
+  .error-strong {
+    font-weight: bold; /* font-bold */
+  }
+  
+  .form-group {
+    margin-bottom: 1rem; /* mb-4 equivalent */
+  }
+  
+  .form-label {
+    display: block; /* block */
+    color: #4a5568; /* text-gray-700 equivalent */
+    font-size: 0.875rem; /* text-sm equivalent */
+    font-weight: bold; /* font-bold */
+    margin-bottom: 0.5rem; /* mb-2 equivalent */
+  }
+  
+  .form-input {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow equivalent */
+    appearance: none; /* appearance-none */
+    border: 1px solid #cbd5e0; /* border equivalent */
+    border-radius: 0.25rem; /* rounded equivalent */
+    width: 90%; /* w-full equivalent */
+    padding: 0.5rem 0.75rem; /* py-2 px-3 equivalent */
+    color: #4a5568; /* text-gray-700 equivalent */
+    line-height: 2; /* leading-tight */
+    outline: none; /* focus:outline-none */
+    transition: box-shadow 0.15s ease-in-out;
+    font-size: 24px;
+  }
+  
+  .form-input:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* focus-shadow-outline equivalent */
+  }
+  
+  .password-input-wrapper {
+    position: relative; /* relative */
+  }
+  
+  .password-toggle-button {
+    position: absolute; /* absolute */
+    inset-y: 0; /* inset-y-0 */
+    right: 0.75rem; /* pr-3 equivalent */
+    display: flex; /* flex */
+    align-items: center; /* items-center */
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25; /* leading-5 */
+    color: #718096; /* text-gray-500 equivalent */
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding-top: 10px;
+  }
+  
+  .password-toggle-button:hover {
+    color: #4a5568; /* hover:text-gray-700 equivalent */
+  }
+  
+  .remember-me-group {
+    display: flex; /* flex */
+    align-items: center; /* items-center */
+    margin-bottom: 1rem; /* mb-4 equivalent */
+  }
+  
+  .remember-me-input {
+    width: 1.5rem; /* w-4 equivalent */
+    height: 1.5rem; /* h-4 equivalent */
+    color: #1e88e5; /* text-blue-600 equivalent */
+    background-color: #edf2f7; /* bg-gray-100 equivalent */
+    border: 1px solid #cbd5e0; /* border-gray-300 equivalent */
+    border-radius: 0.25rem; /* rounded equivalent */
+    outline: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  .remember-me-input:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* focus:ring-blue-500 equivalent */
+  }
+  
+  .remember-me-label {
+    margin-left: 0.5rem; /* ml-2 equivalent */
+    color: #4a5568; /* text-gray-700 equivalent */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: bold; /* font-bold */
+  }
+  
+  .button-group {
+    display: flex; /* flex */
+    align-items: center; /* items-center */
+    justify-content: space-between; /* justify-between */
+  }
+  
+  .login-button {
+    background-color: #1e88e5; /* bg-blue-500 equivalent */
+    color: #fff; /* text-white equivalent */
+    font-weight: bold; /* font-bold */
+    padding: 0.5rem 1rem; /* py-2 px-4 equivalent */
+    border-radius: 0.25rem; /* rounded equivalent */
+    outline: none;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* focus:shadow-outline */
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    border: none;
+    font-size: 24px;
+  }
+  
+  .login-button:hover {
+    background-color: #1565c0; /* hover:bg-blue-700 equivalent */
+  }
+  
+  .login-button:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+  }
+  
+  .login-button .animate-spin {
+    border-color: #fff transparent #fff transparent;
+    border-width: 2px;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .contact-button {
+    display: inline-block; /* inline-block */
+    align-items: baseline; /* align-baseline */
+    font-weight: bold; /* font-bold */
+    font-size: 0.875rem; /* text-sm */
+    color: #1e88e5; /* text-blue-500 equivalent */
+    text-decoration: none; /* No default underline */
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 24px;
+  }
+  
+  .contact-button:hover {
+    color: #0d47a1; /* hover:text-blue-800 equivalent */
+  }
+  
+  .signup-button {
+    background-color: #4caf50; /* bg-green-500 equivalent */
+    color: #fff; /* text-white equivalent */
+    font-weight: bold; /* font-bold */
+    padding: 0.5rem 1rem; /* py-2 px-4 equivalent */
+    border-radius: 0.25rem; /* rounded equivalent */
+    outline: none;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* focus:shadow-outline */
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    border: none;
+    margin-top: 1rem; /* mt-4 equivalent */
+    width: 100%; /* Make it full width in its container */
+  }
+  
+  .signup-button:hover {
+    background-color: #388e3c; /* hover:bg-green-700 equivalent */
+  }

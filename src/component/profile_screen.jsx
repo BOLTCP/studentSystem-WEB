@@ -1,0 +1,86 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import '../styles/profile_screen.css';
+import UserDetails from '../models/user_details';
+import moment from 'moment';
+
+const ProfileCard = ({ label, value }) => (
+    <div className='profile-card'>
+        <h3 className='profile-card-label'>{label}</h3>
+        <p className='profile-card-value'>{value}</p>
+    </div>
+);
+
+const ProfileScreen = ( ) => {
+
+    const location = useLocation();
+    const userDetails = new UserDetails(location.state?.userDetails);
+    
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        let isMounted = true;
+    
+        return () => {
+          isMounted = false; 
+        };
+      }, []);
+
+    if (!userDetails) {
+        return <div className="no-data">Хэрэглэгч олдсонгүй.</div>;
+    }
+
+    const { user, student, major, department } = userDetails;
+
+    if (user.userRole === 'Багш') {
+        return (
+          <div className="profile-container">
+            <h2 className="profile-title">Хэрэглэгчийн мэдээлэл</h2>
+            <div className="profile-card-grid">
+              <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
+              <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
+              <ProfileCard label="Хэрэглэгч / Багшийн код:" value={teacher?.teacherCode} />
+              <ProfileCard label="Хэрэглэгчийн И-мэйл" value={user.email} />
+              <ProfileCard label="Түвшин" value={teacher?.academicDegree} />
+              <ProfileCard label="Салбар сургууль" value={departmentOfEducation?.edDepartmentName} />
+              <ProfileCard label="Төлөв" value={teacher?.isActive ? 'Идэвхтэй' : 'Идэвхгүй'} />
+              <ProfileCard label="Хүйс" value={user.gender} />
+              <ProfileCard label="Регистрийн дугаар" value={user.registryNumber} />
+              <ProfileCard label="Төрсөн өдөр" value={moment(user.birthday).format('YYYY-MM-DD')} />
+              <ProfileCard label="Утасны дугаар" value={user.phoneNumber} />
+              <ProfileCard label="Багшийн И-мэйл" value={teacher?.teacherEmail} />
+              <ProfileCard label="Өмнөх боловсрол" value={user.education} />
+              <ProfileCard label="Created At" value={moment(user.createdAt).local().toString()} />
+            </div>
+          </div>
+        );
+      } else if (user.userRole === 'Оюутан') {
+        return (
+          <div className="profile-container">
+            <h2 className="profile-title">Хэрэглэгчийн мasdfsafдээлэл</h2>
+            <div className="profile-card-grid">
+              <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
+              <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
+              <ProfileCard label="Хэрэглэгч / Сурагчийн код:" value={student?.studentCode} />
+              <ProfileCard label="Хэрэглэгчийн И-мэйл" value={user.email} />
+              <ProfileCard label="Суралцах Эрдмийн зэрэг" value={student?.currentAcademicDegree} />
+              <ProfileCard label="Түвшин" value={student?.yearClassification?.toString()} />
+              <ProfileCard label="Салбар сургууль" value={department?.departmentName} />
+              <ProfileCard label="Төлөв" value={student?.isActive ? 'Идэвхтэй' : 'Идэвхгүй'} />
+              <ProfileCard label="Хүйс" value={user.gender} />
+              <ProfileCard label="Регистрийн дугаар" value={user.registryNumber} />
+              <ProfileCard label="Төрсөн өдөр" value={moment(user.birthday).format('YYYY-MM-DD')} />
+              <ProfileCard label="Утасны дугаар" value={user.phoneNumber} />
+              <ProfileCard label="Багшийн И-мэйл" value={student?.studentEmail} />
+              <ProfileCard label="Өмнөх боловсрол" value={user.education} />
+              <ProfileCard label="Created At" value={moment(user.createdAt).local().toString()} />
+            </div>
+          </div>
+        );
+      } else {
+        return <div className="placeholder">Unknown User Role</div>;
+      }
+};
+    
+export default ProfileScreen;

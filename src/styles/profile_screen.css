@@ -1,0 +1,53 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f2f5; /* Similar to Colors.blue[50] */
+    padding: 20px;
+    min-height: 100vh; /* Ensure it takes full viewport height */
+  }
+  
+  .profile-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff; /* Similar to Colors.blue */
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .profile-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 10px;
+    width: 100%;
+    max-width: 600px; /* Similar to your SizedBox width */
+  }
+  
+  .profile-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .profile-card-label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .profile-card-value {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .loading, .error, .no-data, .placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 16px;
+    color: #777;
+  }

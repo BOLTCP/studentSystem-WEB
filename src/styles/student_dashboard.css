@@ -1,0 +1,189 @@
+/* student_dashboard.css */
+
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Navigation Bar */
+.dashboard-nav {
+  background-color: #1e88e5;/* Indigo color */
+  padding: 1rem;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+}
+
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+
+/* Drawer Styles */
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background-color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.drawer-open {
+  transform: translateX(0);
+}
+
+.drawer-closed {
+  transform: translateX(-100%);
+}
+
+.drawer-header {
+  background-color: #1e88e5;
+  color: white;
+  padding: 1.5rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.drawer-title {
+  height: 14px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.drawer-list {
+  padding: 0;
+  list-style: none;
+}
+
+.drawer-item {
+  padding: 0.75rem 1.5rem;
+}
+
+.drawer-link {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  text-decoration: none; /* For better link-like appearance if using <a> */
+}
+
+.drawer-link:hover {
+  background-color: #f0f0f0;
+}
+
+.logout-button {
+  color: #d32f2f; /* Red color for logout */
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 90; /* Below the drawer */
+}
+
+/* Dashboard Body */
+.dashboard-body {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3f51b5;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Profile Card Grid */
+.profile-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Profile Card */
+.profile-card {
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.profile-card-label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.profile-card-value {
+  color: #777;
+  font-size: 1.1rem;
+}
+
+/* Loading, Error, and No Data Containers */
+.loading-container,
+.error-container,
+.no-data-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #777;
+}
+
+.error-container {
+  color: #d32f2f;
+}
+
+.no-data-container {
+  font-size: 1.1rem;
+}
+
+/* Placeholder for Body Content */
+.placeholder-body {
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 2rem;
+  color: #777;
+  text-align: center;
+  margin-top: 1rem;
+}

@@ -1,162 +1,189 @@
-/* student_dashboard.css */
-
-.dashboard-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
+  min-height: 100vh;
+}
+
+.dashboard-container-layout {
+  min-height: 100vh;
+  width: 100vw;
+  display: block; /* or flex/grid depending on layout */
 }
 
 /* Navigation Bar */
 .dashboard-nav {
-  background-color: #1e88e5;/* Indigo color */
-  padding: 1rem;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  background-color:  rgb(31, 129, 240);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  color: white;
+  width: 100%; 
+  margin: 0 auto; 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center; 
 }
 
 .nav-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.25rem;
+  font-weight: 500;
+  /* text-align: center; Remove this, as justify-content: center on parent handles it */
 }
 
-.menu-button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 0;
+/* Main Content Area with Sidebar */
+.dashboard-main-content {
+  margin-left: 200px;
+  margin-right: 200px;
+  display: grid;
+  flex: 1;
+  width: 100%; /* Make main content take full width */
 }
 
-.menu-icon {
-  width: 24px;
-  height: 24px;
-  fill: white;
+/* Sidebar Styles */
+.dashboard-sidebar {
+  height: 100vh;
+  top: 0px;
+  width: 100px; /* Fixed width for sidebar */
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  padding: 1rem;
+  overflow-y: auto;
+  position: absolute;
+  left: 0px;
+  padding-right: 20px;
 }
 
-/* Drawer Styles */
-.drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 280px;
-  background-color: white;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
+.sidebar-header-logo{
+  width: 50px;
+  height: 50px;
+  margin-left: 25px;
 }
 
-.drawer-open {
-  transform: translateX(0);
+.dashboard-sidebar-right {
+  top: 0px;
+  height: 100vh;
+  width: 150px; /* Fixed width for sidebar */
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  padding: 1rem;
+  overflow-y: auto;
+  position: absolute;
+  right: 0px;
+  
 }
 
-.drawer-closed {
-  transform: translateX(-100%);
+.sidebar-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 1rem;
+  height: 50px;
 }
 
-.drawer-header {
-  background-color: #1e88e5;
-  color: white;
-  padding: 1.5rem;
-  border-bottom: 1px solid #ccc;
+.users-brief-details {
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 1rem;
 }
 
-.drawer-title {
-  height: 14px;
-  font-size: 1.2rem;
-  font-weight: bold;
+.sidebar-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #343a40;
+  text-align: center;
 }
 
-.drawer-list {
+.sidebar-list {
   padding: 0;
   list-style: none;
+  align-items: center;
 }
 
-.drawer-item {
-  padding: 0.75rem 1.5rem;
+.sidebar-list-logo{
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
-.drawer-link {
+.sidebar-item {
+  padding: 0.15rem 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar-link {
   background: none;
   border: none;
-  color: #333;
-  font-size: 1rem;
+  color: #343a40;
+  font-size: 0.9rem;
   width: 100%;
-  text-align: left;
+  text-align: center;
   padding: 0.5rem 0;
   cursor: pointer;
-  text-decoration: none; /* For better link-like appearance if using <a> */
+  text-decoration: none;
+  display: flex;
+  flex-direction: column; /* Stack icon and text vertically */
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem; 
+
 }
 
-.drawer-link:hover {
-  background-color: #f0f0f0;
+.sidebar-link:hover {
+  background-color: #e9ecef;
 }
 
 .logout-button {
-  color: #d32f2f; /* Red color for logout */
+  color: #dc3545;
 }
 
-/* Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 90; /* Below the drawer */
-}
-
-/* Dashboard Body */
+/* Dashboard Body (Main Content) */
 .dashboard-body {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  flex: 1; 
+  padding: 1.5rem;
+  margin: 0; 
+  display: grid;
+  grid-template-columns: 200px 100px 50px;
 }
 
 .dashboard-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #3f51b5;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #343a40;
+  margin-bottom: 1rem;
+  text-align: left;
 }
 
 /* Profile Card Grid */
 .profile-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust min width for desktop */
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 /* Profile Card */
 .profile-card {
   background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-radius: 4px;
-  padding: 1.5rem;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
 }
 
 .profile-card-label {
-  font-weight: bold;
+  font-weight: 500;
   color: #555;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
 }
 
 .profile-card-value {
-  color: #777;
-  font-size: 1.1rem;
+  color: #333;
+  font-size: 1rem;
 }
 
 /* Loading, Error, and No Data Containers */
@@ -166,24 +193,47 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
-  color: #777;
+  height: 200px;
+  color: #6c757d;
+  font-size: 0.9rem;
 }
 
 .error-container {
-  color: #d32f2f;
+  color: #dc3545;
 }
 
 .no-data-container {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 /* Placeholder for Body Content */
 .placeholder-body {
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  padding: 2rem;
-  color: #777;
-  text-align: center;
-  margin-top: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 3px;
+  padding: 1rem;
+  color: #6c757d;
+  text-align: left;
+  margin-top: 0.75rem;
+  border: 1px solid #e0e0e0;
+}
+
+.hover-attribution {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 5px;
+  z-index: 9999;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
 }

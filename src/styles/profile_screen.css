@@ -1,26 +1,60 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.profile-container-layout {
+  min-height: 100vh;
+  width: 100vw;
+  display: block; /* or flex/grid depending on layout */
+}
+
+.profile-nav {
+  width: 100%;
+  background-color:  rgb(31, 129, 240);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+  color: white;
+  width: 100%; 
+  margin: 0 auto; 
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+
+.profile-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+
+/*
 .profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f0f2f5; /* Similar to Colors.blue[50] */
-    padding: 20px;
-    min-height: 100vh; /* Ensure it takes full viewport height */
+  min-height: 100vh;
+  color: white;
+  width: 100%; 
+  margin: 0 auto; 
+  align-items: center;
+  justify-content: center; 
   }
   
-  .profile-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #007bff; /* Similar to Colors.blue */
-    margin-bottom: 20px;
-    text-align: center;
+.profile-title {
+  font-size: 1.25rem;
+    font-weight: 500;
   }
-  
+
   .profile-card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 10px;
     width: 100%;
-    max-width: 600px; /* Similar to your SizedBox width */
+    max-width: 600px; 
   }
   
   .profile-card {
@@ -51,3 +85,4 @@
     font-size: 16px;
     color: #777;
   }
+    */

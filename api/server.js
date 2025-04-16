@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import express from 'express';
-import { PrismaClient } from '../generated/prisma/index.js';
-import cors from 'cors';
+import { PrismaClient } from '../src/generated/prisma/index.js';
+import cors from 'cors'
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 const app = express();
-const port = process.env.PORT || 5001;
+const port = 5001;
 
 app.use(express.json());
 app.use(cors());

@@ -28,10 +28,12 @@ export const RenderSidebar = ({ user }) => {
   };
 
 
+  {/*
   const handleLogout = () => {
     console.log('Logout clicked');
     navigate('/');
-  };
+  };  
+  */}
 
   
   const showAttribution = (attributionComment, attrLink) => {
@@ -50,7 +52,6 @@ export const RenderSidebar = ({ user }) => {
       el.classList.add("hidden");
     }
   }
-
 
   return (
     <div className={`dashboard-sidebar ${theme}`}>
@@ -183,6 +184,8 @@ export const RenderSidebar = ({ user }) => {
             Мессежүүд
           </button>
         </li>
+
+        {/*
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
                   "Settings icons created by srip - Flaticon",
@@ -201,24 +204,8 @@ export const RenderSidebar = ({ user }) => {
             Тохиргоо
           </button>
         </li>
-        <li className="sidebar-item">
-          <button onMouseEnter={() => showAttribution(
-                  "Logout icons created by Pixel perfect - Flaticon",
-                  " https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427"
-                  )}
-                  onMouseLeave={() => hideAttribution()}
-                  onClick={()=>{handleLogout()}} 
-                  className={`sidebar-link ${theme}`}>
-            <img src="/src/assets/logout.png"
-            //Icon source from 
-            //https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427
-            //Logout icons created by Pixel perfect - Flaticon
-            alt="IntoUniversity"
-            className={`sidebar-list-icon ${theme}`}
-            /> 
-            Гарах
-          </button>
-        </li>
+        */}
+
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
                   "Light icons created by Freepik - Flaticon",
@@ -238,6 +225,28 @@ export const RenderSidebar = ({ user }) => {
             {theme === 'light' ? "Light Mode" : "Dark Mode"}
           </button>
         </li>
+        
+        {/*
+        <li className="sidebar-item">
+          <button onMouseEnter={() => showAttribution(
+                  "Logout icons created by Pixel perfect - Flaticon",
+                  " https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427"
+                  )}
+                  onMouseLeave={() => hideAttribution()}
+                  onClick={()=>{handleLogout()}} 
+                  className={`sidebar-link ${theme}`}>
+            <img src="/src/assets/logout.png"
+            //Icon source from 
+            //https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427
+            //Logout icons created by Pixel perfect - Flaticon
+            alt="IntoUniversity"
+            className={`sidebar-list-icon ${theme}`}
+            /> 
+            Гарах
+          </button>
+        </li>
+        */}
+        
       </ul>
     </div>
   );
@@ -268,9 +277,35 @@ export const RenderSidebarRight = ({ user, theme }) => {
     }
   }
 
+  const handleLogout = () => {
+    console.log('Logout clicked');
+    navigate('/');
+  };
+
+  const classroomLocation = () => {
+
+    return (
+      <button onMouseEnter={() => showAttribution(
+        "Location icons created by Freepik - Flaticon",
+        " https://www.flaticon.com/free-icon/location_2838912?term=location&page=1&position=3&origin=search&related_id=2838912"
+        )}
+        onMouseLeave={() => hideAttribution()}
+        className={`sidebar-link ${theme}`}>
+
+        <img src="src/assets/classroomLocation.png"//src/assets/toDoList.png
+        //Icon source from 
+        //https://www.flaticon.com/free-icon/location_2838912?term=location&page=1&position=3&origin=search&related_id=2838912
+        //Location icons created by Freepik - Flaticon
+        alt="LightModeIcon"
+        className={`sidebar-right-classroom-icon ${theme}`}
+        /> 
+      </button>
+    );
+  }
+
   return (
     <div className={`dashboard-sidebar-right ${theme}`}>
-     <div className="sidebar-header-right">
+      <div className="sidebar-header-right">
         <img src="/src/assets/StudentSystemLoginScreenLogo.png"
              alt="Logo"
              className="sidebar-header-right-logo"
@@ -279,69 +314,157 @@ export const RenderSidebarRight = ({ user, theme }) => {
       </div>
       <ul className="sidebar-list">
 
-      <li className="sidebar-item">
+        <li className="sidebar-right-item">
+
+          <div className="sidebar-right-item-container">
+            <button onMouseEnter={() => showAttribution(
+                    "Checklist icons created by Freepik - Flaticon",
+                    " https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615"
+                    )}
+                    onMouseLeave={() => hideAttribution()}
+                    className={`sidebar-link ${theme}`}>
+
+              <img src="src/assets/toDoList.png"//src/assets/toDoList.png
+              //Icon source from 
+              //https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615
+              //Checklist icons created by Freepik - Flaticon
+              alt="LightModeIcon"
+              className={`sidebar-right-icon ${theme}`}
+              /> 
+            </button>
+            <span>
+              Хичээлүүд
+            </span>
+          </div>
+          <div className="to-do-list-container">
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a> </div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+            <div className="to-do-container">
+              <div className="to-do-list-bullets"></div>
+              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
+            </div>
+          </div>
+          
+          <br></br>
+          <div className="sidebar-right-item-container">
+            <button onMouseEnter={() => showAttribution(
+                    "Classroom icons created by Freepik - Flaticon",
+                    " https://www.flaticon.com/free-icon/lecture_5609093?term=classroom&page=1&position=12&origin=search&related_id=5609093"
+                    )}
+                    onMouseLeave={() => hideAttribution()}
+                    className={`sidebar-link ${theme}`}>
+
+              <img src="src/assets/classroom.png"//src/assets/toDoList.png
+              //Icon source from 
+              //https://www.flaticon.com/free-icon/lecture_5609093?term=classroom&page=1&position=12&origin=search&related_id=5609093
+              //Classroom icons created by Freepik - Flaticon
+              alt="LightModeIcon"
+              className={`sidebar-right-icon ${theme}`}
+              /> 
+            </button>
+            <span>
+              Өнөөдрийн хуваарь
+            </span>
+          </div>
+          <div className="today-schedule-list-container">
+            <div className="today-schedule-container">
+              <div>{classroomLocation()}</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+            </div>
+            <div className="today-schedule-container">
+              <div>{classroomLocation()}</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+            </div>
+            <div className="today-schedule-container">
+              <div>{classroomLocation()}</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+            </div>
+            <div className="today-schedule-container">
+              <div>{classroomLocation()}</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+            </div>
+            <div className="today-schedule-container">
+              <div>{classroomLocation()}</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <ul className="sidebar-list-settings-and-logout">
+        <li className="sidebar-item">
+            <button onMouseEnter={() => showAttribution(
+                    "Settings icons created by srip - Flaticon",
+                    "https://www.flaticon.com/free-icon/settings_900797?term=settings&page=1&position=11&origin=search&related_id=900797"
+                    )}    
+                    onMouseLeave={() => hideAttribution()}
+                    onClick={() => navigate('/messages', { state: { userDetails: userDetails } })} 
+                    className={`sidebar-link ${theme}`}>
+              <img src="/src/assets/settings.png"
+              //Icon source from 
+              //https://www.flaticon.com/free-icon/settings_900797?term=settings&page=1&position=11&origin=search&related_id=900797
+              //Settings icons created by srip - Flaticon
+              alt="Settings"
+              className={`sidebar-list-icon ${theme}`}
+              /> 
+              Тохиргоо
+            </button>
+        </li>
+        
+        <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
-                  "Light icons created by Freepik - Flaticon",
-                  " https://www.flaticon.com/search?word=light%20mode"
+                  "Logout icons created by Pixel perfect - Flaticon",
+                  " https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427"
                   )}
                   onMouseLeave={() => hideAttribution()}
-                  onClick={()=>{toggleTheme()}} 
+                  onClick={()=>{handleLogout()}} 
                   className={`sidebar-link ${theme}`}>
-
-            <img src={themeIcon}
+            <img src="/src/assets/logout.png"
             //Icon source from 
-            //https://www.flaticon.com/search?word=light%20mode
-            //Light icons created by Freepik - Flaticon
-            alt="LightModeIcon"
-            className={`sidebar-theme-icon ${theme}`}
+            //https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427
+            //Logout icons created by Pixel perfect - Flaticon
+            alt="IntoUniversity"
+            className={`sidebar-list-icon ${theme}`}
             /> 
-            {theme === 'light' ? "Light Mode" : "Dark Mode"}
-          </button>
-        </li>
-
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/profile_screen', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Сурагчийн бүртгэл
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/courses', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Хөтөлбөрийн хичээлүүд
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/schedule', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Хөтөлбөрийн төлөвлөгөө
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/calendar', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Календарь
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/clubs', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Клубууд
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/notifications', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Сонордуулага
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/messages', { state: { userDetails: userDetails } })} className="sidebar-link">
-            Мессежүүд
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={() => navigate('/settings')} className="sidebar-link">
-            Settings
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onClick={()=>{handleLogout()}} className="sidebar-link logout-button">
-            Logout
+            Гарах
           </button>
         </li>
       </ul>
@@ -349,7 +472,8 @@ export const RenderSidebarRight = ({ user, theme }) => {
   );
 }
 
-
 RenderSidebar.PropTypes = {
   user: PropTypes.instanceOf(UserDetails).isRequired
 }
+
+

@@ -30,6 +30,12 @@ enum AnnouncementStatusEnum {
   has_not_read
 }
 
+enum app_theme_enum {
+  Light_Mode
+  Dark_Mode
+}
+
+
 enum CalendarPurposeEnum {
   important
   statement
@@ -346,10 +352,21 @@ model auth_user {
   Teacher      Teacher[]
   assistantLeaderIn StudentClubs[] @relation(name: "clubAssistantLeader")
   primaryLeaderIn   StudentClubs[] @relation(name: "clubPrimaryLeader")
+  userPreferences   authuserpreferences[] 
+
   Student Student[]
 
   @@index([user_role, email], map: "login_name_key")
   @@map("auth_user")
+}
+
+model authuserpreferences {
+  user_preferences_id Int     @id @default(autoincrement())
+  app_theme           app_theme_enum @default(Light_Mode)
+  user_id             Int     @unique
+  auth_user auth_user @relation(fields: [user_id], references: [user_id])
+
+  @@map("authuserpreferences")
 }
 
 model TeacherSchedule {
@@ -593,3 +610,5 @@ model StudentCurriculum {
 
   @@map("studentcurriculum")
 }
+
+

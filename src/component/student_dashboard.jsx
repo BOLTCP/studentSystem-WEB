@@ -6,6 +6,7 @@ import UserDetails from '../models/user_details';
 import StudentUser from '../models/student_user';
 import MajorClass from '../models/major';
 import Department from '../models/department';
+import AuthUserPreferences from '../models/auth_user_preferences';
 import { RenderSidebar, RenderSidebarRight } from './side_bars';
 import '../styles/student_dashboard.css';
 import './profile_screen';
@@ -30,6 +31,7 @@ const StudentDashboard = () => {
           if (response.status === 200) {
             console.log('User data fetched!', response.data);
             let student = StudentUser.fromJsonStudent(response.data.student);
+            const authuserpreferences = AuthUserPreferences.fromJsonAuthUserPreferences(response.data.userPreferences);
             const major = MajorClass.fromJsonMajor(response.data.major);
             const department = Department.fromJsonDepartment(response.data.department);
             const year_classification_fix = student.yearClassification === 'freshman' 
@@ -42,7 +44,7 @@ const StudentDashboard = () => {
 
             student.yearClassification = year_classification_fix;
 
-            setUserDetails(new UserDetails({ user, student, major, department }));
+            setUserDetails(new UserDetails({ user, authuserpreferences, student, major, department }));
           } else {
             console.error('Error fetching user details:', response.status, response.data);
             setError('Failed to fetch user details.');
@@ -62,10 +64,11 @@ const StudentDashboard = () => {
     fetchDetails();
   }, [user]);
 
-  const buildProfileCard = (label, value) => (
-    <div className="profile-card">
-      <h6 className="profile-card-label">{label}</h6>
-      <p className="profile-card-value">{value}</p>
+  const buildDashboardCourses = (label, value) => (
+    <div className="dashboard-courses-card">
+      <div className="dashboard-courses-picture"></div>
+      <h6 className="dashboard-courses-card-label">{label}</h6>
+      <p className="dashboard-courses-card-value">{value}</p>
     </div>
   );
 
@@ -81,12 +84,14 @@ const StudentDashboard = () => {
     if (userDetails) {
       return (
         <div className="dashboard-content">
-          <div className="dashboard-card-grid">
-            {buildProfileCard('Овог Нэр', `${userDetails.user?.lname} ${userDetails.user?.fname}`)}
-            {buildProfileCard('ID', userDetails.student?.studentCode)}
-            {buildProfileCard('Мэргэжил', userDetails.major?.majorName)}
-            {buildProfileCard('Тэнхим', userDetails.department?.departmentName)}
-          </div>
+          <div className="dashboard-courses-card-grid">
+              {buildDashboardCourses('Овог Нэр', `${userDetails.user?.lname} ${userDetails.user?.fname}`)}
+              {buildDashboardCourses('ID', userDetails.student?.studentCode)}
+              {buildDashboardCourses('Мэргэжил', userDetails.major?.majorName)}
+              {buildDashboardCourses('Овог Нэр', `${userDetails.user?.lname} ${userDetails.user?.fname}`)}
+              {buildDashboardCourses('ID', userDetails.student?.studentCode)}
+              {buildDashboardCourses('Тэнхим', userDetails.department?.departmentName)}
+            </div>
          
         </div>
       );

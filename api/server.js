@@ -64,6 +64,10 @@ app.post('/User/Login/Student', async (req, res) => {
       where: { user_id: userId }, 
     });
 
+    const userPreferences = await prisma.authuserpreferences.findUnique({
+      where: { user_id: userId }, 
+    });
+
     const department = await prisma.department.findUnique({
       where: { department_id: student.department_id },
     });
@@ -74,12 +78,42 @@ app.post('/User/Login/Student', async (req, res) => {
     console.log(student, department, major);
     if (student) {
         console.log(`Мэдээллийг амжилттай авлаа.`);
-        res.status(200).json({ student: student, department: department, major: major });
+        res.status(200).json({ student: student, userPreferences: userPreferences, department: department, major: major });
       } else {
         res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
       }
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+//src/component/side_bars.jsx
+app.post('/Save/User/Preferences', async (req, res) => {
+  const { userId, appTheme } = req.body;
+  console.log("Received user_id for Saving preferences of :", userId);
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required' });
+  }
+
+  try {
+    const authuserpreferences = await prisma.authuserpreferences.update({
+      where:  { user_id: userId },
+      data: {
+        app_theme: appTheme
+      },
+    });
+
+    console.log(authuserpreferences);
+    if (authuserpreferences) {
+        console.log(`Мэдээллийг амжилттай хадгаллаа.`);
+        res.status(200).json({ authuserpreferences: authuserpreferences});
+      } else {
+        res.status(401).json({ error: 'Мэдээлэл хадгалсангүй!' });
+      }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Operation Failed' });
   }
 });

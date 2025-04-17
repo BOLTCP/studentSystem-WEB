@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import getApiUrl from '../../api/get_Api_Url';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router'
 import PropTypes from 'prop-types';
@@ -9,8 +11,13 @@ import './profile_screen';
 
 export const RenderSidebar = ({ user }) => {
 
-  const [theme, setTheme] = useState("light");
   const [userDetails, setUserDetails] = useState(new UserDetails(user));
+  const [theme, setTheme] = useState(
+    `${userDetails.authuserpreferences?.appTheme === 'Light_Mode'
+      ? 'light'
+      : 'dark'
+    }`
+  );
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
   const navigate = useNavigate();
 
@@ -20,20 +27,46 @@ export const RenderSidebar = ({ user }) => {
     } else {
       setThemeIcon("/src/assets/darkMode.png");
     }
-    document.body.className = theme; 
+    document.body.className = theme;
   }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  
+  const toggleTheme = async () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    await saveUserPreferences(newTheme);
   };
-
-
-  {/*
-  const handleLogout = () => {
-    console.log('Logout clicked');
-    navigate('/');
-  };  
-  */}
+  
+  const saveUserPreferences = async (selectedTheme) => {
+    if (userDetails?.user?.userId) {
+      try {
+        const response = await axios.post(
+          getApiUrl('/Save/User/Preferences'),
+          {
+            userId: userDetails.user.userId,
+            appTheme: selectedTheme === 'light' 
+                                              ? 'Light_Mode'
+                                              : 'Dark_Mode', 
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 30000,
+          }
+        );
+  
+        if (response.status === 200) {
+          console.log('User preferences saved!', response.data);
+        } else {
+          console.error('Error saving user preferences :', response.status, response.data);
+          setError('Failed to save user preferences.');
+        }
+      } catch (err) {
+        console.error('Failed to save user preferences:', err);
+        setError('Network error occurred.');
+      } 
+    } else {
+      console.log("User not found");
+    }
+  };
 
   
   const showAttribution = (attributionComment, attrLink) => {

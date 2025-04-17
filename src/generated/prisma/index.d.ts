@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type auth_user = $Result.DefaultSelection<Prisma.$auth_userPayload>
 /**
+ * Model authuserpreferences
+ * 
+ */
+export type authuserpreferences = $Result.DefaultSelection<Prisma.$authuserpreferencesPayload>
+/**
  * Model TeacherSchedule
  * 
  */
@@ -111,6 +116,14 @@ export const AnnouncementStatusEnum: {
 };
 
 export type AnnouncementStatusEnum = (typeof AnnouncementStatusEnum)[keyof typeof AnnouncementStatusEnum]
+
+
+export const app_theme_enum: {
+  Light_Mode: 'Light_Mode',
+  Dark_Mode: 'Dark_Mode'
+};
+
+export type app_theme_enum = (typeof app_theme_enum)[keyof typeof app_theme_enum]
 
 
 export const CalendarPurposeEnum: {
@@ -486,6 +499,10 @@ export type AnnouncementStatusEnum = $Enums.AnnouncementStatusEnum
 
 export const AnnouncementStatusEnum: typeof $Enums.AnnouncementStatusEnum
 
+export type app_theme_enum = $Enums.app_theme_enum
+
+export const app_theme_enum: typeof $Enums.app_theme_enum
+
 export type CalendarPurposeEnum = $Enums.CalendarPurposeEnum
 
 export const CalendarPurposeEnum: typeof $Enums.CalendarPurposeEnum
@@ -744,6 +761,16 @@ export class PrismaClient<
     * ```
     */
   get auth_user(): Prisma.auth_userDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.authuserpreferences`: Exposes CRUD operations for the **authuserpreferences** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Authuserpreferences
+    * const authuserpreferences = await prisma.authuserpreferences.findMany()
+    * ```
+    */
+  get authuserpreferences(): Prisma.authuserpreferencesDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.teacherSchedule`: Exposes CRUD operations for the **TeacherSchedule** model.
@@ -1305,6 +1332,7 @@ export namespace Prisma {
 
   export const ModelName: {
     auth_user: 'auth_user',
+    authuserpreferences: 'authuserpreferences',
     TeacherSchedule: 'TeacherSchedule',
     TeachersCoursePlanning: 'TeachersCoursePlanning',
     Classrooms: 'Classrooms',
@@ -1335,7 +1363,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "auth_user" | "teacherSchedule" | "teachersCoursePlanning" | "classrooms" | "courses" | "teachersMajorPlanning" | "teacher" | "studentClubs" | "student" | "major" | "departmentsOfEducation" | "department" | "studentCurriculum"
+      modelProps: "auth_user" | "authuserpreferences" | "teacherSchedule" | "teachersCoursePlanning" | "classrooms" | "courses" | "teachersMajorPlanning" | "teacher" | "studentClubs" | "student" | "major" | "departmentsOfEducation" | "department" | "studentCurriculum"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1410,6 +1438,80 @@ export namespace Prisma {
           count: {
             args: Prisma.auth_userCountArgs<ExtArgs>
             result: $Utils.Optional<Auth_userCountAggregateOutputType> | number
+          }
+        }
+      }
+      authuserpreferences: {
+        payload: Prisma.$authuserpreferencesPayload<ExtArgs>
+        fields: Prisma.authuserpreferencesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.authuserpreferencesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.authuserpreferencesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>
+          }
+          findFirst: {
+            args: Prisma.authuserpreferencesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.authuserpreferencesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>
+          }
+          findMany: {
+            args: Prisma.authuserpreferencesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>[]
+          }
+          create: {
+            args: Prisma.authuserpreferencesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>
+          }
+          createMany: {
+            args: Prisma.authuserpreferencesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.authuserpreferencesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>[]
+          }
+          delete: {
+            args: Prisma.authuserpreferencesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>
+          }
+          update: {
+            args: Prisma.authuserpreferencesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>
+          }
+          deleteMany: {
+            args: Prisma.authuserpreferencesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.authuserpreferencesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.authuserpreferencesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>[]
+          }
+          upsert: {
+            args: Prisma.authuserpreferencesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$authuserpreferencesPayload>
+          }
+          aggregate: {
+            args: Prisma.AuthuserpreferencesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAuthuserpreferences>
+          }
+          groupBy: {
+            args: Prisma.authuserpreferencesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AuthuserpreferencesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.authuserpreferencesCountArgs<ExtArgs>
+            result: $Utils.Optional<AuthuserpreferencesCountAggregateOutputType> | number
           }
         }
       }
@@ -2386,6 +2488,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     auth_user?: auth_userOmit
+    authuserpreferences?: authuserpreferencesOmit
     teacherSchedule?: TeacherScheduleOmit
     teachersCoursePlanning?: TeachersCoursePlanningOmit
     classrooms?: ClassroomsOmit
@@ -2495,6 +2598,7 @@ export namespace Prisma {
     Teacher: number
     assistantLeaderIn: number
     primaryLeaderIn: number
+    userPreferences: number
     Student: number
   }
 
@@ -2502,6 +2606,7 @@ export namespace Prisma {
     Teacher?: boolean | Auth_userCountOutputTypeCountTeacherArgs
     assistantLeaderIn?: boolean | Auth_userCountOutputTypeCountAssistantLeaderInArgs
     primaryLeaderIn?: boolean | Auth_userCountOutputTypeCountPrimaryLeaderInArgs
+    userPreferences?: boolean | Auth_userCountOutputTypeCountUserPreferencesArgs
     Student?: boolean | Auth_userCountOutputTypeCountStudentArgs
   }
 
@@ -2535,6 +2640,13 @@ export namespace Prisma {
    */
   export type Auth_userCountOutputTypeCountPrimaryLeaderInArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StudentClubsWhereInput
+  }
+
+  /**
+   * Auth_userCountOutputType without action
+   */
+  export type Auth_userCountOutputTypeCountUserPreferencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: authuserpreferencesWhereInput
   }
 
   /**
@@ -3521,6 +3633,7 @@ export namespace Prisma {
     Teacher?: boolean | auth_user$TeacherArgs<ExtArgs>
     assistantLeaderIn?: boolean | auth_user$assistantLeaderInArgs<ExtArgs>
     primaryLeaderIn?: boolean | auth_user$primaryLeaderInArgs<ExtArgs>
+    userPreferences?: boolean | auth_user$userPreferencesArgs<ExtArgs>
     Student?: boolean | auth_user$StudentArgs<ExtArgs>
     _count?: boolean | Auth_userCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auth_user"]>
@@ -3671,6 +3784,7 @@ export namespace Prisma {
     Teacher?: boolean | auth_user$TeacherArgs<ExtArgs>
     assistantLeaderIn?: boolean | auth_user$assistantLeaderInArgs<ExtArgs>
     primaryLeaderIn?: boolean | auth_user$primaryLeaderInArgs<ExtArgs>
+    userPreferences?: boolean | auth_user$userPreferencesArgs<ExtArgs>
     Student?: boolean | auth_user$StudentArgs<ExtArgs>
     _count?: boolean | Auth_userCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3683,6 +3797,7 @@ export namespace Prisma {
       Teacher: Prisma.$TeacherPayload<ExtArgs>[]
       assistantLeaderIn: Prisma.$StudentClubsPayload<ExtArgs>[]
       primaryLeaderIn: Prisma.$StudentClubsPayload<ExtArgs>[]
+      userPreferences: Prisma.$authuserpreferencesPayload<ExtArgs>[]
       Student: Prisma.$StudentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -4127,6 +4242,7 @@ export namespace Prisma {
     Teacher<T extends auth_user$TeacherArgs<ExtArgs> = {}>(args?: Subset<T, auth_user$TeacherArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeacherPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assistantLeaderIn<T extends auth_user$assistantLeaderInArgs<ExtArgs> = {}>(args?: Subset<T, auth_user$assistantLeaderInArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentClubsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     primaryLeaderIn<T extends auth_user$primaryLeaderInArgs<ExtArgs> = {}>(args?: Subset<T, auth_user$primaryLeaderInArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentClubsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userPreferences<T extends auth_user$userPreferencesArgs<ExtArgs> = {}>(args?: Subset<T, auth_user$userPreferencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Student<T extends auth_user$StudentArgs<ExtArgs> = {}>(args?: Subset<T, auth_user$StudentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4661,6 +4777,30 @@ export namespace Prisma {
   }
 
   /**
+   * auth_user.userPreferences
+   */
+  export type auth_user$userPreferencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    where?: authuserpreferencesWhereInput
+    orderBy?: authuserpreferencesOrderByWithRelationInput | authuserpreferencesOrderByWithRelationInput[]
+    cursor?: authuserpreferencesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuthuserpreferencesScalarFieldEnum | AuthuserpreferencesScalarFieldEnum[]
+  }
+
+  /**
    * auth_user.Student
    */
   export type auth_user$StudentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4700,6 +4840,1076 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: auth_userInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model authuserpreferences
+   */
+
+  export type AggregateAuthuserpreferences = {
+    _count: AuthuserpreferencesCountAggregateOutputType | null
+    _avg: AuthuserpreferencesAvgAggregateOutputType | null
+    _sum: AuthuserpreferencesSumAggregateOutputType | null
+    _min: AuthuserpreferencesMinAggregateOutputType | null
+    _max: AuthuserpreferencesMaxAggregateOutputType | null
+  }
+
+  export type AuthuserpreferencesAvgAggregateOutputType = {
+    user_preferences_id: number | null
+    user_id: number | null
+  }
+
+  export type AuthuserpreferencesSumAggregateOutputType = {
+    user_preferences_id: number | null
+    user_id: number | null
+  }
+
+  export type AuthuserpreferencesMinAggregateOutputType = {
+    user_preferences_id: number | null
+    app_theme: $Enums.app_theme_enum | null
+    user_id: number | null
+  }
+
+  export type AuthuserpreferencesMaxAggregateOutputType = {
+    user_preferences_id: number | null
+    app_theme: $Enums.app_theme_enum | null
+    user_id: number | null
+  }
+
+  export type AuthuserpreferencesCountAggregateOutputType = {
+    user_preferences_id: number
+    app_theme: number
+    user_id: number
+    _all: number
+  }
+
+
+  export type AuthuserpreferencesAvgAggregateInputType = {
+    user_preferences_id?: true
+    user_id?: true
+  }
+
+  export type AuthuserpreferencesSumAggregateInputType = {
+    user_preferences_id?: true
+    user_id?: true
+  }
+
+  export type AuthuserpreferencesMinAggregateInputType = {
+    user_preferences_id?: true
+    app_theme?: true
+    user_id?: true
+  }
+
+  export type AuthuserpreferencesMaxAggregateInputType = {
+    user_preferences_id?: true
+    app_theme?: true
+    user_id?: true
+  }
+
+  export type AuthuserpreferencesCountAggregateInputType = {
+    user_preferences_id?: true
+    app_theme?: true
+    user_id?: true
+    _all?: true
+  }
+
+  export type AuthuserpreferencesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which authuserpreferences to aggregate.
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of authuserpreferences to fetch.
+     */
+    orderBy?: authuserpreferencesOrderByWithRelationInput | authuserpreferencesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: authuserpreferencesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` authuserpreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` authuserpreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned authuserpreferences
+    **/
+    _count?: true | AuthuserpreferencesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AuthuserpreferencesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AuthuserpreferencesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuthuserpreferencesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuthuserpreferencesMaxAggregateInputType
+  }
+
+  export type GetAuthuserpreferencesAggregateType<T extends AuthuserpreferencesAggregateArgs> = {
+        [P in keyof T & keyof AggregateAuthuserpreferences]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAuthuserpreferences[P]>
+      : GetScalarType<T[P], AggregateAuthuserpreferences[P]>
+  }
+
+
+
+
+  export type authuserpreferencesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: authuserpreferencesWhereInput
+    orderBy?: authuserpreferencesOrderByWithAggregationInput | authuserpreferencesOrderByWithAggregationInput[]
+    by: AuthuserpreferencesScalarFieldEnum[] | AuthuserpreferencesScalarFieldEnum
+    having?: authuserpreferencesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AuthuserpreferencesCountAggregateInputType | true
+    _avg?: AuthuserpreferencesAvgAggregateInputType
+    _sum?: AuthuserpreferencesSumAggregateInputType
+    _min?: AuthuserpreferencesMinAggregateInputType
+    _max?: AuthuserpreferencesMaxAggregateInputType
+  }
+
+  export type AuthuserpreferencesGroupByOutputType = {
+    user_preferences_id: number
+    app_theme: $Enums.app_theme_enum
+    user_id: number
+    _count: AuthuserpreferencesCountAggregateOutputType | null
+    _avg: AuthuserpreferencesAvgAggregateOutputType | null
+    _sum: AuthuserpreferencesSumAggregateOutputType | null
+    _min: AuthuserpreferencesMinAggregateOutputType | null
+    _max: AuthuserpreferencesMaxAggregateOutputType | null
+  }
+
+  type GetAuthuserpreferencesGroupByPayload<T extends authuserpreferencesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AuthuserpreferencesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AuthuserpreferencesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AuthuserpreferencesGroupByOutputType[P]>
+            : GetScalarType<T[P], AuthuserpreferencesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type authuserpreferencesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    user_preferences_id?: boolean
+    app_theme?: boolean
+    user_id?: boolean
+    auth_user?: boolean | auth_userDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["authuserpreferences"]>
+
+  export type authuserpreferencesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    user_preferences_id?: boolean
+    app_theme?: boolean
+    user_id?: boolean
+    auth_user?: boolean | auth_userDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["authuserpreferences"]>
+
+  export type authuserpreferencesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    user_preferences_id?: boolean
+    app_theme?: boolean
+    user_id?: boolean
+    auth_user?: boolean | auth_userDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["authuserpreferences"]>
+
+  export type authuserpreferencesSelectScalar = {
+    user_preferences_id?: boolean
+    app_theme?: boolean
+    user_id?: boolean
+  }
+
+  export type authuserpreferencesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"user_preferences_id" | "app_theme" | "user_id", ExtArgs["result"]["authuserpreferences"]>
+  export type authuserpreferencesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    auth_user?: boolean | auth_userDefaultArgs<ExtArgs>
+  }
+  export type authuserpreferencesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    auth_user?: boolean | auth_userDefaultArgs<ExtArgs>
+  }
+  export type authuserpreferencesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    auth_user?: boolean | auth_userDefaultArgs<ExtArgs>
+  }
+
+  export type $authuserpreferencesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "authuserpreferences"
+    objects: {
+      auth_user: Prisma.$auth_userPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      user_preferences_id: number
+      app_theme: $Enums.app_theme_enum
+      user_id: number
+    }, ExtArgs["result"]["authuserpreferences"]>
+    composites: {}
+  }
+
+  type authuserpreferencesGetPayload<S extends boolean | null | undefined | authuserpreferencesDefaultArgs> = $Result.GetResult<Prisma.$authuserpreferencesPayload, S>
+
+  type authuserpreferencesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<authuserpreferencesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AuthuserpreferencesCountAggregateInputType | true
+    }
+
+  export interface authuserpreferencesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['authuserpreferences'], meta: { name: 'authuserpreferences' } }
+    /**
+     * Find zero or one Authuserpreferences that matches the filter.
+     * @param {authuserpreferencesFindUniqueArgs} args - Arguments to find a Authuserpreferences
+     * @example
+     * // Get one Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends authuserpreferencesFindUniqueArgs>(args: SelectSubset<T, authuserpreferencesFindUniqueArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Authuserpreferences that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {authuserpreferencesFindUniqueOrThrowArgs} args - Arguments to find a Authuserpreferences
+     * @example
+     * // Get one Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends authuserpreferencesFindUniqueOrThrowArgs>(args: SelectSubset<T, authuserpreferencesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Authuserpreferences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {authuserpreferencesFindFirstArgs} args - Arguments to find a Authuserpreferences
+     * @example
+     * // Get one Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends authuserpreferencesFindFirstArgs>(args?: SelectSubset<T, authuserpreferencesFindFirstArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Authuserpreferences that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {authuserpreferencesFindFirstOrThrowArgs} args - Arguments to find a Authuserpreferences
+     * @example
+     * // Get one Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends authuserpreferencesFindFirstOrThrowArgs>(args?: SelectSubset<T, authuserpreferencesFindFirstOrThrowArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Authuserpreferences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {authuserpreferencesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.findMany()
+     * 
+     * // Get first 10 Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.findMany({ take: 10 })
+     * 
+     * // Only select the `user_preferences_id`
+     * const authuserpreferencesWithUser_preferences_idOnly = await prisma.authuserpreferences.findMany({ select: { user_preferences_id: true } })
+     * 
+     */
+    findMany<T extends authuserpreferencesFindManyArgs>(args?: SelectSubset<T, authuserpreferencesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Authuserpreferences.
+     * @param {authuserpreferencesCreateArgs} args - Arguments to create a Authuserpreferences.
+     * @example
+     * // Create one Authuserpreferences
+     * const Authuserpreferences = await prisma.authuserpreferences.create({
+     *   data: {
+     *     // ... data to create a Authuserpreferences
+     *   }
+     * })
+     * 
+     */
+    create<T extends authuserpreferencesCreateArgs>(args: SelectSubset<T, authuserpreferencesCreateArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Authuserpreferences.
+     * @param {authuserpreferencesCreateManyArgs} args - Arguments to create many Authuserpreferences.
+     * @example
+     * // Create many Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends authuserpreferencesCreateManyArgs>(args?: SelectSubset<T, authuserpreferencesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Authuserpreferences and returns the data saved in the database.
+     * @param {authuserpreferencesCreateManyAndReturnArgs} args - Arguments to create many Authuserpreferences.
+     * @example
+     * // Create many Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Authuserpreferences and only return the `user_preferences_id`
+     * const authuserpreferencesWithUser_preferences_idOnly = await prisma.authuserpreferences.createManyAndReturn({
+     *   select: { user_preferences_id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends authuserpreferencesCreateManyAndReturnArgs>(args?: SelectSubset<T, authuserpreferencesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Authuserpreferences.
+     * @param {authuserpreferencesDeleteArgs} args - Arguments to delete one Authuserpreferences.
+     * @example
+     * // Delete one Authuserpreferences
+     * const Authuserpreferences = await prisma.authuserpreferences.delete({
+     *   where: {
+     *     // ... filter to delete one Authuserpreferences
+     *   }
+     * })
+     * 
+     */
+    delete<T extends authuserpreferencesDeleteArgs>(args: SelectSubset<T, authuserpreferencesDeleteArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Authuserpreferences.
+     * @param {authuserpreferencesUpdateArgs} args - Arguments to update one Authuserpreferences.
+     * @example
+     * // Update one Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends authuserpreferencesUpdateArgs>(args: SelectSubset<T, authuserpreferencesUpdateArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Authuserpreferences.
+     * @param {authuserpreferencesDeleteManyArgs} args - Arguments to filter Authuserpreferences to delete.
+     * @example
+     * // Delete a few Authuserpreferences
+     * const { count } = await prisma.authuserpreferences.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends authuserpreferencesDeleteManyArgs>(args?: SelectSubset<T, authuserpreferencesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Authuserpreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {authuserpreferencesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends authuserpreferencesUpdateManyArgs>(args: SelectSubset<T, authuserpreferencesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Authuserpreferences and returns the data updated in the database.
+     * @param {authuserpreferencesUpdateManyAndReturnArgs} args - Arguments to update many Authuserpreferences.
+     * @example
+     * // Update many Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Authuserpreferences and only return the `user_preferences_id`
+     * const authuserpreferencesWithUser_preferences_idOnly = await prisma.authuserpreferences.updateManyAndReturn({
+     *   select: { user_preferences_id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends authuserpreferencesUpdateManyAndReturnArgs>(args: SelectSubset<T, authuserpreferencesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Authuserpreferences.
+     * @param {authuserpreferencesUpsertArgs} args - Arguments to update or create a Authuserpreferences.
+     * @example
+     * // Update or create a Authuserpreferences
+     * const authuserpreferences = await prisma.authuserpreferences.upsert({
+     *   create: {
+     *     // ... data to create a Authuserpreferences
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Authuserpreferences we want to update
+     *   }
+     * })
+     */
+    upsert<T extends authuserpreferencesUpsertArgs>(args: SelectSubset<T, authuserpreferencesUpsertArgs<ExtArgs>>): Prisma__authuserpreferencesClient<$Result.GetResult<Prisma.$authuserpreferencesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Authuserpreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {authuserpreferencesCountArgs} args - Arguments to filter Authuserpreferences to count.
+     * @example
+     * // Count the number of Authuserpreferences
+     * const count = await prisma.authuserpreferences.count({
+     *   where: {
+     *     // ... the filter for the Authuserpreferences we want to count
+     *   }
+     * })
+    **/
+    count<T extends authuserpreferencesCountArgs>(
+      args?: Subset<T, authuserpreferencesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AuthuserpreferencesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Authuserpreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthuserpreferencesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuthuserpreferencesAggregateArgs>(args: Subset<T, AuthuserpreferencesAggregateArgs>): Prisma.PrismaPromise<GetAuthuserpreferencesAggregateType<T>>
+
+    /**
+     * Group by Authuserpreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {authuserpreferencesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends authuserpreferencesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: authuserpreferencesGroupByArgs['orderBy'] }
+        : { orderBy?: authuserpreferencesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, authuserpreferencesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuthuserpreferencesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the authuserpreferences model
+   */
+  readonly fields: authuserpreferencesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for authuserpreferences.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__authuserpreferencesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    auth_user<T extends auth_userDefaultArgs<ExtArgs> = {}>(args?: Subset<T, auth_userDefaultArgs<ExtArgs>>): Prisma__auth_userClient<$Result.GetResult<Prisma.$auth_userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the authuserpreferences model
+   */
+  interface authuserpreferencesFieldRefs {
+    readonly user_preferences_id: FieldRef<"authuserpreferences", 'Int'>
+    readonly app_theme: FieldRef<"authuserpreferences", 'app_theme_enum'>
+    readonly user_id: FieldRef<"authuserpreferences", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * authuserpreferences findUnique
+   */
+  export type authuserpreferencesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * Filter, which authuserpreferences to fetch.
+     */
+    where: authuserpreferencesWhereUniqueInput
+  }
+
+  /**
+   * authuserpreferences findUniqueOrThrow
+   */
+  export type authuserpreferencesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * Filter, which authuserpreferences to fetch.
+     */
+    where: authuserpreferencesWhereUniqueInput
+  }
+
+  /**
+   * authuserpreferences findFirst
+   */
+  export type authuserpreferencesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * Filter, which authuserpreferences to fetch.
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of authuserpreferences to fetch.
+     */
+    orderBy?: authuserpreferencesOrderByWithRelationInput | authuserpreferencesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for authuserpreferences.
+     */
+    cursor?: authuserpreferencesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` authuserpreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` authuserpreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of authuserpreferences.
+     */
+    distinct?: AuthuserpreferencesScalarFieldEnum | AuthuserpreferencesScalarFieldEnum[]
+  }
+
+  /**
+   * authuserpreferences findFirstOrThrow
+   */
+  export type authuserpreferencesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * Filter, which authuserpreferences to fetch.
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of authuserpreferences to fetch.
+     */
+    orderBy?: authuserpreferencesOrderByWithRelationInput | authuserpreferencesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for authuserpreferences.
+     */
+    cursor?: authuserpreferencesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` authuserpreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` authuserpreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of authuserpreferences.
+     */
+    distinct?: AuthuserpreferencesScalarFieldEnum | AuthuserpreferencesScalarFieldEnum[]
+  }
+
+  /**
+   * authuserpreferences findMany
+   */
+  export type authuserpreferencesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * Filter, which authuserpreferences to fetch.
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of authuserpreferences to fetch.
+     */
+    orderBy?: authuserpreferencesOrderByWithRelationInput | authuserpreferencesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing authuserpreferences.
+     */
+    cursor?: authuserpreferencesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` authuserpreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` authuserpreferences.
+     */
+    skip?: number
+    distinct?: AuthuserpreferencesScalarFieldEnum | AuthuserpreferencesScalarFieldEnum[]
+  }
+
+  /**
+   * authuserpreferences create
+   */
+  export type authuserpreferencesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a authuserpreferences.
+     */
+    data: XOR<authuserpreferencesCreateInput, authuserpreferencesUncheckedCreateInput>
+  }
+
+  /**
+   * authuserpreferences createMany
+   */
+  export type authuserpreferencesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many authuserpreferences.
+     */
+    data: authuserpreferencesCreateManyInput | authuserpreferencesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * authuserpreferences createManyAndReturn
+   */
+  export type authuserpreferencesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * The data used to create many authuserpreferences.
+     */
+    data: authuserpreferencesCreateManyInput | authuserpreferencesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * authuserpreferences update
+   */
+  export type authuserpreferencesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a authuserpreferences.
+     */
+    data: XOR<authuserpreferencesUpdateInput, authuserpreferencesUncheckedUpdateInput>
+    /**
+     * Choose, which authuserpreferences to update.
+     */
+    where: authuserpreferencesWhereUniqueInput
+  }
+
+  /**
+   * authuserpreferences updateMany
+   */
+  export type authuserpreferencesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update authuserpreferences.
+     */
+    data: XOR<authuserpreferencesUpdateManyMutationInput, authuserpreferencesUncheckedUpdateManyInput>
+    /**
+     * Filter which authuserpreferences to update
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * Limit how many authuserpreferences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * authuserpreferences updateManyAndReturn
+   */
+  export type authuserpreferencesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * The data used to update authuserpreferences.
+     */
+    data: XOR<authuserpreferencesUpdateManyMutationInput, authuserpreferencesUncheckedUpdateManyInput>
+    /**
+     * Filter which authuserpreferences to update
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * Limit how many authuserpreferences to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * authuserpreferences upsert
+   */
+  export type authuserpreferencesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the authuserpreferences to update in case it exists.
+     */
+    where: authuserpreferencesWhereUniqueInput
+    /**
+     * In case the authuserpreferences found by the `where` argument doesn't exist, create a new authuserpreferences with this data.
+     */
+    create: XOR<authuserpreferencesCreateInput, authuserpreferencesUncheckedCreateInput>
+    /**
+     * In case the authuserpreferences was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<authuserpreferencesUpdateInput, authuserpreferencesUncheckedUpdateInput>
+  }
+
+  /**
+   * authuserpreferences delete
+   */
+  export type authuserpreferencesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
+    /**
+     * Filter which authuserpreferences to delete.
+     */
+    where: authuserpreferencesWhereUniqueInput
+  }
+
+  /**
+   * authuserpreferences deleteMany
+   */
+  export type authuserpreferencesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which authuserpreferences to delete
+     */
+    where?: authuserpreferencesWhereInput
+    /**
+     * Limit how many authuserpreferences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * authuserpreferences without action
+   */
+  export type authuserpreferencesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the authuserpreferences
+     */
+    select?: authuserpreferencesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the authuserpreferences
+     */
+    omit?: authuserpreferencesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: authuserpreferencesInclude<ExtArgs> | null
   }
 
 
@@ -20113,6 +21323,15 @@ export namespace Prisma {
   export type Auth_userScalarFieldEnum = (typeof Auth_userScalarFieldEnum)[keyof typeof Auth_userScalarFieldEnum]
 
 
+  export const AuthuserpreferencesScalarFieldEnum: {
+    user_preferences_id: 'user_preferences_id',
+    app_theme: 'app_theme',
+    user_id: 'user_id'
+  };
+
+  export type AuthuserpreferencesScalarFieldEnum = (typeof AuthuserpreferencesScalarFieldEnum)[keyof typeof AuthuserpreferencesScalarFieldEnum]
+
+
   export const TeacherScheduleScalarFieldEnum: {
     teacherScheduleId: 'teacherScheduleId',
     teacherId: 'teacherId',
@@ -20484,6 +21703,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'app_theme_enum'
+   */
+  export type Enumapp_theme_enumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'app_theme_enum'>
+    
+
+
+  /**
+   * Reference to a field of type 'app_theme_enum[]'
+   */
+  export type ListEnumapp_theme_enumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'app_theme_enum[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Decimal'
    */
   export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -20747,6 +21980,7 @@ export namespace Prisma {
     Teacher?: TeacherListRelationFilter
     assistantLeaderIn?: StudentClubsListRelationFilter
     primaryLeaderIn?: StudentClubsListRelationFilter
+    userPreferences?: AuthuserpreferencesListRelationFilter
     Student?: StudentListRelationFilter
   }
 
@@ -20798,6 +22032,7 @@ export namespace Prisma {
     Teacher?: TeacherOrderByRelationAggregateInput
     assistantLeaderIn?: StudentClubsOrderByRelationAggregateInput
     primaryLeaderIn?: StudentClubsOrderByRelationAggregateInput
+    userPreferences?: authuserpreferencesOrderByRelationAggregateInput
     Student?: StudentOrderByRelationAggregateInput
   }
 
@@ -20852,6 +22087,7 @@ export namespace Prisma {
     Teacher?: TeacherListRelationFilter
     assistantLeaderIn?: StudentClubsListRelationFilter
     primaryLeaderIn?: StudentClubsListRelationFilter
+    userPreferences?: AuthuserpreferencesListRelationFilter
     Student?: StudentListRelationFilter
   }, "user_id" | "login_name" | "email">
 
@@ -20955,6 +22191,53 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"auth_user"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"auth_user"> | Date | string
     family_tree_name?: StringWithAggregatesFilter<"auth_user"> | string
+  }
+
+  export type authuserpreferencesWhereInput = {
+    AND?: authuserpreferencesWhereInput | authuserpreferencesWhereInput[]
+    OR?: authuserpreferencesWhereInput[]
+    NOT?: authuserpreferencesWhereInput | authuserpreferencesWhereInput[]
+    user_preferences_id?: IntFilter<"authuserpreferences"> | number
+    app_theme?: Enumapp_theme_enumFilter<"authuserpreferences"> | $Enums.app_theme_enum
+    user_id?: IntFilter<"authuserpreferences"> | number
+    auth_user?: XOR<Auth_userScalarRelationFilter, auth_userWhereInput>
+  }
+
+  export type authuserpreferencesOrderByWithRelationInput = {
+    user_preferences_id?: SortOrder
+    app_theme?: SortOrder
+    user_id?: SortOrder
+    auth_user?: auth_userOrderByWithRelationInput
+  }
+
+  export type authuserpreferencesWhereUniqueInput = Prisma.AtLeast<{
+    user_preferences_id?: number
+    user_id?: number
+    AND?: authuserpreferencesWhereInput | authuserpreferencesWhereInput[]
+    OR?: authuserpreferencesWhereInput[]
+    NOT?: authuserpreferencesWhereInput | authuserpreferencesWhereInput[]
+    app_theme?: Enumapp_theme_enumFilter<"authuserpreferences"> | $Enums.app_theme_enum
+    auth_user?: XOR<Auth_userScalarRelationFilter, auth_userWhereInput>
+  }, "user_preferences_id" | "user_id">
+
+  export type authuserpreferencesOrderByWithAggregationInput = {
+    user_preferences_id?: SortOrder
+    app_theme?: SortOrder
+    user_id?: SortOrder
+    _count?: authuserpreferencesCountOrderByAggregateInput
+    _avg?: authuserpreferencesAvgOrderByAggregateInput
+    _max?: authuserpreferencesMaxOrderByAggregateInput
+    _min?: authuserpreferencesMinOrderByAggregateInput
+    _sum?: authuserpreferencesSumOrderByAggregateInput
+  }
+
+  export type authuserpreferencesScalarWhereWithAggregatesInput = {
+    AND?: authuserpreferencesScalarWhereWithAggregatesInput | authuserpreferencesScalarWhereWithAggregatesInput[]
+    OR?: authuserpreferencesScalarWhereWithAggregatesInput[]
+    NOT?: authuserpreferencesScalarWhereWithAggregatesInput | authuserpreferencesScalarWhereWithAggregatesInput[]
+    user_preferences_id?: IntWithAggregatesFilter<"authuserpreferences"> | number
+    app_theme?: Enumapp_theme_enumWithAggregatesFilter<"authuserpreferences"> | $Enums.app_theme_enum
+    user_id?: IntWithAggregatesFilter<"authuserpreferences"> | number
   }
 
   export type TeacherScheduleWhereInput = {
@@ -22199,6 +23482,7 @@ export namespace Prisma {
     Teacher?: TeacherCreateNestedManyWithoutAuth_userInput
     assistantLeaderIn?: StudentClubsCreateNestedManyWithoutClubAssistantLeaderInput
     primaryLeaderIn?: StudentClubsCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesCreateNestedManyWithoutAuth_userInput
     Student?: StudentCreateNestedManyWithoutAuth_userInput
   }
 
@@ -22250,6 +23534,7 @@ export namespace Prisma {
     Teacher?: TeacherUncheckedCreateNestedManyWithoutAuth_userInput
     assistantLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubAssistantLeaderInput
     primaryLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesUncheckedCreateNestedManyWithoutAuth_userInput
     Student?: StudentUncheckedCreateNestedManyWithoutAuth_userInput
   }
 
@@ -22300,6 +23585,7 @@ export namespace Prisma {
     Teacher?: TeacherUpdateManyWithoutAuth_userNestedInput
     assistantLeaderIn?: StudentClubsUpdateManyWithoutClubAssistantLeaderNestedInput
     primaryLeaderIn?: StudentClubsUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -22351,6 +23637,7 @@ export namespace Prisma {
     Teacher?: TeacherUncheckedUpdateManyWithoutAuth_userNestedInput
     assistantLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubAssistantLeaderNestedInput
     primaryLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUncheckedUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUncheckedUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -22492,6 +23779,44 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     family_tree_name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type authuserpreferencesCreateInput = {
+    app_theme?: $Enums.app_theme_enum
+    auth_user: auth_userCreateNestedOneWithoutUserPreferencesInput
+  }
+
+  export type authuserpreferencesUncheckedCreateInput = {
+    user_preferences_id?: number
+    app_theme?: $Enums.app_theme_enum
+    user_id: number
+  }
+
+  export type authuserpreferencesUpdateInput = {
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
+    auth_user?: auth_userUpdateOneRequiredWithoutUserPreferencesNestedInput
+  }
+
+  export type authuserpreferencesUncheckedUpdateInput = {
+    user_preferences_id?: IntFieldUpdateOperationsInput | number
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
+    user_id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type authuserpreferencesCreateManyInput = {
+    user_preferences_id?: number
+    app_theme?: $Enums.app_theme_enum
+    user_id: number
+  }
+
+  export type authuserpreferencesUpdateManyMutationInput = {
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
+  }
+
+  export type authuserpreferencesUncheckedUpdateManyInput = {
+    user_preferences_id?: IntFieldUpdateOperationsInput | number
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
+    user_id?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeacherScheduleCreateInput = {
@@ -23828,6 +25153,12 @@ export namespace Prisma {
     none?: StudentClubsWhereInput
   }
 
+  export type AuthuserpreferencesListRelationFilter = {
+    every?: authuserpreferencesWhereInput
+    some?: authuserpreferencesWhereInput
+    none?: authuserpreferencesWhereInput
+  }
+
   export type StudentListRelationFilter = {
     every?: StudentWhereInput
     some?: StudentWhereInput
@@ -23844,6 +25175,10 @@ export namespace Prisma {
   }
 
   export type StudentClubsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type authuserpreferencesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24122,6 +25457,56 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type Enumapp_theme_enumFilter<$PrismaModel = never> = {
+    equals?: $Enums.app_theme_enum | Enumapp_theme_enumFieldRefInput<$PrismaModel>
+    in?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    notIn?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    not?: NestedEnumapp_theme_enumFilter<$PrismaModel> | $Enums.app_theme_enum
+  }
+
+  export type Auth_userScalarRelationFilter = {
+    is?: auth_userWhereInput
+    isNot?: auth_userWhereInput
+  }
+
+  export type authuserpreferencesCountOrderByAggregateInput = {
+    user_preferences_id?: SortOrder
+    app_theme?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type authuserpreferencesAvgOrderByAggregateInput = {
+    user_preferences_id?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type authuserpreferencesMaxOrderByAggregateInput = {
+    user_preferences_id?: SortOrder
+    app_theme?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type authuserpreferencesMinOrderByAggregateInput = {
+    user_preferences_id?: SortOrder
+    app_theme?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type authuserpreferencesSumOrderByAggregateInput = {
+    user_preferences_id?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type Enumapp_theme_enumWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.app_theme_enum | Enumapp_theme_enumFieldRefInput<$PrismaModel>
+    in?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    notIn?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    not?: NestedEnumapp_theme_enumWithAggregatesFilter<$PrismaModel> | $Enums.app_theme_enum
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumapp_theme_enumFilter<$PrismaModel>
+    _max?: NestedEnumapp_theme_enumFilter<$PrismaModel>
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -24771,11 +26156,6 @@ export namespace Prisma {
     not?: NestedEnumClubTypeEnumFilter<$PrismaModel> | $Enums.ClubTypeEnum
   }
 
-  export type Auth_userScalarRelationFilter = {
-    is?: auth_userWhereInput
-    isNot?: auth_userWhereInput
-  }
-
   export type StudentClubsCountOrderByAggregateInput = {
     studentClubId?: SortOrder
     clubCode?: SortOrder
@@ -25384,6 +26764,13 @@ export namespace Prisma {
     connect?: StudentClubsWhereUniqueInput | StudentClubsWhereUniqueInput[]
   }
 
+  export type authuserpreferencesCreateNestedManyWithoutAuth_userInput = {
+    create?: XOR<authuserpreferencesCreateWithoutAuth_userInput, authuserpreferencesUncheckedCreateWithoutAuth_userInput> | authuserpreferencesCreateWithoutAuth_userInput[] | authuserpreferencesUncheckedCreateWithoutAuth_userInput[]
+    connectOrCreate?: authuserpreferencesCreateOrConnectWithoutAuth_userInput | authuserpreferencesCreateOrConnectWithoutAuth_userInput[]
+    createMany?: authuserpreferencesCreateManyAuth_userInputEnvelope
+    connect?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+  }
+
   export type StudentCreateNestedManyWithoutAuth_userInput = {
     create?: XOR<StudentCreateWithoutAuth_userInput, StudentUncheckedCreateWithoutAuth_userInput> | StudentCreateWithoutAuth_userInput[] | StudentUncheckedCreateWithoutAuth_userInput[]
     connectOrCreate?: StudentCreateOrConnectWithoutAuth_userInput | StudentCreateOrConnectWithoutAuth_userInput[]
@@ -25410,6 +26797,13 @@ export namespace Prisma {
     connectOrCreate?: StudentClubsCreateOrConnectWithoutClubPrimaryLeaderInput | StudentClubsCreateOrConnectWithoutClubPrimaryLeaderInput[]
     createMany?: StudentClubsCreateManyClubPrimaryLeaderInputEnvelope
     connect?: StudentClubsWhereUniqueInput | StudentClubsWhereUniqueInput[]
+  }
+
+  export type authuserpreferencesUncheckedCreateNestedManyWithoutAuth_userInput = {
+    create?: XOR<authuserpreferencesCreateWithoutAuth_userInput, authuserpreferencesUncheckedCreateWithoutAuth_userInput> | authuserpreferencesCreateWithoutAuth_userInput[] | authuserpreferencesUncheckedCreateWithoutAuth_userInput[]
+    connectOrCreate?: authuserpreferencesCreateOrConnectWithoutAuth_userInput | authuserpreferencesCreateOrConnectWithoutAuth_userInput[]
+    createMany?: authuserpreferencesCreateManyAuth_userInputEnvelope
+    connect?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
   }
 
   export type StudentUncheckedCreateNestedManyWithoutAuth_userInput = {
@@ -25497,6 +26891,20 @@ export namespace Prisma {
     deleteMany?: StudentClubsScalarWhereInput | StudentClubsScalarWhereInput[]
   }
 
+  export type authuserpreferencesUpdateManyWithoutAuth_userNestedInput = {
+    create?: XOR<authuserpreferencesCreateWithoutAuth_userInput, authuserpreferencesUncheckedCreateWithoutAuth_userInput> | authuserpreferencesCreateWithoutAuth_userInput[] | authuserpreferencesUncheckedCreateWithoutAuth_userInput[]
+    connectOrCreate?: authuserpreferencesCreateOrConnectWithoutAuth_userInput | authuserpreferencesCreateOrConnectWithoutAuth_userInput[]
+    upsert?: authuserpreferencesUpsertWithWhereUniqueWithoutAuth_userInput | authuserpreferencesUpsertWithWhereUniqueWithoutAuth_userInput[]
+    createMany?: authuserpreferencesCreateManyAuth_userInputEnvelope
+    set?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    disconnect?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    delete?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    connect?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    update?: authuserpreferencesUpdateWithWhereUniqueWithoutAuth_userInput | authuserpreferencesUpdateWithWhereUniqueWithoutAuth_userInput[]
+    updateMany?: authuserpreferencesUpdateManyWithWhereWithoutAuth_userInput | authuserpreferencesUpdateManyWithWhereWithoutAuth_userInput[]
+    deleteMany?: authuserpreferencesScalarWhereInput | authuserpreferencesScalarWhereInput[]
+  }
+
   export type StudentUpdateManyWithoutAuth_userNestedInput = {
     create?: XOR<StudentCreateWithoutAuth_userInput, StudentUncheckedCreateWithoutAuth_userInput> | StudentCreateWithoutAuth_userInput[] | StudentUncheckedCreateWithoutAuth_userInput[]
     connectOrCreate?: StudentCreateOrConnectWithoutAuth_userInput | StudentCreateOrConnectWithoutAuth_userInput[]
@@ -25561,6 +26969,20 @@ export namespace Prisma {
     deleteMany?: StudentClubsScalarWhereInput | StudentClubsScalarWhereInput[]
   }
 
+  export type authuserpreferencesUncheckedUpdateManyWithoutAuth_userNestedInput = {
+    create?: XOR<authuserpreferencesCreateWithoutAuth_userInput, authuserpreferencesUncheckedCreateWithoutAuth_userInput> | authuserpreferencesCreateWithoutAuth_userInput[] | authuserpreferencesUncheckedCreateWithoutAuth_userInput[]
+    connectOrCreate?: authuserpreferencesCreateOrConnectWithoutAuth_userInput | authuserpreferencesCreateOrConnectWithoutAuth_userInput[]
+    upsert?: authuserpreferencesUpsertWithWhereUniqueWithoutAuth_userInput | authuserpreferencesUpsertWithWhereUniqueWithoutAuth_userInput[]
+    createMany?: authuserpreferencesCreateManyAuth_userInputEnvelope
+    set?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    disconnect?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    delete?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    connect?: authuserpreferencesWhereUniqueInput | authuserpreferencesWhereUniqueInput[]
+    update?: authuserpreferencesUpdateWithWhereUniqueWithoutAuth_userInput | authuserpreferencesUpdateWithWhereUniqueWithoutAuth_userInput[]
+    updateMany?: authuserpreferencesUpdateManyWithWhereWithoutAuth_userInput | authuserpreferencesUpdateManyWithWhereWithoutAuth_userInput[]
+    deleteMany?: authuserpreferencesScalarWhereInput | authuserpreferencesScalarWhereInput[]
+  }
+
   export type StudentUncheckedUpdateManyWithoutAuth_userNestedInput = {
     create?: XOR<StudentCreateWithoutAuth_userInput, StudentUncheckedCreateWithoutAuth_userInput> | StudentCreateWithoutAuth_userInput[] | StudentUncheckedCreateWithoutAuth_userInput[]
     connectOrCreate?: StudentCreateOrConnectWithoutAuth_userInput | StudentCreateOrConnectWithoutAuth_userInput[]
@@ -25573,6 +26995,24 @@ export namespace Prisma {
     update?: StudentUpdateWithWhereUniqueWithoutAuth_userInput | StudentUpdateWithWhereUniqueWithoutAuth_userInput[]
     updateMany?: StudentUpdateManyWithWhereWithoutAuth_userInput | StudentUpdateManyWithWhereWithoutAuth_userInput[]
     deleteMany?: StudentScalarWhereInput | StudentScalarWhereInput[]
+  }
+
+  export type auth_userCreateNestedOneWithoutUserPreferencesInput = {
+    create?: XOR<auth_userCreateWithoutUserPreferencesInput, auth_userUncheckedCreateWithoutUserPreferencesInput>
+    connectOrCreate?: auth_userCreateOrConnectWithoutUserPreferencesInput
+    connect?: auth_userWhereUniqueInput
+  }
+
+  export type Enumapp_theme_enumFieldUpdateOperationsInput = {
+    set?: $Enums.app_theme_enum
+  }
+
+  export type auth_userUpdateOneRequiredWithoutUserPreferencesNestedInput = {
+    create?: XOR<auth_userCreateWithoutUserPreferencesInput, auth_userUncheckedCreateWithoutUserPreferencesInput>
+    connectOrCreate?: auth_userCreateOrConnectWithoutUserPreferencesInput
+    upsert?: auth_userUpsertWithoutUserPreferencesInput
+    connect?: auth_userWhereUniqueInput
+    update?: XOR<XOR<auth_userUpdateToOneWithWhereWithoutUserPreferencesInput, auth_userUpdateWithoutUserPreferencesInput>, auth_userUncheckedUpdateWithoutUserPreferencesInput>
   }
 
   export type ClassroomsCreateNestedOneWithoutTeacherScheduleInput = {
@@ -27551,6 +28991,23 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedEnumapp_theme_enumFilter<$PrismaModel = never> = {
+    equals?: $Enums.app_theme_enum | Enumapp_theme_enumFieldRefInput<$PrismaModel>
+    in?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    notIn?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    not?: NestedEnumapp_theme_enumFilter<$PrismaModel> | $Enums.app_theme_enum
+  }
+
+  export type NestedEnumapp_theme_enumWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.app_theme_enum | Enumapp_theme_enumFieldRefInput<$PrismaModel>
+    in?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    notIn?: $Enums.app_theme_enum[] | ListEnumapp_theme_enumFieldRefInput<$PrismaModel>
+    not?: NestedEnumapp_theme_enumWithAggregatesFilter<$PrismaModel> | $Enums.app_theme_enum
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumapp_theme_enumFilter<$PrismaModel>
+    _max?: NestedEnumapp_theme_enumFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -28023,6 +29480,25 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type authuserpreferencesCreateWithoutAuth_userInput = {
+    app_theme?: $Enums.app_theme_enum
+  }
+
+  export type authuserpreferencesUncheckedCreateWithoutAuth_userInput = {
+    user_preferences_id?: number
+    app_theme?: $Enums.app_theme_enum
+  }
+
+  export type authuserpreferencesCreateOrConnectWithoutAuth_userInput = {
+    where: authuserpreferencesWhereUniqueInput
+    create: XOR<authuserpreferencesCreateWithoutAuth_userInput, authuserpreferencesUncheckedCreateWithoutAuth_userInput>
+  }
+
+  export type authuserpreferencesCreateManyAuth_userInputEnvelope = {
+    data: authuserpreferencesCreateManyAuth_userInput | authuserpreferencesCreateManyAuth_userInput[]
+    skipDuplicates?: boolean
+  }
+
   export type StudentCreateWithoutAuth_userInput = {
     additional_roles?: $Enums.AdditionalRolesEnum
     student_code: string
@@ -28156,6 +29632,31 @@ export namespace Prisma {
     data: XOR<StudentClubsUpdateManyMutationInput, StudentClubsUncheckedUpdateManyWithoutClubPrimaryLeaderInput>
   }
 
+  export type authuserpreferencesUpsertWithWhereUniqueWithoutAuth_userInput = {
+    where: authuserpreferencesWhereUniqueInput
+    update: XOR<authuserpreferencesUpdateWithoutAuth_userInput, authuserpreferencesUncheckedUpdateWithoutAuth_userInput>
+    create: XOR<authuserpreferencesCreateWithoutAuth_userInput, authuserpreferencesUncheckedCreateWithoutAuth_userInput>
+  }
+
+  export type authuserpreferencesUpdateWithWhereUniqueWithoutAuth_userInput = {
+    where: authuserpreferencesWhereUniqueInput
+    data: XOR<authuserpreferencesUpdateWithoutAuth_userInput, authuserpreferencesUncheckedUpdateWithoutAuth_userInput>
+  }
+
+  export type authuserpreferencesUpdateManyWithWhereWithoutAuth_userInput = {
+    where: authuserpreferencesScalarWhereInput
+    data: XOR<authuserpreferencesUpdateManyMutationInput, authuserpreferencesUncheckedUpdateManyWithoutAuth_userInput>
+  }
+
+  export type authuserpreferencesScalarWhereInput = {
+    AND?: authuserpreferencesScalarWhereInput | authuserpreferencesScalarWhereInput[]
+    OR?: authuserpreferencesScalarWhereInput[]
+    NOT?: authuserpreferencesScalarWhereInput | authuserpreferencesScalarWhereInput[]
+    user_preferences_id?: IntFilter<"authuserpreferences"> | number
+    app_theme?: Enumapp_theme_enumFilter<"authuserpreferences"> | $Enums.app_theme_enum
+    user_id?: IntFilter<"authuserpreferences"> | number
+  }
+
   export type StudentUpsertWithWhereUniqueWithoutAuth_userInput = {
     where: StudentWhereUniqueInput
     update: XOR<StudentUpdateWithoutAuth_userInput, StudentUncheckedUpdateWithoutAuth_userInput>
@@ -28193,6 +29694,224 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"Student"> | Date | string | null
     contracts?: JsonNullableFilter<"Student">
     department_id?: IntNullableFilter<"Student"> | number | null
+  }
+
+  export type auth_userCreateWithoutUserPreferencesInput = {
+    login_name: string
+    password_hash: string
+    profile_picture?: string | null
+    registry_number: string
+    user_role: $Enums.UserRoleEnum
+    fname: string
+    lname: string
+    birthday: Date | string
+    gender: $Enums.GenderEnum
+    citizenship: string
+    state_city: string
+    town_district: string
+    valid_address: string
+    state_city_living: string
+    town_district_living: string
+    valid_address_living: string
+    postal_address?: string | null
+    home_phone_number?: string | null
+    phone_number: string
+    phone_number_emergency: string
+    country: string
+    ethnicity: string
+    social_background: string
+    state_city_of_birth: string
+    town_district_of_birth: string
+    place_of_birth: string
+    education: string
+    current_academic_degree: string
+    profession?: string | null
+    profession_certification?: string | null
+    f_passport_number?: string | null
+    married: $Enums.MarriedEnum
+    military_service: $Enums.MilitaryServiceEnum
+    pensions_established?: string | null
+    additional_notes?: string | null
+    blood_type?: string | null
+    drivers_certificate?: string | null
+    drivers_certificate_number?: string | null
+    disabled: $Enums.DisabledEnum
+    is_active?: boolean
+    email?: string | null
+    created_at?: Date | string
+    family_tree_name?: string
+    Teacher?: TeacherCreateNestedManyWithoutAuth_userInput
+    assistantLeaderIn?: StudentClubsCreateNestedManyWithoutClubAssistantLeaderInput
+    primaryLeaderIn?: StudentClubsCreateNestedManyWithoutClubPrimaryLeaderInput
+    Student?: StudentCreateNestedManyWithoutAuth_userInput
+  }
+
+  export type auth_userUncheckedCreateWithoutUserPreferencesInput = {
+    user_id?: number
+    login_name: string
+    password_hash: string
+    profile_picture?: string | null
+    registry_number: string
+    user_role: $Enums.UserRoleEnum
+    fname: string
+    lname: string
+    birthday: Date | string
+    gender: $Enums.GenderEnum
+    citizenship: string
+    state_city: string
+    town_district: string
+    valid_address: string
+    state_city_living: string
+    town_district_living: string
+    valid_address_living: string
+    postal_address?: string | null
+    home_phone_number?: string | null
+    phone_number: string
+    phone_number_emergency: string
+    country: string
+    ethnicity: string
+    social_background: string
+    state_city_of_birth: string
+    town_district_of_birth: string
+    place_of_birth: string
+    education: string
+    current_academic_degree: string
+    profession?: string | null
+    profession_certification?: string | null
+    f_passport_number?: string | null
+    married: $Enums.MarriedEnum
+    military_service: $Enums.MilitaryServiceEnum
+    pensions_established?: string | null
+    additional_notes?: string | null
+    blood_type?: string | null
+    drivers_certificate?: string | null
+    drivers_certificate_number?: string | null
+    disabled: $Enums.DisabledEnum
+    is_active?: boolean
+    email?: string | null
+    created_at?: Date | string
+    family_tree_name?: string
+    Teacher?: TeacherUncheckedCreateNestedManyWithoutAuth_userInput
+    assistantLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubAssistantLeaderInput
+    primaryLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubPrimaryLeaderInput
+    Student?: StudentUncheckedCreateNestedManyWithoutAuth_userInput
+  }
+
+  export type auth_userCreateOrConnectWithoutUserPreferencesInput = {
+    where: auth_userWhereUniqueInput
+    create: XOR<auth_userCreateWithoutUserPreferencesInput, auth_userUncheckedCreateWithoutUserPreferencesInput>
+  }
+
+  export type auth_userUpsertWithoutUserPreferencesInput = {
+    update: XOR<auth_userUpdateWithoutUserPreferencesInput, auth_userUncheckedUpdateWithoutUserPreferencesInput>
+    create: XOR<auth_userCreateWithoutUserPreferencesInput, auth_userUncheckedCreateWithoutUserPreferencesInput>
+    where?: auth_userWhereInput
+  }
+
+  export type auth_userUpdateToOneWithWhereWithoutUserPreferencesInput = {
+    where?: auth_userWhereInput
+    data: XOR<auth_userUpdateWithoutUserPreferencesInput, auth_userUncheckedUpdateWithoutUserPreferencesInput>
+  }
+
+  export type auth_userUpdateWithoutUserPreferencesInput = {
+    login_name?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    profile_picture?: NullableStringFieldUpdateOperationsInput | string | null
+    registry_number?: StringFieldUpdateOperationsInput | string
+    user_role?: EnumUserRoleEnumFieldUpdateOperationsInput | $Enums.UserRoleEnum
+    fname?: StringFieldUpdateOperationsInput | string
+    lname?: StringFieldUpdateOperationsInput | string
+    birthday?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: EnumGenderEnumFieldUpdateOperationsInput | $Enums.GenderEnum
+    citizenship?: StringFieldUpdateOperationsInput | string
+    state_city?: StringFieldUpdateOperationsInput | string
+    town_district?: StringFieldUpdateOperationsInput | string
+    valid_address?: StringFieldUpdateOperationsInput | string
+    state_city_living?: StringFieldUpdateOperationsInput | string
+    town_district_living?: StringFieldUpdateOperationsInput | string
+    valid_address_living?: StringFieldUpdateOperationsInput | string
+    postal_address?: NullableStringFieldUpdateOperationsInput | string | null
+    home_phone_number?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: StringFieldUpdateOperationsInput | string
+    phone_number_emergency?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    ethnicity?: StringFieldUpdateOperationsInput | string
+    social_background?: StringFieldUpdateOperationsInput | string
+    state_city_of_birth?: StringFieldUpdateOperationsInput | string
+    town_district_of_birth?: StringFieldUpdateOperationsInput | string
+    place_of_birth?: StringFieldUpdateOperationsInput | string
+    education?: StringFieldUpdateOperationsInput | string
+    current_academic_degree?: StringFieldUpdateOperationsInput | string
+    profession?: NullableStringFieldUpdateOperationsInput | string | null
+    profession_certification?: NullableStringFieldUpdateOperationsInput | string | null
+    f_passport_number?: NullableStringFieldUpdateOperationsInput | string | null
+    married?: EnumMarriedEnumFieldUpdateOperationsInput | $Enums.MarriedEnum
+    military_service?: EnumMilitaryServiceEnumFieldUpdateOperationsInput | $Enums.MilitaryServiceEnum
+    pensions_established?: NullableStringFieldUpdateOperationsInput | string | null
+    additional_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    blood_type?: NullableStringFieldUpdateOperationsInput | string | null
+    drivers_certificate?: NullableStringFieldUpdateOperationsInput | string | null
+    drivers_certificate_number?: NullableStringFieldUpdateOperationsInput | string | null
+    disabled?: EnumDisabledEnumFieldUpdateOperationsInput | $Enums.DisabledEnum
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    family_tree_name?: StringFieldUpdateOperationsInput | string
+    Teacher?: TeacherUpdateManyWithoutAuth_userNestedInput
+    assistantLeaderIn?: StudentClubsUpdateManyWithoutClubAssistantLeaderNestedInput
+    primaryLeaderIn?: StudentClubsUpdateManyWithoutClubPrimaryLeaderNestedInput
+    Student?: StudentUpdateManyWithoutAuth_userNestedInput
+  }
+
+  export type auth_userUncheckedUpdateWithoutUserPreferencesInput = {
+    user_id?: IntFieldUpdateOperationsInput | number
+    login_name?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    profile_picture?: NullableStringFieldUpdateOperationsInput | string | null
+    registry_number?: StringFieldUpdateOperationsInput | string
+    user_role?: EnumUserRoleEnumFieldUpdateOperationsInput | $Enums.UserRoleEnum
+    fname?: StringFieldUpdateOperationsInput | string
+    lname?: StringFieldUpdateOperationsInput | string
+    birthday?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: EnumGenderEnumFieldUpdateOperationsInput | $Enums.GenderEnum
+    citizenship?: StringFieldUpdateOperationsInput | string
+    state_city?: StringFieldUpdateOperationsInput | string
+    town_district?: StringFieldUpdateOperationsInput | string
+    valid_address?: StringFieldUpdateOperationsInput | string
+    state_city_living?: StringFieldUpdateOperationsInput | string
+    town_district_living?: StringFieldUpdateOperationsInput | string
+    valid_address_living?: StringFieldUpdateOperationsInput | string
+    postal_address?: NullableStringFieldUpdateOperationsInput | string | null
+    home_phone_number?: NullableStringFieldUpdateOperationsInput | string | null
+    phone_number?: StringFieldUpdateOperationsInput | string
+    phone_number_emergency?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    ethnicity?: StringFieldUpdateOperationsInput | string
+    social_background?: StringFieldUpdateOperationsInput | string
+    state_city_of_birth?: StringFieldUpdateOperationsInput | string
+    town_district_of_birth?: StringFieldUpdateOperationsInput | string
+    place_of_birth?: StringFieldUpdateOperationsInput | string
+    education?: StringFieldUpdateOperationsInput | string
+    current_academic_degree?: StringFieldUpdateOperationsInput | string
+    profession?: NullableStringFieldUpdateOperationsInput | string | null
+    profession_certification?: NullableStringFieldUpdateOperationsInput | string | null
+    f_passport_number?: NullableStringFieldUpdateOperationsInput | string | null
+    married?: EnumMarriedEnumFieldUpdateOperationsInput | $Enums.MarriedEnum
+    military_service?: EnumMilitaryServiceEnumFieldUpdateOperationsInput | $Enums.MilitaryServiceEnum
+    pensions_established?: NullableStringFieldUpdateOperationsInput | string | null
+    additional_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    blood_type?: NullableStringFieldUpdateOperationsInput | string | null
+    drivers_certificate?: NullableStringFieldUpdateOperationsInput | string | null
+    drivers_certificate_number?: NullableStringFieldUpdateOperationsInput | string | null
+    disabled?: EnumDisabledEnumFieldUpdateOperationsInput | $Enums.DisabledEnum
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    family_tree_name?: StringFieldUpdateOperationsInput | string
+    Teacher?: TeacherUncheckedUpdateManyWithoutAuth_userNestedInput
+    assistantLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubAssistantLeaderNestedInput
+    primaryLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubPrimaryLeaderNestedInput
+    Student?: StudentUncheckedUpdateManyWithoutAuth_userNestedInput
   }
 
   export type ClassroomsCreateWithoutTeacherScheduleInput = {
@@ -29806,6 +31525,7 @@ export namespace Prisma {
     family_tree_name?: string
     assistantLeaderIn?: StudentClubsCreateNestedManyWithoutClubAssistantLeaderInput
     primaryLeaderIn?: StudentClubsCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesCreateNestedManyWithoutAuth_userInput
     Student?: StudentCreateNestedManyWithoutAuth_userInput
   }
 
@@ -29856,6 +31576,7 @@ export namespace Prisma {
     family_tree_name?: string
     assistantLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubAssistantLeaderInput
     primaryLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesUncheckedCreateNestedManyWithoutAuth_userInput
     Student?: StudentUncheckedCreateNestedManyWithoutAuth_userInput
   }
 
@@ -30135,6 +31856,7 @@ export namespace Prisma {
     family_tree_name?: StringFieldUpdateOperationsInput | string
     assistantLeaderIn?: StudentClubsUpdateManyWithoutClubAssistantLeaderNestedInput
     primaryLeaderIn?: StudentClubsUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -30185,6 +31907,7 @@ export namespace Prisma {
     family_tree_name?: StringFieldUpdateOperationsInput | string
     assistantLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubAssistantLeaderNestedInput
     primaryLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUncheckedUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUncheckedUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -30433,6 +32156,7 @@ export namespace Prisma {
     family_tree_name?: string
     Teacher?: TeacherCreateNestedManyWithoutAuth_userInput
     primaryLeaderIn?: StudentClubsCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesCreateNestedManyWithoutAuth_userInput
     Student?: StudentCreateNestedManyWithoutAuth_userInput
   }
 
@@ -30483,6 +32207,7 @@ export namespace Prisma {
     family_tree_name?: string
     Teacher?: TeacherUncheckedCreateNestedManyWithoutAuth_userInput
     primaryLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesUncheckedCreateNestedManyWithoutAuth_userInput
     Student?: StudentUncheckedCreateNestedManyWithoutAuth_userInput
   }
 
@@ -30591,6 +32316,7 @@ export namespace Prisma {
     family_tree_name?: string
     Teacher?: TeacherCreateNestedManyWithoutAuth_userInput
     assistantLeaderIn?: StudentClubsCreateNestedManyWithoutClubAssistantLeaderInput
+    userPreferences?: authuserpreferencesCreateNestedManyWithoutAuth_userInput
     Student?: StudentCreateNestedManyWithoutAuth_userInput
   }
 
@@ -30641,6 +32367,7 @@ export namespace Prisma {
     family_tree_name?: string
     Teacher?: TeacherUncheckedCreateNestedManyWithoutAuth_userInput
     assistantLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubAssistantLeaderInput
+    userPreferences?: authuserpreferencesUncheckedCreateNestedManyWithoutAuth_userInput
     Student?: StudentUncheckedCreateNestedManyWithoutAuth_userInput
   }
 
@@ -30801,6 +32528,7 @@ export namespace Prisma {
     family_tree_name?: StringFieldUpdateOperationsInput | string
     Teacher?: TeacherUpdateManyWithoutAuth_userNestedInput
     primaryLeaderIn?: StudentClubsUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -30851,6 +32579,7 @@ export namespace Prisma {
     family_tree_name?: StringFieldUpdateOperationsInput | string
     Teacher?: TeacherUncheckedUpdateManyWithoutAuth_userNestedInput
     primaryLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUncheckedUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUncheckedUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -30971,6 +32700,7 @@ export namespace Prisma {
     family_tree_name?: StringFieldUpdateOperationsInput | string
     Teacher?: TeacherUpdateManyWithoutAuth_userNestedInput
     assistantLeaderIn?: StudentClubsUpdateManyWithoutClubAssistantLeaderNestedInput
+    userPreferences?: authuserpreferencesUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -31021,6 +32751,7 @@ export namespace Prisma {
     family_tree_name?: StringFieldUpdateOperationsInput | string
     Teacher?: TeacherUncheckedUpdateManyWithoutAuth_userNestedInput
     assistantLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubAssistantLeaderNestedInput
+    userPreferences?: authuserpreferencesUncheckedUpdateManyWithoutAuth_userNestedInput
     Student?: StudentUncheckedUpdateManyWithoutAuth_userNestedInput
   }
 
@@ -31087,6 +32818,7 @@ export namespace Prisma {
     Teacher?: TeacherCreateNestedManyWithoutAuth_userInput
     assistantLeaderIn?: StudentClubsCreateNestedManyWithoutClubAssistantLeaderInput
     primaryLeaderIn?: StudentClubsCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesCreateNestedManyWithoutAuth_userInput
   }
 
   export type auth_userUncheckedCreateWithoutStudentInput = {
@@ -31137,6 +32869,7 @@ export namespace Prisma {
     Teacher?: TeacherUncheckedCreateNestedManyWithoutAuth_userInput
     assistantLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubAssistantLeaderInput
     primaryLeaderIn?: StudentClubsUncheckedCreateNestedManyWithoutClubPrimaryLeaderInput
+    userPreferences?: authuserpreferencesUncheckedCreateNestedManyWithoutAuth_userInput
   }
 
   export type auth_userCreateOrConnectWithoutStudentInput = {
@@ -31361,6 +33094,7 @@ export namespace Prisma {
     Teacher?: TeacherUpdateManyWithoutAuth_userNestedInput
     assistantLeaderIn?: StudentClubsUpdateManyWithoutClubAssistantLeaderNestedInput
     primaryLeaderIn?: StudentClubsUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUpdateManyWithoutAuth_userNestedInput
   }
 
   export type auth_userUncheckedUpdateWithoutStudentInput = {
@@ -31411,6 +33145,7 @@ export namespace Prisma {
     Teacher?: TeacherUncheckedUpdateManyWithoutAuth_userNestedInput
     assistantLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubAssistantLeaderNestedInput
     primaryLeaderIn?: StudentClubsUncheckedUpdateManyWithoutClubPrimaryLeaderNestedInput
+    userPreferences?: authuserpreferencesUncheckedUpdateManyWithoutAuth_userNestedInput
   }
 
   export type MajorUpsertWithoutStudentInput = {
@@ -33069,6 +34804,11 @@ export namespace Prisma {
     createdAt?: Date | string | null
   }
 
+  export type authuserpreferencesCreateManyAuth_userInput = {
+    user_preferences_id?: number
+    app_theme?: $Enums.app_theme_enum
+  }
+
   export type StudentCreateManyAuth_userInput = {
     student_id?: number
     student_club_id?: number | null
@@ -33221,6 +34961,20 @@ export namespace Prisma {
     clubLogo?: StringFieldUpdateOperationsInput | string
     clubMoto?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type authuserpreferencesUpdateWithoutAuth_userInput = {
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
+  }
+
+  export type authuserpreferencesUncheckedUpdateWithoutAuth_userInput = {
+    user_preferences_id?: IntFieldUpdateOperationsInput | number
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
+  }
+
+  export type authuserpreferencesUncheckedUpdateManyWithoutAuth_userInput = {
+    user_preferences_id?: IntFieldUpdateOperationsInput | number
+    app_theme?: Enumapp_theme_enumFieldUpdateOperationsInput | $Enums.app_theme_enum
   }
 
   export type StudentUpdateWithoutAuth_userInput = {

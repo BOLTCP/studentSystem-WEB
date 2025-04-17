@@ -164,6 +164,12 @@ exports.Prisma.Auth_userScalarFieldEnum = {
   family_tree_name: 'family_tree_name'
 };
 
+exports.Prisma.AuthuserpreferencesScalarFieldEnum = {
+  user_preferences_id: 'user_preferences_id',
+  app_theme: 'app_theme',
+  user_id: 'user_id'
+};
+
 exports.Prisma.TeacherScheduleScalarFieldEnum = {
   teacherScheduleId: 'teacherScheduleId',
   teacherId: 'teacherId',
@@ -416,6 +422,11 @@ exports.DisabledEnum = exports.$Enums.DisabledEnum = {
   Үгүй: 'Үгүй'
 };
 
+exports.app_theme_enum = exports.$Enums.app_theme_enum = {
+  Light_Mode: 'Light_Mode',
+  Dark_Mode: 'Dark_Mode'
+};
+
 exports.ClassroomTypeEnum = exports.$Enums.ClassroomTypeEnum = {
   computer_laboratory: 'computer_laboratory',
   students_dev: 'students_dev',
@@ -521,6 +532,7 @@ exports.SignUpsEnum = exports.$Enums.SignUpsEnum = {
 
 exports.Prisma.ModelName = {
   auth_user: 'auth_user',
+  authuserpreferences: 'authuserpreferences',
   TeacherSchedule: 'TeacherSchedule',
   TeachersCoursePlanning: 'TeachersCoursePlanning',
   Classrooms: 'Classrooms',

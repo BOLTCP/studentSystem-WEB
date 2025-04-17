@@ -30,6 +30,11 @@ enum AnnouncementStatusEnum {
   has_not_read
 }
 
+enum app_theme_enum {
+  Light_Mode
+  Dark_Mode
+}
+
 enum CalendarPurposeEnum {
   important
   statement
@@ -298,57 +303,68 @@ enum YearClassificationEnum {
 }
 
 model auth_user {
-  user_id                    Int                 @id @default(autoincrement())
-  login_name                 String              @unique(map: "login_name") @db.VarChar(10)
-  password_hash              String              @db.Text
-  profile_picture            String?             @db.Text
-  registry_number            String              @db.VarChar(10)
+  user_id                    Int                   @id @default(autoincrement())
+  login_name                 String                @unique(map: "login_name") @db.VarChar(10)
+  password_hash              String                @db.Text
+  profile_picture            String?               @db.Text
+  registry_number            String                @db.VarChar(10)
   user_role                  UserRoleEnum
-  fname                      String              @db.VarChar(50)
-  lname                      String              @db.VarChar(50)
-  birthday                   DateTime            @db.Date
+  fname                      String                @db.VarChar(50)
+  lname                      String                @db.VarChar(50)
+  birthday                   DateTime              @db.Date
   gender                     GenderEnum
-  citizenship                String              @db.VarChar(50)
-  state_city                 String              @db.VarChar(100)
-  town_district              String              @db.VarChar(100)
-  valid_address              String              @db.VarChar(100)
-  state_city_living          String              @db.VarChar(100)
-  town_district_living       String              @db.VarChar(100)
-  valid_address_living       String              @db.VarChar(100)
-  postal_address             String?             @db.VarChar(50)
-  home_phone_number          String?             @db.VarChar(20)
-  phone_number               String              @db.VarChar(20)
-  phone_number_emergency     String              @db.VarChar(20)
-  country                    String              @db.VarChar(50)
-  ethnicity                  String              @db.VarChar(50)
-  social_background          String              @db.VarChar(50)
-  state_city_of_birth        String              @db.VarChar(100)
-  town_district_of_birth     String              @db.VarChar(100)
-  place_of_birth             String              @db.VarChar(150)
-  education                  String              @db.VarChar(50)
-  current_academic_degree    String              @db.VarChar(50)
-  profession                 String?             @db.VarChar(150)
-  profession_certification   String?             @db.Text
-  f_passport_number          String?             @db.VarChar(50)
+  citizenship                String                @db.VarChar(50)
+  state_city                 String                @db.VarChar(100)
+  town_district              String                @db.VarChar(100)
+  valid_address              String                @db.VarChar(100)
+  state_city_living          String                @db.VarChar(100)
+  town_district_living       String                @db.VarChar(100)
+  valid_address_living       String                @db.VarChar(100)
+  postal_address             String?               @db.VarChar(50)
+  home_phone_number          String?               @db.VarChar(20)
+  phone_number               String                @db.VarChar(20)
+  phone_number_emergency     String                @db.VarChar(20)
+  country                    String                @db.VarChar(50)
+  ethnicity                  String                @db.VarChar(50)
+  social_background          String                @db.VarChar(50)
+  state_city_of_birth        String                @db.VarChar(100)
+  town_district_of_birth     String                @db.VarChar(100)
+  place_of_birth             String                @db.VarChar(150)
+  education                  String                @db.VarChar(50)
+  current_academic_degree    String                @db.VarChar(50)
+  profession                 String?               @db.VarChar(150)
+  profession_certification   String?               @db.Text
+  f_passport_number          String?               @db.VarChar(50)
   married                    MarriedEnum
   military_service           MilitaryServiceEnum
-  pensions_established       String?             @db.VarChar(50)
-  additional_notes           String?             @db.VarChar(150)
-  blood_type                 String?             @db.VarChar(5)
-  drivers_certificate        String?             @db.VarChar(50)
-  drivers_certificate_number String?             @db.VarChar(25)
+  pensions_established       String?               @db.VarChar(50)
+  additional_notes           String?               @db.VarChar(150)
+  blood_type                 String?               @db.VarChar(5)
+  drivers_certificate        String?               @db.VarChar(50)
+  drivers_certificate_number String?               @db.VarChar(25)
   disabled                   DisabledEnum
-  is_active                  Boolean             @default(true)
-  email                      String?             @unique(map: "auth_user_email_key") @db.Text
-  created_at                 DateTime            @default(now()) @db.Timestamp(6)
-  family_tree_name           String              @default("Халх") @db.VarChar
+  is_active                  Boolean               @default(true)
+  email                      String?               @unique(map: "auth_user_email_key") @db.Text
+  created_at                 DateTime              @default(now()) @db.Timestamp(6)
+  family_tree_name           String                @default("Халх") @db.VarChar
   Teacher                    Teacher[]
-  assistantLeaderIn          StudentClubs[]      @relation(name: "clubAssistantLeader")
-  primaryLeaderIn            StudentClubs[]      @relation(name: "clubPrimaryLeader")
-  Student                    Student[]
+  assistantLeaderIn          StudentClubs[]        @relation(name: "clubAssistantLeader")
+  primaryLeaderIn            StudentClubs[]        @relation(name: "clubPrimaryLeader")
+  userPreferences            authuserpreferences[]
+
+  Student Student[]
 
   @@index([user_role, email], map: "login_name_key")
   @@map("auth_user")
+}
+
+model authuserpreferences {
+  user_preferences_id Int            @id @default(autoincrement())
+  app_theme           app_theme_enum @default(Light_Mode)
+  user_id             Int            @unique
+  auth_user           auth_user      @relation(fields: [user_id], references: [user_id])
+
+  @@map("authuserpreferences")
 }
 
 model TeacherSchedule {

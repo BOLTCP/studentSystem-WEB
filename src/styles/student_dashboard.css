@@ -344,6 +344,8 @@ button.sidebar-link.dark {
   border: 1px solid #e0e0e0;
   overflow: auto;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 .to-do-container {
@@ -377,8 +379,6 @@ button.sidebar-link.dark {
 }
 
 .today-schedule-list-container {
-  scrollbar-width: 20px;
-  scrollbar-color: black;
   padding-bottom: 10px;
   width: 200px;
   height: 240px;
@@ -388,6 +388,8 @@ button.sidebar-link.dark {
   border: 1px solid #e0e0e0;
   overflow: auto;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 .today-schedule-container {

@@ -115,6 +115,7 @@ const StudentDashboard = () => {
           {renderBody()}
         </div>
         {userDetails && <RenderSidebarRight user = {userDetails} />}
+        
       </div>
 
       <div id="hover-attribution" className="hover-attribution hidden">

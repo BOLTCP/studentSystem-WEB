@@ -36,6 +36,7 @@ html, body {
 
 /* Main Content Area with Sidebar */
 .dashboard-main-content {
+  margin-right: 235px;
   margin-left: 135px;
   display: grid;
   flex: 1;
@@ -165,7 +166,11 @@ body.dark .to-do-item a{
 }
 
 body.dark .dashboard-courses-card {
-  flex-direction: flex;
+  flex: 1 1 calc(33.33% - 2rem);
+  max-width: 300px; 
+  min-width: 200px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   background-color: rgb(217, 240, 246);
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   border-radius: 9px;
@@ -174,7 +179,15 @@ body.dark .dashboard-courses-card {
   transition: background-color 0.3s ease-in-out;
 }
 
+body.dark .dashboard-courses-card:hover {
+  background-color: rgb(125, 223, 247);
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
 body.light .dashboard-courses-card {
+  width: calc(33.33% - 2rem * 2 / 3);
+  aspect-ratio: 1 / 1;
   background-color: white;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   border-radius: 9px;
@@ -413,39 +426,24 @@ button.sidebar-link.dark {
 }
 
 .dashboard-body {
-  padding: 1.5rem;
-  margin: 0; 
-  display: grid;
+  margin: 1.5rem;
   grid-template-columns: auto;
 }
 
 .dashboard-courses-card-grid {
   display: flex;
   flex-wrap: wrap; 
-  gap: 2rem;
-  max-width: 77vw;
-  border-bottom: 1px solid #007bff;
-  overflow-x: scroll; 
-  justify-content: flex-start;
-}
-
-.dashboard-courses-card {
-  width: 400px;     
-  min-width: 250px;        /* optional max size */
-  aspect-ratio: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
-  border-radius: 9px;
+  gap: 1.5rem;
+  height: 85vh;
+  justify-content: start; 
+  align-items: flex-start; 
+  overflow-y: auto; 
   padding: 1rem;
-  border: 3px solid #e0e0e0;
-  box-sizing: border-box;
 }
 
 .dashboard-courses-picture {
-  min-width: 200px;
-  height: 100px;
+  width: 100%;
+  height: 50%;
 }
 
 .dashboard-courses-card-label {

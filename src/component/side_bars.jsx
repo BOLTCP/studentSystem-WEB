@@ -109,6 +109,27 @@ export const RenderSidebar = ({ user }) => {
         </h3>
       </div>
       <ul className="sidebar-list">
+
+      <li className="sidebar-item">
+          <button onMouseEnter={() => showAttribution(
+                  "Dashboard icons created by Those Icons - Flaticon",
+                  " https://www.flaticon.com/free-icon/dashboard_481270?term=dashboard&page=1&position=60&origin=search&related_id=481270"
+                  )} 
+                  onMouseLeave={() => hideAttribution()}
+                  onClick={() => navigate('/student_dashboard', { state: { user: userDetails.user } })} 
+                  className={`sidebar-link ${theme}`}>
+
+          <img src="/src/assets/dashboard.png"
+          //Icon source from 
+          //https://www.flaticon.com/free-icon/dashboard_481270?term=dashboard&page=1&position=60&origin=search&related_id=481270
+              title="Icon by Freepik - Flaticon"
+              alt="UserIcon"
+              className={`sidebar-list-icon ${theme}`}
+          />
+            Хянах самбар
+          </button>
+        </li>
+
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
                   "User icons created by Freepik - Flaticon",

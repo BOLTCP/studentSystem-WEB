@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
   binaryTargets = ["native", "windows"]
 }
 
@@ -9,110 +9,906 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AdditionalRolesEnum {
+model announcement {
+  announcement_id      Int                       @id @default(autoincrement())
+  student_id           Int
+  major_id             Int
+  course_id            Int
+  teacher_id           Int
+  status               announcement_status_enum
+  announcement         Json
+  announcement_options announcement_options_enum @default(mandatory)
+  sent_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  courses              courses                   @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+  major                major                     @relation(fields: [major_id], references: [major_id], onDelete: Cascade, onUpdate: NoAction)
+  student              student                   @relation(fields: [student_id], references: [student_id], onDelete: NoAction, onUpdate: NoAction)
+  teacher              teacher                   @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model auth_user {
+  user_id                                                       Int                   @id @default(autoincrement())
+  login_name                                                    String                @db.VarChar(10)
+  password_hash                                                 String
+  profile_picture                                               String?
+  registry_number                                               String                @db.VarChar(10)
+  user_role                                                     user_role_enum
+  fname                                                         String                @db.VarChar(50)
+  lname                                                         String                @db.VarChar(50)
+  birthday                                                      DateTime              @db.Date
+  gender                                                        gender_enum
+  citizenship                                                   String                @db.VarChar(50)
+  state_city                                                    String                @db.VarChar(100)
+  town_district                                                 String                @db.VarChar(100)
+  valid_address                                                 String                @db.VarChar(100)
+  state_city_living                                             String                @db.VarChar(100)
+  town_district_living                                          String                @db.VarChar(100)
+  valid_address_living                                          String                @db.VarChar(100)
+  postal_address                                                String?               @db.VarChar(50)
+  home_phone_number                                             String?               @db.VarChar(20)
+  phone_number                                                  String                @db.VarChar(20)
+  phone_number_emergency                                        String                @db.VarChar(20)
+  country                                                       String                @db.VarChar(50)
+  ethnicity                                                     String                @db.VarChar(50)
+  social_background                                             String                @db.VarChar(50)
+  state_city_of_birth                                           String                @db.VarChar(100)
+  town_district_of_birth                                        String                @db.VarChar(100)
+  place_of_birth                                                String                @db.VarChar(150)
+  education                                                     String                @db.VarChar(50)
+  current_academic_degree                                       String                @db.VarChar(50)
+  profession                                                    String?               @db.VarChar(150)
+  profession_certification                                      String?
+  f_passport_number                                             String?               @db.VarChar(50)
+  married                                                       married_enum
+  military_service                                              military_service_enum
+  pensions_established                                          String?               @db.VarChar(50)
+  additional_notes                                              String?               @db.VarChar(150)
+  blood_type                                                    String?               @db.VarChar(5)
+  drivers_certificate                                           String?               @db.VarChar(50)
+  drivers_certificate_number                                    String?               @db.VarChar(25)
+  disabled                                                      disabled_enum
+  is_active                                                     Boolean?              @default(true)
+  email                                                         String?               @unique
+  created_at                                                    DateTime              @default(now()) @db.Timestamp(6)
+  family_tree_name                                              String                @default("Халх") @db.VarChar
+  signedcontracts                                               signedcontracts[]
+  staff                                                         staff[]
+  student                                                       student?
+  studentclubs_studentclubs_club_assistant_leader_idToauth_user studentclubs[]        @relation("studentclubs_club_assistant_leader_idToauth_user")
+  studentclubs_studentclubs_club_primary_leader_idToauth_user   studentclubs[]        @relation("studentclubs_club_primary_leader_idToauth_user")
+  teacher                                                       teacher?
+  user_signatures                                               user_signatures?      @ignore
+  usercard                                                      usercard[]
+  userprofiles                                                  userprofiles[]
+
+  @@unique([login_name, user_role, email], map: "login_name_key")
+}
+
+model basecurriculum {
+  base_curriculum_id Int      @id @default(autoincrement())
+  major_id           Int
+  course_id          Int
+  curriculum_year    DateTime @db.Date
+  semester_year      String   @db.Char(25)
+  courses            courses  @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_course")
+  major              major    @relation(fields: [major_id], references: [major_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_major")
+}
+
+model calendar {
+  calendar_id      Int                   @id @default(autoincrement())
+  teacher_id       Int
+  calendar_title   String                @db.VarChar(100)
+  calendar_access  Json
+  calendar_purpose calendar_purpose_enum
+  event_timestamp  DateTime              @db.Timestamp(6)
+  ringer           DateTime              @db.Timestamp(6)
+  files            String
+  created_at       DateTime?             @default(now()) @db.Timestamp(6)
+  teacher          teacher               @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
+  calendaraccess   calendaraccess?
+}
+
+model calendaraccess {
+  calendar_id  Int      @id @default(autoincrement())
+  teacher_id   Int
+  to_course_id Int?
+  access_types Json?
+  calendar     calendar @relation(fields: [calendar_id], references: [calendar_id], onDelete: Cascade, onUpdate: NoAction)
+  courses      courses? @relation(fields: [to_course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model classroomproperties {
+  classroom_properties_id Int        @id @default(autoincrement())
+  classroom_id            Int
+  classroom_type          String     @db.VarChar(50)
+  number_of_desks_chairs  Int
+  number_of_pcs           Int
+  desks_chairs_json       Json?
+  pcs_json                Json?
+  created_at              DateTime?  @default(now()) @db.Timestamp(6)
+  classrooms              classrooms @relation(fields: [classroom_id], references: [classroom_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_classroom")
+}
+
+model classrooms {
+  classroom_id           Int                     @id @default(autoincrement())
+  department_id          Int?
+  classroom_type         classroom_type_enum
+  classroom_number       String                  @unique(map: "classroom_number_uq") @db.Char(5)
+  projector              projector_enum          @default(yes)
+  tv                     tv_enum                 @default(yes)
+  created_at             DateTime?               @default(now()) @db.Timestamp(6)
+  capacity               Int
+  classroomproperties    classroomproperties[]
+  departmentsofeducation departmentsofeducation? @relation(fields: [department_id], references: [departments_of_education_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
+}
+
+model clubmembers {
+  club_member_id                                                           Int                     @id @default(autoincrement())
+  student_club_id                                                          Int
+  student_id                                                               Int
+  volunteer_hours                                                          Int
+  volunteer_hours_attendance                                               Json
+  join_date                                                                DateTime?               @default(now()) @db.Timestamp(6)
+  studentclubs                                                             studentclubs            @relation(fields: [student_club_id], references: [student_club_id], onDelete: NoAction, onUpdate: NoAction)
+  student                                                                  student                 @relation(fields: [student_id], references: [student_id], onDelete: NoAction, onUpdate: NoAction)
+  internalmessagingclub_internalmessagingclub_club_member_idToclubmembers  internalmessagingclub[] @relation("internalmessagingclub_club_member_idToclubmembers")
+  internalmessagingclub_internalmessagingclub_mention_someoneToclubmembers internalmessagingclub[] @relation("internalmessagingclub_mention_someoneToclubmembers")
+}
+
+model contracts {
+  contract_id     Int               @id @default(autoincrement())
+  contract_name   String            @db.Char(50)
+  contracts_year  Int
+  contract        String
+  to_user         Json?
+  major_id        Int?
+  to_student_year String?           @db.Char(15)
+  to_student_id   String?           @db.Char(8)
+  created_at      DateTime?         @default(now()) @db.Timestamp(6)
+  send_at         DateTime          @db.Timestamp(6)
+  signedcontracts signedcontracts[]
+}
+
+model coursematerial {
+  course_material_id     Int                    @id @default(autoincrement())
+  course_id              Int
+  week                   Int
+  material_type          material_type_enum
+  material_name          String                 @db.Char(25)
+  material_url           String
+  description            String?                @db.VarChar(100)
+  is_submission_required Boolean?               @default(true)
+  submission_url         String?
+  points                 Decimal?               @db.Decimal(2, 2)
+  allowed_attempts       Int
+  due_date               DateTime?              @db.Timestamp(6)
+  available_from         DateTime?              @db.Timestamp(6)
+  available_until        DateTime?              @db.Timestamp(6)
+  major_id               Int
+  teacher_id             Int
+  created_at             DateTime?              @default(now()) @db.Timestamp(6)
+  courses                courses                @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_course")
+  major                  major                  @relation(fields: [major_id], references: [major_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_major")
+  teacher                teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
+  notificationstudents   notificationstudents[]
+  studentattendance      studentattendance[]
+  submission             submission[]
+}
+
+model courses {
+  course_id              Int                      @id @default(autoincrement())
+  course_name            String                   @unique(map: "course_name_unique_constraint") @db.VarChar(50)
+  course_code            String                   @db.Char(6)
+  course_type            course_type_enum
+  course_year            String                   @db.VarChar(10)
+  total_credits          Int
+  major_id               Int
+  description            String                   @default("*") @db.VarChar(100)
+  course_season          course_season_type_enum  @default(dbgenerated("Намар, Өвөл, Хавар, Зун"))
+  times_per_week         Int?                     @default(0)
+  announcement           announcement[]
+  basecurriculum         basecurriculum[]
+  calendaraccess         calendaraccess[]
+  coursematerial         coursematerial[]
+  major                  major                    @relation(fields: [major_id], references: [major_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_major")
+  grades                 grades[]
+  invitations            invitations[]
+  notificationstudents   notificationstudents[]
+  studentcurriculum      studentcurriculum[]
+  studentschedule        studentschedule[]
+  studentstoadvise       studentstoadvise[]
+  teacherscourseplanning teacherscourseplanning[]
+}
+
+model department {
+  department_id                                Int                      @id @default(autoincrement())
+  department_name                              String                   @db.VarChar(50)
+  department_code                              String                   @db.VarChar(10)
+  department_email                             String                   @db.VarChar(50)
+  number_of_staff                              Int?
+  logo                                         String
+  created_at                                   DateTime?                @default(now()) @db.Timestamp(6)
+  department_of_edu_id                         Int
+  departmentsofeducation                       departmentsofeducation   @relation(fields: [department_of_edu_id], references: [departments_of_education_id], onDelete: NoAction, onUpdate: NoAction, map: "departmentsofedu_fkey")
+  inventoryofteacher                           inventoryofteacher[]
+  major_major_department_idTodepartment        major[]                  @relation("major_department_idTodepartment")
+  major_major_department_of_edu_idTodepartment major[]                  @relation("major_department_of_edu_idTodepartment")
+  propertyofteacher                            propertyofteacher[]
+  staff                                        staff[]
+  student                                      student[]
+  studentstoadvise                             studentstoadvise[]
+  teacher                                      teacher[]
+  teacherscourseplanning                       teacherscourseplanning[]
+  teachersmajorplanning                        teachersmajorplanning[]
+}
+
+model departmentsofeducation {
+  departments_of_education_id Int                      @id @default(autoincrement())
+  ed_department_name          String                   @db.VarChar(50)
+  ed_department_code          String                   @db.VarChar(10)
+  teachers                    Json?
+  classrooms                  classrooms[]
+  department                  department[]
+  teacher                     teacher[]
+  teacherscourseplanning      teacherscourseplanning[]
+  teachersmajorplanning       teachersmajorplanning[]
+}
+
+model grades {
+  grade_id                      Int       @id @default(autoincrement())
+  student_id                    Int
+  course_id                     Int
+  course_grade                  Decimal?  @db.Decimal(3, 2)
+  grade_letter                  String?   @db.Char(5)
+  finals_grade                  String?   @db.Char(10)
+  graded_date                   DateTime? @default(now()) @db.Timestamp(6)
+  calculated_credit_grade       Int       @default(0)
+  net_credit_of_semester        Int
+  credits_collected_of_semester Int       @default(0)
+  semester_gpa                  Decimal?  @db.Decimal(3, 2)
+  semester_average              Decimal?  @db.Decimal(3, 2)
+  prelimenary_grade             Decimal?  @db.Decimal(3, 2)
+  overall_credits               Int
+  overall_credits_collected     Int       @default(0)
+  overall_gpa                   Decimal?  @db.Decimal(3, 2)
+  overall_average               Decimal?  @db.Decimal(3, 2)
+  courses                       courses   @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction)
+  student                       student   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model internalmessagingclub {
+  internal_messaging_id                                          Int                     @id @default(autoincrement())
+  student_club_id                                                Int
+  club_member_id                                                 Int
+  student_id                                                     Int
+  club_member_message                                            Json
+  mention_someone                                                Int?
+  replied_to                                                     Int?
+  created_at                                                     DateTime?               @default(now()) @db.Timestamp(6)
+  clubmembers_internalmessagingclub_club_member_idToclubmembers  clubmembers             @relation("internalmessagingclub_club_member_idToclubmembers", fields: [club_member_id], references: [club_member_id], onDelete: Cascade, onUpdate: NoAction)
+  clubmembers_internalmessagingclub_mention_someoneToclubmembers clubmembers?            @relation("internalmessagingclub_mention_someoneToclubmembers", fields: [mention_someone], references: [club_member_id], onDelete: Cascade, onUpdate: NoAction)
+  internalmessagingclub                                          internalmessagingclub?  @relation("internalmessagingclubTointernalmessagingclub", fields: [replied_to], references: [internal_messaging_id], onDelete: Cascade, onUpdate: NoAction)
+  other_internalmessagingclub                                    internalmessagingclub[] @relation("internalmessagingclubTointernalmessagingclub")
+  studentclubs                                                   studentclubs            @relation(fields: [student_club_id], references: [student_club_id], onDelete: Cascade, onUpdate: NoAction)
+  student                                                        student                 @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model inventoryofteacher {
+  inventory_of_teacher_id Int        @id @default(autoincrement())
+  teacher_id              Int
+  inventory_name          String     @db.VarChar(100)
+  inventory_number        String     @db.VarChar(15)
+  unit                    String     @db.Char(5)
+  quantity                Int
+  unit_cost               Decimal?   @db.Decimal(10, 2)
+  net_cost                Decimal?   @db.Decimal(10, 2)
+  returned_quantity       Decimal?   @db.Decimal(10, 2)
+  returned_unit_cost      Decimal?   @db.Decimal(10, 2)
+  returned_net_cost       Decimal?   @db.Decimal(10, 2)
+  department_id           Int
+  created_at              DateTime?  @default(now()) @db.Timestamp(6)
+  department              department @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
+  teacher                 teacher    @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
+}
+
+model invitations {
+  invitation_id Int                    @id @default(autoincrement())
+  student_id    Int
+  major_id      Int
+  course_id     Int
+  teacher_id    Int
+  status        invitation_status_enum
+  invite        Json
+  sent_at       DateTime?              @default(now()) @db.Timestamp(6)
+  courses       courses                @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+  major         major                  @relation(fields: [major_id], references: [major_id], onDelete: Cascade, onUpdate: NoAction)
+  student       student                @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  teacher       teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model major {
+  major_id                                          Int                @id @default(autoincrement())
+  major_name                                        String             @unique(map: "major_name") @db.VarChar(50)
+  majors_year                                       DateTime           @db.Date
+  majors_type                                       major_type_enum
+  credit_unit_rate                                  Decimal            @db.Money
+  major_tuition                                     Decimal            @db.Money
+  academic_degree                                   String             @db.VarChar(20)
+  total_years                                       Int
+  total_credits_per_year                            Int
+  department_of_edu_id                              Int
+  created_at                                        DateTime?          @default(now()) @db.Timestamp(6)
+  exam1                                             Float
+  exam2                                             Float
+  majors_description                                String             @db.VarChar(700)
+  description_brief                                 String?            @db.VarChar(50)
+  qualifications                                    Json?
+  qualifications1                                   String?
+  qualifications2                                   String?
+  sign_ups                                          sign_ups_enum      @default(dbgenerated("бүртгэл нээлттэй"))
+  department_id                                     Int                @default(1)
+  announcement                                      announcement[]
+  basecurriculum                                    basecurriculum[]
+  coursematerial                                    coursematerial[]
+  courses                                           courses[]
+  invitations                                       invitations[]
+  department_major_department_idTodepartment        department         @relation("major_department_idTodepartment", fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department_id")
+  department_major_department_of_edu_idTodepartment department         @relation("major_department_of_edu_idTodepartment", fields: [department_of_edu_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
+  student                                           student[]
+  studentclubs                                      studentclubs[]
+  surveys                                           surveys[]
+  teachersschedule                                  teachersschedule[]
+}
+
+model notificationstudents {
+  notification_students_id Int             @id @default(autoincrement())
+  teacher_id               Int
+  course_id                Int
+  to_student               Int
+  notification_message     Json
+  course_material_id       Int?
+  created_at               DateTime?       @default(now()) @db.Timestamp(6)
+  courses                  courses         @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+  coursematerial           coursematerial? @relation(fields: [course_material_id], references: [course_material_id], onDelete: NoAction, onUpdate: NoAction)
+  teacher                  teacher         @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction)
+  student                  student         @relation(fields: [to_student], references: [student_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model paymentinformation {
+  payment_information_id  Int                       @id @default(autoincrement())
+  payment_to_pay          Decimal?                  @db.Decimal(10, 2)
+  payed_payments          Decimal?                  @db.Decimal(10, 2)
+  gross_payment           Decimal?                  @db.Decimal(10, 2)
+  balance                 Decimal?                  @db.Decimal(10, 2)
+  payment_unit_credit     Decimal?                  @db.Decimal(10, 2)
+  student_id              Int
+  major_id                Int
+  student                 student                   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  paymentlessonsselection paymentlessonsselection[]
+}
+
+model paymentlessonsselection {
+  lesson_selection_id    Int                @id @default(autoincrement())
+  student_id             Int
+  payment_information_id Int
+  student_curriculum_id  Int
+  course_payment         Decimal?           @db.Decimal(10, 2)
+  credit_unit_payment    Decimal            @db.Decimal(10, 2)
+  course_credits         Int
+  discount               Decimal?           @db.Decimal(10, 2)
+  created_at             DateTime?          @default(now()) @db.Timestamp(6)
+  net_credit             Int
+  gross_payment          Decimal?           @db.Decimal(10, 2)
+  gross_discount         Decimal?           @db.Decimal(10, 2)
+  paymentinformation     paymentinformation @relation(fields: [payment_information_id], references: [payment_information_id], onDelete: NoAction, onUpdate: NoAction)
+  studentcurriculum      studentcurriculum  @relation(fields: [student_curriculum_id], references: [student_curriculum_id], onDelete: NoAction, onUpdate: NoAction)
+  student                student            @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model propertyofteacher {
+  property_of_teacher_id  Int                    @id @default(autoincrement())
+  teacher_id              Int
+  property_number         String                 @db.VarChar(100)
+  property_category       property_category_enum
+  property_code           String                 @db.VarChar(10)
+  property_name_and_model DateTime               @db.Timestamp(6)
+  started_using           DateTime               @db.Timestamp(6)
+  state_of_usage          state_of_usage_enum
+  price                   Decimal?               @db.Decimal(10, 2)
+  location                String                 @db.VarChar(50)
+  department_id           Int
+  created_at              DateTime?              @default(now()) @db.Timestamp(6)
+  department              department             @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
+  teacher                 teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model rules {
+  rule_id       Int                @id @default(autoincrement())
+  rule_category rule_category_enum
+  rule_name     String             @db.VarChar(100)
+  rule_pdf      String
+  created_at    DateTime?          @default(now()) @db.Timestamp(6)
+}
+
+model signedcontracts {
+  singed_contract_id Int        @id @default(autoincrement())
+  contract_id        Int
+  user_id            Int?
+  student_id         Int?
+  contract           String
+  signed_at          DateTime?  @default(now()) @db.Timestamp(6)
+  contracts          contracts  @relation(fields: [contract_id], references: [contract_id], onDelete: Cascade, onUpdate: NoAction)
+  student            student?   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  auth_user          auth_user? @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model staff {
+  staff_id           Int             @id @default(autoincrement())
+  user_id            Int
+  staff_role         staff_role_enum
+  staff_code         Int             @unique @default(autoincrement())
+  staff_email        String          @db.VarChar(50)
+  family_description String          @db.Char(100)
+  cv                 String?
+  certificate        String?
+  department_id      Int
+  job_position       String          @db.Char(50)
+  job_location       String          @db.VarChar(100)
+  job_description    String          @db.Char(50)
+  department         department      @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
+  auth_user          auth_user       @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model student {
+  student_id              Int                       @id @default(autoincrement())
+  user_id                 Int                       @unique(map: "uq_student_user_id")
+  student_club_id         Int?
+  additional_roles        additional_roles_enum     @default(dbgenerated("байхгүй"))
+  student_code            String                    @db.Char(8)
+  student_email           String                    @db.VarChar(50)
+  student_file            Json?
+  enrollment_number       Int                       @unique @default(autoincrement())
+  enrollment_year         Int
+  year_classification     year_classification_enum
+  is_active               student_is_active_enum?   @default(dbgenerated("суралцаж байгаа"))
+  current_academic_degree String                    @db.Char(25)
+  academic_degree_file    String?
+  major_id                Int
+  created_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  contracts               Json?
+  department_id           Int?
+  announcement            announcement[]
+  clubmembers             clubmembers[]
+  grades                  grades[]
+  internalmessagingclub   internalmessagingclub[]
+  invitations             invitations[]
+  notificationstudents    notificationstudents[]
+  paymentinformation      paymentinformation[]
+  paymentlessonsselection paymentlessonsselection[]
+  signedcontracts         signedcontracts[]
+  major                   major                     @relation(fields: [major_id], references: [major_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_major")
+  studentclubs            studentclubs?             @relation(fields: [student_club_id], references: [student_club_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_club")
+  department              department?               @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_department")
+  auth_user               auth_user                 @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+  studentansweredsurvey   studentansweredsurvey[]
+  studentattendance       studentattendance[]
+  studentbalance          studentbalance[]
+  studentcurriculum       studentcurriculum[]
+  studentschedule         studentschedule[]
+  studentstoadvise        studentstoadvise[]
+  submission              submission[]
+  surveys                 surveys[]
+  transactioninformation  transactioninformation[]
+}
+
+model studentansweredsurvey {
+  answered_survey_id Int       @id @default(autoincrement())
+  survey_id          Int
+  major_id           Int
+  student_id         Int
+  recieved_at        DateTime? @default(now()) @db.Timestamp(6)
+  answers_json       String
+  student            student   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  surveys            surveys   @relation(fields: [survey_id], references: [surveys_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model studentattendance {
+  attendance_id            Int                     @id @default(autoincrement())
+  course_id                Int
+  course_material_id       Int
+  week_title               Int
+  student_attendance       student_attendance_enum
+  student_balance          Decimal?                @db.Decimal(10, 2)
+  gross_transaction_amount Decimal?                @db.Decimal(10, 2)
+  student_id               Int
+  created_at               DateTime?               @default(now()) @db.Timestamp(6)
+  coursematerial           coursematerial          @relation(fields: [course_material_id], references: [course_material_id], onDelete: Cascade, onUpdate: NoAction)
+  student                  student                 @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model studentbalance {
+  student_balance_id       Int                    @id @default(autoincrement())
+  student_id               Int
+  transaction_info_id      Int
+  student_code             String?                @db.Char(15)
+  registry_number          String?                @db.Char(15)
+  student_balance          Decimal?               @db.Decimal(10, 2)
+  gross_transaction_amount Decimal?               @db.Decimal(10, 2)
+  created_at               DateTime?              @default(now()) @db.Timestamp(6)
+  student                  student                @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  transactioninformation   transactioninformation @relation(fields: [transaction_info_id], references: [transaction_info_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model studentclubevent {
+  club_event_id   Int             @id @default(autoincrement())
+  student_club_id Int
+  club_type       String          @db.Char(25)
+  event_type      event_type_enum
+  timestamp       DateTime        @db.Timestamp(6)
+  description     String          @db.VarChar(200)
+  files           String
+  title           String          @db.Char(50)
+  attendees       Json
+  created_at      DateTime?       @default(now()) @db.Timestamp(6)
+  studentclubs    studentclubs    @relation(fields: [student_club_id], references: [student_club_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model studentclubs {
+  student_club_id                                            Int                     @id @default(autoincrement())
+  club_code                                                  String                  @unique @db.VarChar(10)
+  club_name                                                  String                  @db.VarChar(50)
+  club_members                                               Int                     @default(0)
+  club_type                                                  club_type_enum          @default(professional_club)
+  club_major_id                                              Int
+  club_primary_leader_id                                     Int
+  club_assistant_leader_id                                   Int
+  club_advisor_teacher_id                                    Int
+  club_logo                                                  String
+  club_moto                                                  String                  @db.VarChar(100)
+  created_at                                                 DateTime?               @default(now()) @db.Timestamp(6)
+  clubmembers                                                clubmembers[]
+  internalmessagingclub                                      internalmessagingclub[]
+  student                                                    student[]
+  studentclubevent                                           studentclubevent[]
+  teacher                                                    teacher                 @relation(fields: [club_advisor_teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction)
+  auth_user_studentclubs_club_assistant_leader_idToauth_user auth_user               @relation("studentclubs_club_assistant_leader_idToauth_user", fields: [club_assistant_leader_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+  major                                                      major                   @relation(fields: [club_major_id], references: [major_id], onDelete: NoAction, onUpdate: NoAction)
+  auth_user_studentclubs_club_primary_leader_idToauth_user   auth_user               @relation("studentclubs_club_primary_leader_idToauth_user", fields: [club_primary_leader_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model studentcurriculum {
+  student_curriculum_id   Int                       @id @default(autoincrement())
+  student_id              Int
+  course_id               Int
+  credit                  Int
+  student_curriculum_year DateTime                  @db.Date
+  semester_year           String                    @db.Char(25)
+  modified_at             DateTime?                 @default(now()) @db.Timestamp(6)
+  paymentlessonsselection paymentlessonsselection[]
+  courses                 courses                   @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction)
+  student                 student                   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model studentschedule {
+  student_curriculum_id Int       @id @default(autoincrement())
+  student_id            Int
+  course_id             Int
+  student_schedule_year DateTime  @db.Date
+  classroom_number      String    @db.Char(10)
+  class_group           Int
+  semester_year         String    @db.Char(25)
+  modified_at           DateTime? @default(now()) @db.Timestamp(6)
+  courses               courses   @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction)
+  student               student   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model studentstoadvise {
+  students_to_advise_id    Int        @id @default(autoincrement())
+  teacher_id               Int
+  academic_degree_of_major String     @db.VarChar(20)
+  major_id                 Decimal?   @db.Decimal(10, 2)
+  course_id                Int
+  student_id               Int
+  students_full_name       String     @db.VarChar(25)
+  student_phone_numbers    String     @db.Char(50)
+  department_id            Int
+  created_at               DateTime?  @default(now()) @db.Timestamp(6)
+  courses                  courses    @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+  department               department @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
+  student                  student    @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  teacher                  teacher    @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model submission {
+  submission_id      Int               @id @default(autoincrement())
+  course_material_id Int
+  submitted_at       DateTime?         @default(now()) @db.Timestamp(6)
+  submission_file    String
+  student_id         Int
+  graded_points      Decimal?          @db.Decimal(2, 2)
+  grade_status       grade_status_enum @default(submitted)
+  grader_comment     String?
+  teacher_id         Int
+  graded_at          DateTime?         @db.Timestamp(6)
+  created_at         DateTime?         @default(now()) @db.Timestamp(6)
+  coursematerial     coursematerial    @relation(fields: [course_material_id], references: [course_material_id], onDelete: Cascade, onUpdate: NoAction)
+  student            student           @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+  teacher            teacher           @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model surveys {
+  surveys_id            Int                     @id @default(autoincrement())
+  survey_name           String                  @db.Char(25)
+  due_date              DateTime                @db.Date
+  created_at            DateTime?               @default(now()) @db.Timestamp(6)
+  major_id              Int
+  to_student_year       Int
+  to_student_id         Int
+  questions_json        String
+  studentansweredsurvey studentansweredsurvey[]
+  major                 major                   @relation(fields: [major_id], references: [major_id], onDelete: Cascade, onUpdate: NoAction)
+  student               student                 @relation(fields: [to_student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model teacher {
+  teacher_id                  Int                      @id @default(autoincrement())
+  user_id                     Int                      @unique(map: "uq_teacher_user_id")
+  teacher_code                String                   @db.VarChar(10)
+  teacher_email               String                   @db.VarChar(50)
+  certificate                 String?
+  profession                  String                   @db.Char(25)
+  academic_degree             String                   @db.Char(25)
+  job_title                   String?
+  is_active                   is_active_enum           @default(is_working)
+  job_description             String                   @default("Багшлах") @db.Char(100)
+  departments_of_education_id Int
+  department_id               Int?
+  announcement                announcement[]
+  calendar                    calendar[]
+  coursematerial              coursematerial[]
+  inventoryofteacher          inventoryofteacher[]
+  invitations                 invitations[]
+  notificationstudents        notificationstudents[]
+  propertyofteacher           propertyofteacher[]
+  studentclubs                studentclubs[]
+  studentstoadvise            studentstoadvise[]
+  submission                  submission[]
+  department                  department?              @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
+  departmentsofeducation      departmentsofeducation   @relation(fields: [departments_of_education_id], references: [departments_of_education_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
+  auth_user                   auth_user                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+  teacherscourseplanning      teacherscourseplanning[]
+  teachersmajorplanning       teachersmajorplanning[]
+  teachersschedule            teachersschedule[]
+}
+
+model teacherscourseplanning {
+  teacher_course_planning_id Int                    @id(map: "teachercourseplanning_pkey") @default(autoincrement())
+  teacher_id                 Int
+  major_name                 String                 @db.VarChar(50)
+  major_id                   Int
+  course_name                String                 @db.VarChar(50)
+  credit                     Int
+  course_id                  Int
+  department_id              Int
+  created_at                 DateTime?              @default(now()) @db.Timestamp(6)
+  department_of_edu_id       Int
+  course_code                String                 @db.VarChar(6)
+  teacher_major_id           Int
+  courses                    courses                @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
+  department                 department             @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
+  departmentsofeducation     departmentsofeducation @relation(fields: [department_of_edu_id], references: [departments_of_education_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
+  teacher                    teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
+  teachersmajorplanning      teachersmajorplanning  @relation(fields: [teacher_major_id], references: [teacher_major_id], onDelete: Cascade, map: "fk_teacher_major")
+  teachersschedule           teachersschedule[]
+
+  @@unique([teacher_id, major_id, course_id], map: "teachers_id_and_course_id_uq")
+}
+
+model teachersmajorplanning {
+  teacher_major_id            Int                      @id(map: "teacher_major_id") @default(autoincrement())
+  teacher_id                  Int
+  academic_degree_of_major    String                   @db.VarChar(20)
+  major_name                  String                   @db.VarChar(50)
+  major_id                    Int
+  credit                      Int
+  department_id               Int
+  created_at                  DateTime?                @default(now()) @db.Timestamp(6)
+  department_of_educations_id Int
+  teacherscourseplanning      teacherscourseplanning[]
+  department                  department               @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
+  departmentsofeducation      departmentsofeducation   @relation(fields: [department_of_educations_id], references: [departments_of_education_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
+  teacher                     teacher                  @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
+
+  @@unique([teacher_id, major_id], map: "unique_teacher_major")
+}
+
+model teachersschedule {
+  classroom_id                 Int?                    @default(0)
+  students                     Int?                    @default(0)
+  teacher_id                   Int
+  course_id                    Int
+  major_id                     Int
+  teacher_name                 String                  @db.VarChar(50)
+  teachers_email               String                  @db.VarChar(50)
+  schedule_type                schedule_type_enum?     @default(dbgenerated("Лаборатори"))
+  time                         schedule_time_type_enum
+  course_planning_id           Int                     @default(0)
+  days                         days_type_enum
+  teachers_schedule_id         Int                     @id(map: "pk_teachers_schedule_id") @default(autoincrement())
+  created_at                   DateTime                @default(now()) @db.Date
+  course_name                  String                  @db.VarChar(50)
+  classroom_capacity           Int?
+  classroom_type               classroom_type_enum?
+  classroom_number             String?                 @db.VarChar(5)
+  schedules_timetable_position Int                     @default(0)
+  major                        major                   @relation(fields: [major_id], references: [major_id], onDelete: Cascade, map: "fk_major")
+  teacher                      teacher                 @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_teacher")
+  teacherscourseplanning       teacherscourseplanning  @relation(fields: [course_planning_id], references: [teacher_course_planning_id], onDelete: Cascade, map: "fk_teachers_course_planning")
+
+  @@unique([classroom_id, teacher_id, time, days], map: "uq_classroom_time_teacher")
+}
+
+model transactioninformation {
+  transaction_info_id Int              @id @default(autoincrement())
+  student_id          Int
+  reciept             String?
+  recipient_bank      String           @db.Char(25)
+  transaction_string  String           @db.Char(100)
+  transaction_amount  Decimal?         @db.Decimal(10, 2)
+  parsed_string       Int
+  created_at          DateTime?        @default(now()) @db.Timestamp(6)
+  studentbalance      studentbalance[]
+  student             student          @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model user_signatures {
+  user_signature_id    Int            @default(autoincrement())
+  user_id              Int?           @unique(map: "uq_user_signatures_user_id")
+  user_registry_number String?        @db.VarChar(10)
+  user_role            user_role_enum
+  signature            Bytes?
+  auth_user            auth_user?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_signatures")
+
+  @@ignore
+}
+
+model usercard {
+  user_card_id     Int            @id @default(autoincrement())
+  card_code        Int
+  user_id          Int
+  user_role        user_role_enum @default(student)
+  user_information Json
+  valid_from       DateTime       @db.Timestamp(6)
+  valid_until      DateTime       @db.Timestamp(6)
+  recieved         recieved_enum  @default(yes)
+  signature        String
+  created_at       DateTime?      @default(now()) @db.Timestamp(6)
+  auth_user        auth_user      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+}
+
+model userprofiles {
+  profile_id      Int       @id @default(autoincrement())
+  user_id         Int
+  user_code       String    @db.Char(10)
+  user_role       String    @db.Char(25)
+  profile_picture String
+  description     String    @db.VarChar(100)
+  department_id   Int
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
+  auth_user       auth_user @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user")
+}
+
+enum additional_roles_enum {
   club_primary_leader
   club_assistant_leader
   none
   laborant
-  Клубын_тэргүүн
-  Клубын_туслах_тэргүүн
-  байхгүй
-  Лаборант
+  // Клубын тэргүүн @map("Клубын тэргүүн")
+  // Клубын туслах тэргүүн @map("Клубын туслах тэргүүн")
+  // байхгүй @map("байхгүй")
+  // Лаборант @map("Лаборант")
 }
 
-enum AnnouncementOptionsEnum {
+enum announcement_options_enum {
   mandatory
   is_not_mandatory
 }
 
-enum AnnouncementStatusEnum {
+enum announcement_status_enum {
   has_read
   has_not_read
 }
 
-enum app_theme_enum {
-  Light_Mode
-  Dark_Mode
-}
-
-
-enum CalendarPurposeEnum {
+enum calendar_purpose_enum {
   important
   statement
   notification
 }
 
-enum ClassroomTypeEnum {
-  computer_laboratory
-  students_dev
+enum classroom_type_enum {
+  computer_laboratory @map("computer-laboratory")
+  students_dev        @map("students-dev")
   lecture
-  tv_classroom
-  Компьютерийн_лаборатори_анги
-  Оюутны_хөгжлийн_төв
-  Лекцийн_анги
-  Семинар_анги
-  Семинар_Лекцийн_анги
-  Телевизортой_анги
-  Биеийн_тамирын_заал
+  tv_classroom        @map("tv-classroom")
+  // Компьютерийн лаборатори анги @map("Компьютерийн лаборатори анги")
+  // Оюутны хөгжлийн төв @map("Оюутны хөгжлийн төв")
+  // Лекцийн анги @map("Лекцийн анги")
+  // Семинар анги @map("Семинар анги")
+  // Семинар / Лекцийн анги @map("Семинар / Лекцийн анги")
+  // Телевизортой анги @map("Телевизортой анги")
+  // Биеийн тамирын заал @map("Биеийн тамирын заал")
 }
 
-enum ClubTypeEnum {
+enum club_type_enum {
   professional_club
   amatuer_club
 }
 
-enum CourseSeasonTypeEnum {
-  Намар_Өвөл_Хавар_Зун
-  Намар_Өвөл_Зун
-  Намар
-  Хавар
-  Намар_Хавар
-  Өвөл_Хавар_Зун
+enum course_season_type_enum {
+  // Намар, Өвөл, Хавар, Зун @map("Намар, Өвөл, Хавар, Зун")
+  // Намар, Өвөл, Зун @map("Намар, Өвөл, Зун")
+  // Намар @map("Намар")
+  // Хавар @map("Хавар")
+  // Намар, Хавар @map("Намар, Хавар")
+  // Өвөл, Хавар, Зун @map("Өвөл, Хавар, Зун")
+  AutumWinterSpringSummer
+  AutumWinterSummer
+  Autumn
+  Spring
+  AutumnSpring
+  WinterSpringSummer
 }
 
-enum CourseTypeEnum {
+enum course_type_enum {
   bachelors
   masters
   doctors
   professors
-  Заавал_судлах
-  Сонгон_судлах
+  // Заавал судлах @map("Заавал судлах")
+  // Сонгон судлах @map("Сонгон судлах")
 }
 
-enum DaysTypeEnum {
-  Даваа_гараг
-  Мягмар_гараг
-  Лхагва_гараг
-  Пүрэв_гараг
-  Баасан_гараг
-  Бямба_гараг
-  Ням_гараг
+enum days_type_enum {
+  // Даваа гараг @map("Даваа гараг")
+  // Мягмар гараг @map("Мягмар гараг")
+  // Лхагва гараг @map("Лхагва гараг")
+  // Пүрэв гараг @map("Пүрэв гараг")
+  // Баасан гараг @map("Баасан гараг")
+  // Бямба гараг @map("Бямба гараг")
+  // Ням гараг @map("Ням гараг")
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
 }
 
-enum DisabledEnum {
+enum disabled_enum {
   yes
   no
-  Тийм
-  Үгүй
+  // Тийм @map("Тийм")
+  // Үгүй @map("Үгүй")
 }
 
-enum EventTypeEnum {
+enum event_type_enum {
   mandatory
-  non_mandatory
+  non_mandatory @map("non-mandatory")
   recreational
-  outside_event
+  outside_event @map("outside-event")
 }
 
-enum GenderEnum {
+enum gender_enum {
   male
   female
   other
-  эрэгтэй
-  эмэгтэй
-  бусад
+  // эрэгтэй @map("эрэгтэй")
+  // эмэгтэй @map("эмэгтэй")
+  // бусад @map("бусад")
 }
 
-enum GradeStatusEnum {
+enum grade_status_enum {
   incomplete
   complete
   missing
@@ -120,33 +916,33 @@ enum GradeStatusEnum {
   other
 }
 
-enum InvitationStatusEnum {
+enum invitation_status_enum {
   pending
   accepted
   denied
 }
 
-enum IsActiveEnum {
+enum is_active_enum {
   is_working
   vacation
   left
 }
 
-enum MajorTypeEnum {
+enum major_type_enum {
   afternoon
   evening
-  орой
-  өдөр
+  // орой @map("орой")
+  // өдөр @map("өдөр")
 }
 
-enum MarriedEnum {
+enum married_enum {
   married
   not_married
-  Гэрлээгүй
-  Гэрлэсэн
+  // Гэрлээгүй @map("Гэрлээгүй")
+  // Гэрлэсэн @map("Гэрлэсэн")
 }
 
-enum MaterialTypeEnum {
+enum material_type_enum {
   assignment
   discussion
   attendance_question
@@ -157,34 +953,34 @@ enum MaterialTypeEnum {
   exam_final
 }
 
-enum MilitaryServiceEnum {
+enum military_service_enum {
   served
   not_served
-  Тийм
-  Үгүй
-  Хаасан
-  Хаагаагүй
+  // Тийм @map("Тийм")
+  // Үгүй @map("Үгүй")
+  // Хаасан @map("Хаасан")
+  // Хаагаагүй @map("Хаагаагүй")
 }
 
-enum ProjectorEnum {
+enum projector_enum {
   yes
   no
-  тийм
-  үгүй
+  // тийм @map("тийм")
+  // үгүй @map("үгүй")
 }
 
-enum PropertyCategoryEnum {
+enum property_category_enum {
   offices
   computer
   office_utilities
 }
 
-enum RecievedEnum {
+enum recieved_enum {
   yes
   no
 }
 
-enum RuleCategoryEnum {
+enum rule_category_enum {
   university_academic_procedures
   tuition_payment_procedures
   laboratory_rules
@@ -192,31 +988,44 @@ enum RuleCategoryEnum {
   user_guide_canvas
 }
 
-enum ScheduleTimeTypeEnum {
-  value_1_р_цаг @map("1-р_цаг")
-  value_2_р_цаг @map("2-р_цаг")
-  value_3_р_цаг @map("3-р_цаг")
-  value_4_р_цаг @map("4-р_цаг")
-  value_5_р_цаг @map("5-р_цаг")
-  value_6_р_цаг @map("6-р_цаг")
-  value_7_р_цаг @map("7-р_цаг")
-  value_8_р_цаг @map("8-р_цаг")
-  value_9_р_цаг @map("9-р_цаг")
+enum schedule_time_type_enum {
+  // 1-р цаг @map("1-р цаг")
+  // 2-р цаг @map("2-р цаг")
+  // 3-р цаг @map("3-р цаг")
+  // 4-р цаг @map("4-р цаг")
+  // 5-р цаг @map("5-р цаг")
+  // 6-р цаг @map("6-р цаг")
+  // 7-р цаг @map("7-р цаг")
+  // 8-р цаг @map("8-р цаг")
+  // 9-р цаг @map("9-р цаг")
+  firstPeriod
+  secondPeriod
+  thirdPeriod
+  fourthPeriod
+  fifthPeriod
+  sixthPeriod
+  seventhPeriod
+  eightPeriod
+  ninthPeriod
 }
 
-enum ScheduleTypeEnum {
-  Лекц
-  Семинар
-  Лаборатори
+enum schedule_type_enum {
+  // Лекц @map("Лекц")
+  // Семинар @map("Семинар")
+  // Лаборатори @map("Лаборатори")
+  Lecture
+  Seminar
+  Laboratory
 }
 
-enum SignUpsEnum {
-  бүртгэл_хаагдсан
-  бүртгэл_нээлттэй
-  
+enum sign_ups_enum {
+  // бүртгэл хаагдсан @map("бүртгэл хаагдсан")
+  // бүртгэл нээлттэй @map("бүртгэл нээлттэй")
+  admissions_closed
+  admissions_open
 }
 
-enum StaffRoleEnum {
+enum staff_role_enum {
   security
   cleaner
   electrician
@@ -224,39 +1033,39 @@ enum StaffRoleEnum {
   manager
 }
 
-enum StateOfUsageEnum {
+enum state_of_usage_enum {
   normal
   broken
   needs_service
 }
 
-enum StudentAttendanceEnum {
+enum student_attendance_enum {
   arrived
   absent
   excused
   ill
 }
 
-enum StudentIsActiveEnum {
+enum student_is_active_enum {
   graduated
   transfered
   expelled
   studying
-  төгссөн
-  шилжсэн
-  хөөгдсөн
-  суралцаж_байгаа
-  чөлөө_авсан
+  // төгссөн @map("төгссөн")
+  // шилжсэн @map("шилжсэн")
+  // хөөгдсөн @map("хөөгдсөн")
+  // суралцаж байгаа @map("суралцаж байгаа")
+  // чөлөө авсан @map("чөлөө авсан")
 }
 
-enum TvEnum {
+enum tv_enum {
   yes
   no
-  тийм
-  үгүй
+  // тийм @map("тийм")
+  // үгүй @map("үгүй")
 }
 
-enum TypeEnum {
+enum type_enum {
   computer_science
   business
   social_studies
@@ -267,7 +1076,7 @@ enum TypeEnum {
   journalism
 }
 
-enum UserRoleEnum {
+enum user_role {
   student
   teacher
   administration
@@ -280,335 +1089,41 @@ enum UserRoleEnum {
   librarian
   marketing
   teacher_assistant
-  Оюутан
-  Багш
-  Удирдлага
-  Ажилтан
-  Захирал
-  Хүний_Нөөц
-  Салбар_Сургуулийн_Захирал
-  Элсэлтийн_Комисс
-  Сэтгэл_Зүйч
-  Номын_Санч
-  Маркетинг
 }
 
-enum YearClassificationEnum {
+enum user_role_enum {
+  student
+  teacher
+  administration
+  staff
+  principal
+  hr
+  department_chair
+  admissions_officer
+  mental_health_counselor
+  librarian
+  marketing
+  teacher_assistant
+  // Оюутан @map("Оюутан")
+  // Багш @map("Багш")
+  // Удирдлага @map("Удирдлага")
+  // Ажилтан @map("Ажилтан")
+  // Захирал @map("Захирал")
+  // Хүний Нөөц @map("Хүний Нөөц")
+  // Салбар Сургуулийн Захирал @map("Салбар Сургуулийн Захирал")
+  // Элсэлтийн Комисс @map("Элсэлтийн Комисс")
+  // Сэтгэл Зүйч @map("Сэтгэл Зүйч")
+  // Номын Санч @map("Номын Санч")
+  // Маркетинг @map("Маркетинг")
+}
+
+enum year_classification_enum {
   freshman
   junior
   sophomore
   senior
-  value_1_р_курс @map("1-р_курс")
-  value_2_р_курс @map("2-р_курс")
-  value_3_р_курс @map("3-р_курс")
-  value_4_р_курс @map("4-р_курс")
+  // 1-р курс @map("1-р курс")
+  // 2-р курс @map("2-р курс")
+  // 3-р курс @map("3-р курс")
+  // 4-р курс @map("4-р курс")
 }
-
-model auth_user {
-  user_id                  Int       @id @default(autoincrement())
-  login_name               String    @unique(map: "login_name") @db.VarChar(10)
-  password_hash            String    @db.Text
-  profile_picture          String?   @db.Text
-  registry_number          String    @db.VarChar(10)
-  user_role                UserRoleEnum
-  fname                   String    @db.VarChar(50)
-  lname                   String    @db.VarChar(50)
-  birthday                DateTime  @db.Date
-  gender                  GenderEnum
-  citizenship             String    @db.VarChar(50)
-  state_city               String    @db.VarChar(100)
-  town_district            String    @db.VarChar(100)
-  valid_address            String    @db.VarChar(100)
-  state_city_living         String    @db.VarChar(100)
-  town_district_living      String    @db.VarChar(100)
-  valid_address_living      String    @db.VarChar(100)
-  postal_address           String?   @db.VarChar(50)
-  home_phone_number         String?   @db.VarChar(20)
-  phone_number             String    @db.VarChar(20)
-  phone_number_emergency    String    @db.VarChar(20)
-  country                 String    @db.VarChar(50)
-  ethnicity               String    @db.VarChar(50)
-  social_background        String    @db.VarChar(50)
-  state_city_of_birth        String    @db.VarChar(100)
-  town_district_of_birth     String    @db.VarChar(100)
-  place_of_birth            String    @db.VarChar(150)
-  education               String    @db.VarChar(50)
-  current_academic_degree   String    @db.VarChar(50)
-  profession              String?   @db.VarChar(150)
-  profession_certification String?   @db.Text
-  f_passport_number         String?   @db.VarChar(50)
-  married                 MarriedEnum
-  military_service         MilitaryServiceEnum
-  pensions_established     String?   @db.VarChar(50)
-  additional_notes         String?   @db.VarChar(150)
-  blood_type               String?   @db.VarChar(5)
-  drivers_certificate      String?   @db.VarChar(50)
-  drivers_certificate_number String?   @db.VarChar(25)
-  disabled                DisabledEnum
-  is_active                Boolean   @default(true)
-  email                   String?   @unique(map: "auth_user_email_key") @db.Text
-  created_at               DateTime  @default(now()) @db.Timestamp(6)
-  family_tree_name          String    @default("Халх") @db.VarChar
-  Teacher      Teacher[]
-  assistantLeaderIn StudentClubs[] @relation(name: "clubAssistantLeader")
-  primaryLeaderIn   StudentClubs[] @relation(name: "clubPrimaryLeader")
-  userPreferences   authuserpreferences[] 
-
-  Student Student[]
-
-  @@index([user_role, email], map: "login_name_key")
-  @@map("auth_user")
-}
-
-model authuserpreferences {
-  user_preferences_id Int     @id @default(autoincrement())
-  app_theme           app_theme_enum @default(Light_Mode)
-  user_id             Int     @unique
-  auth_user auth_user @relation(fields: [user_id], references: [user_id])
-
-  @@map("authuserpreferences")
-}
-
-model TeacherSchedule {
-  teacherScheduleId Int       @id @default(autoincrement()) @map("teacher_schedule_id")
-  teacherId         Int       @map("teacher_id")
-  weekDay           String    @db.VarChar(20) @map("week_day")
-  periodOfClass     String    @db.VarChar(50) @map("period_of_class")
-  classroomId       Int       @map("classroom_id")
-  classGroup        String    @db.VarChar(10) @map("class_group")
-  courseName        String    @db.VarChar(50) @map("course_name")
-  credit            Int       @map("credit")
-  numberOfStudents  Int       @map("number_of_students")
-  courseId          Int       @map("course_id")
-  departmentId      Int       @map("department_id")
-  createdAt         DateTime? @default(now()) @db.Timestamp(6) @map("created_at")
-  classroom         Classrooms  @relation(fields: [classroomId], references: [classroom_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_classroom")
-  course            Courses     @relation(fields: [courseId], references: [courseId], onDelete: Cascade, onUpdate: NoAction, map: "fk_course")
-  department        Department  @relation(fields: [departmentId], references: [department_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_department")
-  teacher           Teacher     @relation(fields: [teacherId], references: [teacherId], onDelete: NoAction, onUpdate: NoAction, map: "fk_teacher")
-}
-
-model TeachersCoursePlanning {
-  teacherCoursePlanningId Int       @id @default(autoincrement()) @map("teacher_course_planning_id")
-  teacherId               Int       @map("teacher_id")
-  majorName               String    @db.VarChar(50) @map("major_name")
-  majorId                 Decimal?  @db.Decimal @map("major_id")
-  courseName              String    @db.VarChar(50) @map("course_name")
-  credit                  Int       @map("credit")
-  courseId                Int       @map("course_id")
-  departmentId            Int       @map("department_id")
-  createdAt               DateTime? @default(now()) @db.Timestamp(6) @map("created_at")
-  departmentOfEduId       Int       @map("department_of_edu_id")
-  courseCode              String    @db.VarChar(6) @map("course_code")
-  teacherMajorId          Int       @map("teacher_major_id")
-  course                  Courses                 @relation(fields: [courseId], references: [courseId], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
-  department              Department              @relation(fields: [departmentId], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
-  departmentOfEducation DepartmentsOfEducation @relation(fields: [departmentOfEduId], references: [departmentsOfEducationId], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
-  teacher                 Teacher                 @relation(fields: [teacherId], references: [teacherId], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
-  teachersMajorPlanning   TeachersMajorPlanning   @relation(fields: [teacherMajorId], references: [teacherMajorId], onDelete: Cascade, onUpdate: Cascade, map: "fk_teacher_major")
-
-  @@unique([teacherId, majorId, courseId], map: "teachers_id_and_course_id_uq")
-}
-
-model Classrooms {
-  classroom_id Int       @id @default(autoincrement()) @map("classroom_id")
-  department_id Int?    @map("department_id")
-  classroom_type ClassroomTypeEnum @map("classroom_type")
-  classroom_number String    @unique @db.Char(5) @map("classroom_number")
-  projector        ProjectorEnum @default(yes) @map("projector")
-  tv               TvEnum        @default(yes) @map("tv")
-  createdAt        DateTime? @default(now()) @db.Timestamp(6) @map("created_at")
-  capacity         Int       @map("capacity")
-  departmentOfEducation DepartmentsOfEducation? @relation(fields: [department_id], references: [departmentsOfEducationId], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
-  TeacherSchedule  TeacherSchedule[]
-
-  Department Department[]
-}
-
-model Courses {
-  courseId     Int                @id @default(autoincrement()) @map("course_id")
-  courseName   String             @unique(map: "course_name_unique_constraint") @db.VarChar(50) @map("course_name")
-  courseCode   String             @db.Char(6) @map("course_code")
-  courseType   CourseTypeEnum @map("course_type")
-  courseYear   String             @db.VarChar(10) @map("course_year")
-  totalCredits Int                @map("total_credits")
-  majorId      Int                @map("major_id")
-  description  String             @default("*") @db.VarChar(100) @map("description")
-  courseSeason CourseSeasonTypeEnum @default(Намар_Өвөл_Хавар_Зун) @map("course_season")
-  timesPerWeek Int?               @default(0) @map("times_per_week")
-  major        Major              @relation(fields: [majorId], references: [major_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_major")
-  TeacherSchedule TeacherSchedule[]
-  TeachersCoursePlanning TeachersCoursePlanning[]
-  departmentId Int?               @map("department_id")
-  department   Department?        @relation(fields: [departmentId], references: [department_id])
-
-
-  StudentCurriculum StudentCurriculum[] @relation(map: "studentcurriculum_course_id_fkey")
-}
-
-model TeachersMajorPlanning {
-  teacherMajorId          Int       @id @default(autoincrement()) @map("teacher_major_id")
-  teacherId               Int       @map("teacher_id")
-  academicDegreeOfMajor String    @db.VarChar(20) @map("academic_degree_of_major")
-  majorName               String    @db.VarChar(50) @map("major_name")
-  majorId                 Decimal?  @db.Decimal @map("major_id")
-  credit                  Int       @map("credit")
-  departmentId            Int       @map("department_id")
-  createdAt               DateTime? @default(now()) @db.Timestamp(6) @map("created_at")
-  departmentOfEducationsId Int       @map("department_of_educations_id")
-  department              Department              @relation(fields: [departmentId], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
-  departmentOfEducation DepartmentsOfEducation @relation(fields: [departmentOfEducationsId], references: [departmentsOfEducationId], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
-  teacher                 Teacher                 @relation(fields: [teacherId], references: [teacherId], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
-  TeachersCoursePlanning TeachersCoursePlanning[]
-
-  @@unique([teacherId, majorId], map: "unique_teacher_major")
-}
-
-model Teacher {
-  teacherId             Int       @id @default(autoincrement()) @map("teacher_id")
-  userId                Int       @unique(map: "uq_teacher_user_id") @map("user_id")
-  teacherCode           String    @db.VarChar(10) @map("teacher_code")
-  teacherEmail          String    @db.VarChar(50) @map("teacher_email")
-  certificate           String?   @db.Text @map("certificate")
-  profession            String    @db.Char(25) @map("profession")
-  academicDegree        String    @db.Char(25) @map("academic_degree")
-  jobTitle              String?   @db.Text @map("job_title")
-  isActive              IsActiveEnum @default(is_working) @map("is_active")
-  jobDescription        String    @default("Багшлах") @db.Char(100) @map("job_description")
-  departmentsOfEducationId Int       @map("departments_of_education_id")
-  departmentId          Int?      @map("department_id")
-  auth_user              auth_user? @relation(fields: [userId], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
-  department            Department? @relation(fields: [departmentId], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
-  departmentsOfEducation DepartmentsOfEducation @relation(fields: [departmentsOfEducationId], references: [departmentsOfEducationId], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
-  TeacherSchedule       TeacherSchedule[]
-  TeachersCoursePlanning TeachersCoursePlanning[]
-  TeachersMajorPlanning TeachersMajorPlanning[]
-  StudentClubs          StudentClubs[]
-  @@map("teacher")
-}
-
-model StudentClubs {
-  studentClubId          Int       @id @default(autoincrement()) @map("student_club_id")
-  clubCode               String    @unique @db.VarChar(10) @map("club_code")
-  clubName               String    @db.VarChar(50) @map("club_name")
-  clubMembers            Int       @default(0) @map("club_members")
-  clubType               ClubTypeEnum @default(professional_club) @map("club_type")
-  clubMajorId            Int       @map("club_major_id")
-  clubPrimaryLeaderId    Int       @map("club_primary_leader_id")
-  clubAssistantLeaderId  Int       @map("club_assistant_leader_id")
-  clubAdvisorTeacherId   Int       @map("club_advisor_teacher_id")
-  clubLogo               String    @db.Text @map("club_logo")
-  clubMoto               String    @db.VarChar(100) @map("club_moto")
-  createdAt              DateTime? @default(now()) @db.Timestamp(6) @map("created_at")
-  club_advisor_teacher   Teacher     @relation(fields: [clubAdvisorTeacherId], references: [teacherId], onDelete: NoAction, onUpdate: NoAction, map: "studentclubs_club_advisor_teacher_id_fkey")
-  clubAssistantLeader    auth_user    @relation(name: "clubAssistantLeader", fields: [clubAssistantLeaderId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "studentclubs_club_assistant_leader_id_fkey")
-  clubMajor              Major       @relation(fields: [clubMajorId], references: [major_id], onDelete: NoAction, onUpdate: NoAction, map: "studentclubs_club_major_id_fkey")
-  clubPrimaryLeader      auth_user    @relation(name: "clubPrimaryLeader", fields: [clubPrimaryLeaderId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "studentclubs_club_primary_leader_id_fkey")
-  Student                Student[]
-}
-
-model Student {
-  student_id              Int                  @id @default(autoincrement())
-  user_id                 Int                  @unique(map: "uq_student_user_id")
-  student_club_id          Int?
-  additional_roles        AdditionalRolesEnum    @default(байхгүй)
-  student_code            String               @db.Char(8)
-  student_email           String               @db.VarChar(50)
-  student_file            Json?
-  enrollment_number       Int                  @unique(map: "student_enrollment_number_key") @default(autoincrement())
-  enrollment_year         Int
-  year_classification     YearClassificationEnum
-  is_active               StudentIsActiveEnum? @default(суралцаж_байгаа)
-  current_academic_degree  String               @db.Char(25)
-  academic_degree_file     String?              @db.Text
-  major_id                Int
-  created_at              DateTime?            @default(now()) @db.Timestamp(6)
-  contracts              Json?
-  department_id           Int?
-  auth_user               auth_user?            @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
-  major                  Major                @relation(fields: [major_id], references: [major_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_major")
-  student_clubs           StudentClubs?        @relation(fields: [student_club_id], references: [studentClubId], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_club")
-  department             Department?          @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_department")
-  @@map("student")
-  StudentCurriculum StudentCurriculum[] @relation(map: "studentcurriculum_student_id_fkey")
-}
-
-model Major {
-  major_id             Int                @id @default(autoincrement())
-  major_name           String             @unique @db.VarChar(50)
-  majors_year          DateTime           @db.Date
-  majors_type          MajorTypeEnum
-  credit_unit_rate      Decimal            @db.Money
-  major_tuition        Decimal            @db.Money
-  academic_degree      String             @db.VarChar(20)
-  total_years          Int
-  total_credits_per_year Int
-  department_of_edu_id   Int
-  created_at           DateTime?          @default(now()) @db.Timestamp(6)
-  exam1               Float              @db.DoublePrecision
-  exam2               Float              @db.DoublePrecision
-  majors_description   String             @db.VarChar(700)
-  description_brief    String?            @db.VarChar(50)
-  qualifications      Json?
-  qualifications1     String?            @db.Text
-  qualifications2     String?            @db.Text
-  sign_ups             SignUpsEnum        @default(бүртгэл_нээлттэй)
-  department_id        Int                @default(1)
-  department          Department         @relation(name: "Department", fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department_id")
-  departmentOfEdu     Department         @relation(name: "DepartmentsOfEducation", fields: [department_of_edu_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
-  Courses             Courses[]
-  Student             Student[]
-  StudentClubs StudentClubs[]
-  @@map("major")
-}
-
-model DepartmentsOfEducation {
-  departmentsOfEducationId Int       @id @default(autoincrement()) @map("departments_of_education_id")
-  edDepartmentName         String    @db.VarChar(50) @map("ed_department_name")
-  edDepartmentCode         String    @db.VarChar(10) @map("ed_department_code")
-  teachers                 Json?     @map("teachers")
-  Classrooms               Classrooms[]
-  Teacher                  Teacher[]
-  TeachersCoursePlanning   TeachersCoursePlanning[]
-  TeachersMajorPlanning    TeachersMajorPlanning[]
-  Department Department[]
-}
-
-model Department {
-  department_id          Int       @id @default(autoincrement())
-  department_name        String    @db.VarChar(50)
-  department_code        String    @db.VarChar(10)
-  department_email       String    @db.VarChar(50)
-  number_of_staff         Int?
-  logo                  String    @db.Text
-  created_at             DateTime? @default(now()) @db.Timestamp(6)
-  department_of_edu_id     Int
-  departmentOfEducation DepartmentsOfEducation @relation(fields: [department_of_edu_id], references: [departmentsOfEducationId], onDelete: NoAction, onUpdate: NoAction, map: "departmentsofedu_fkey")
-  Classrooms            Classrooms[]
-  Courses               Courses[]
-  majors                Major[]   @relation(name: "Department", map: "department_majors")
-  majorsOfEducation     Major[]   @relation(name: "DepartmentsOfEducation", map: "department_majors_edu")
-  Student               Student[]
-  Teacher               Teacher[]
-  TeachersCoursePlanning TeachersCoursePlanning[]
-  TeachersMajorPlanning  TeachersMajorPlanning[]
-  teacherSchedules      TeacherSchedule[]
-  @@map("department")
-}
-
-model StudentCurriculum {
-  studentCurriculumId Int       @id @default(autoincrement()) @map("student_curriculum_id")
-  studentId           Int       @map("student_id")
-  courseId            Int       @map("course_id")
-  credit              Int       @map("credit")
-  studentYear         DateTime  @db.Date @map("student_year")
-  semesterYear        String    @db.Char(25) @map("semester_year")
-  modifiedAt          DateTime? @default(now()) @db.Timestamp(6) @map("modified_at")
-  courseCode          String    @db.VarChar(6) @map("course_code")
-  student             Student   @relation(  fields: [studentId], references: [student_id], onDelete: Cascade, onUpdate: NoAction, map: "studentcurriculum_student_id_fkey")
-  course              Courses   @relation( fields: [courseId], references: [courseId], onDelete: Cascade, onUpdate: NoAction, map: "studentcurriculum_course_id_fkey")
-
-  @@map("studentcurriculum")
-}
-
-

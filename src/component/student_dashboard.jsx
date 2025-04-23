@@ -66,7 +66,7 @@ const StudentDashboard = () => {
 
   const buildDashboardCourses = (label, value) => (
     <div className="dashboard-courses-card">
-      <div className="dashboard-courses-picture"></div>
+      <img src="src/assets/curriculum.png" alt="courses-picture" className="dashboard-courses-picture" />
       <h6 className="dashboard-courses-card-label">{label}</h6>
       <p className="dashboard-courses-card-value">{value}</p>
     </div>

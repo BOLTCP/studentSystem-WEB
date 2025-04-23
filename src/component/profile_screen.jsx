@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/profile_screen.css';
+//import '../styles/student_dashboard.css';
+import { RenderSidebar, RenderSidebarRight } from './side_bars';
 import UserDetails from '../models/user_details';
 import moment from 'moment';
 
 
 const ProfileScreen = ( ) => {
-
     const location = useLocation();
     const userDetails = new UserDetails(location.state?.userDetails);
-    
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -63,12 +63,19 @@ const ProfileScreen = ( ) => {
         );
       } else if (user.userRole === 'Оюутан') {
         return (
-          <div className="profile-container-layout">
-            <div className="profile-nav">
-              <div className="nav-container">
-                <h2 className="profile-title">Оюутан {userDetails.user.fname} -н хувийн мэдээлэл</h2>
-                <div className="profile-card-grid">
-                 {/* <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
+          <>
+            <RenderSidebar user = {userDetails} />
+            <div className="profile-container-layout">
+              <div className="profile-nav">
+                <div className="nav-container">
+                  <h2 className="profile-title">Оюутан {userDetails.user.fname} - н хувийн мэдээлэл</h2>
+                </div>
+              </div>
+
+              <div className="profile-content">
+                <div className="profile-container">
+                  <div className="profile-card-grid">
+                  <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
                   <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
                   <ProfileCard label="Хэрэглэгч / Сурагчийн код:" value={student?.studentCode} />
                   <ProfileCard label="Хэрэглэгчийн И-мэйл" value={user.email} />
@@ -83,11 +90,13 @@ const ProfileScreen = ( ) => {
                   <ProfileCard label="Багшийн И-мэйл" value={student?.studentEmail} />
                   <ProfileCard label="Өмнөх боловсрол" value={user.education} />
                   <ProfileCard label="Created At" value={moment(user.createdAt).local().toString()} />
-                */}
                   </div>
+                </div>
               </div>
+
             </div>
-          </div>
+            <RenderSidebarRight user = {userDetails} />
+          </>
         );
       } else {
         return <div className="placeholder">Unknown User Role</div>;

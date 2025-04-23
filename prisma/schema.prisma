@@ -78,9 +78,10 @@ model auth_user {
   teacher                                                       teacher?
   user_signatures                                               user_signatures?      @ignore
   usercard                                                      usercard[]
+  userpreferences                                               userpreferences[]
   userprofiles                                                  userprofiles[]
 
-  @@unique([login_name, user_role, email], map: "login_name_key")
+  @@unique([login_name], map: "login_name_key")
 }
 
 model basecurriculum {
@@ -786,6 +787,13 @@ model usercard {
   auth_user        auth_user      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
 }
 
+model userpreferences {
+  user_preferences_id Int       @id @default(autoincrement())
+  app_theme           String    @db.VarChar(20)
+  user_id             Int
+  auth_user           auth_user @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_auth_user")
+}
+
 model userprofiles {
   profile_id      Int       @id @default(autoincrement())
   user_id         Int
@@ -817,6 +825,11 @@ enum announcement_options_enum {
 enum announcement_status_enum {
   has_read
   has_not_read
+}
+
+enum app_theme_enum {
+  Light_Mode
+  Dark_Mode
 }
 
 enum calendar_purpose_enum {

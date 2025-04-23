@@ -26,7 +26,8 @@ app.post('/login', async (req, res) => {
 
   try {
     const authUser = await prisma.auth_user.findUnique({
-      where: { login_name: login_name },
+      where: { login_name: login_name,
+       },
     });
 
     if (authUser) {
@@ -64,7 +65,7 @@ app.post('/User/Login/Student', async (req, res) => {
       where: { user_id: userId }, 
     });
 
-    const userPreferences = await prisma.authuserpreferences.findUnique({
+    const userpreferences = await prisma.userpreferences.findMany({
       where: { user_id: userId }, 
     });
 
@@ -78,7 +79,7 @@ app.post('/User/Login/Student', async (req, res) => {
     console.log(student, department, major);
     if (student) {
         console.log(`Мэдээллийг амжилттай авлаа.`);
-        res.status(200).json({ student: student, userPreferences: userPreferences, department: department, major: major });
+        res.status(200).json({ student: student, userPreferences: userpreferences, department: department, major: major });
       } else {
         res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
       }

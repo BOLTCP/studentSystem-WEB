@@ -35,7 +35,7 @@ const ProfileScreen = ( ) => {
 
     const { user, student, major, department } = userDetails;
 
-    if (user.userRole === 'Багш') {
+    if (user.userRole === 'teacher') {
         return (
           <div className="profile-container-layout">
             <div className="profile-nav">
@@ -61,7 +61,7 @@ const ProfileScreen = ( ) => {
             </div>
           </div>
         );
-      } else if (user.userRole === 'Оюутан') {
+      } else if (user.userRole === 'student') {
         return (
           <>
             <RenderSidebar user = {userDetails} />

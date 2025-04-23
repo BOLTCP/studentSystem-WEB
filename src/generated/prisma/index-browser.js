@@ -688,6 +688,12 @@ exports.Prisma.UsercardScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.UserpreferencesScalarFieldEnum = {
+  user_preferences_id: 'user_preferences_id',
+  app_theme: 'app_theme',
+  user_id: 'user_id'
+};
+
 exports.Prisma.UserprofilesScalarFieldEnum = {
   profile_id: 'profile_id',
   user_id: 'user_id',
@@ -998,6 +1004,7 @@ exports.Prisma.ModelName = {
   teachersschedule: 'teachersschedule',
   transactioninformation: 'transactioninformation',
   usercard: 'usercard',
+  userpreferences: 'userpreferences',
   userprofiles: 'userprofiles'
 };
 

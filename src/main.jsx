@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<LoginScreen />} /> {/* Main login route */}
         <Route path="/student_dashboard" element={<StudentDashboard />} /> {/* Absolute path for dashboard */}
         <Route path="/profile_screen" element={<ProfileScreen />} /> {/* Absolute path for profile */}
-        <Route path="/src/component/university/university" element={<University />} /> {/* Absolute path for profile */}
+        <Route path="/university" element={<University />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

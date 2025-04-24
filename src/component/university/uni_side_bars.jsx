@@ -21,6 +21,12 @@ export const RenderSidebar = ({ user }) => {
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
   const navigate = useNavigate();
 
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  const toggleDropdown = (index) => {
+    setOpenDropdown(openDropdown === index ? null : index); // Toggle dropdown
+  };
+
   useEffect(() => {
     if (theme === 'light') {
       setThemeIcon("/src/assets/lightMode.png");
@@ -131,75 +137,107 @@ export const RenderSidebar = ({ user }) => {
         </li>
 
         <li className="sidebar-item">
+          <button
+            onMouseEnter={() => {
+              showAttribution(
+                'Dashboard icons created by Those Icons - Flaticon',
+                'https://www.flaticon.com/free-icon/dashboard_481270?term=dashboard&page=1&position=60&origin=search&related_id=481270'
+              );
+            }}
+            onClick={() => toggleDropdown(0)}
+            className={`sidebar-link ${theme}`}
+          >
+            <img src="/src/assets/dashboard.png" title="Icon by Freepik - Flaticon" alt="UserIcon" className={`sidebar-list-icon ${theme}`} />
+            Хянах самбар
+          </button>
+          {openDropdown === 0 && (
+            <ul className="dropdown-menu">
+              {/* Submenu items */}
+              <li className="dropdown-item">
+                <button onClick={() => navigate('/student_dashboard', { state: { user: userDetails.user } })}>
+                  Dashboard Submenu 1
+                </button>
+              </li>
+              <li className="dropdown-item">
+                <button onClick={() => navigate('/student_dashboard/advanced', { state: { user: userDetails.user } })}>
+                  Dashboard Submenu 2
+                </button>
+              </li>
+            </ul>
+          )}
+        </li>
+
+        <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
-                  "User icons created by Freepik - Flaticon",
-                  " https://www.flaticon.com/free-icon/user_1144760?term=user&page=1&position=2&origin=search&related_id=1144760"
+                  "Subject icons created by Rashad - Flaticon",
+                  " https://www.flaticon.com/free-icon/books_3413612?term=subjects&page=1&position=1&origin=search&related_id=3413612"
                   )} 
                   onMouseLeave={() => hideAttribution()}
                   onClick={() => navigate('/profile_screen', { state: { userDetails: userDetails } })} 
                   className={`sidebar-link ${theme}`}>
 
-          <img src="/src/assets/user.png"
+          <img src="/src/assets/books.png"
           //Icon source from 
-          //https://www.flaticon.com/free-icon/user_1144760?term=user&page=1&position=2&origin=search&related_id=1144760
+          //https://www.flaticon.com/free-icon/books_3413612?term=subjects&page=1&position=1&origin=search&related_id=3413612
               title="Icon by Freepik - Flaticon"
               alt="UserIcon"
               className={`sidebar-list-icon ${theme}`}
           />
-            Сурагчийн бүртгэл
+            Сургалтын төлөвлөгөө
           </button>
         </li>
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
-                  "Degree icons created by Pixel perfect - Flaticon",
-                  " https://www.flaticon.com/free-icon/degrees_3424711?term=university+program&page=1&position=4&origin=search&related_id=3424711"
+                  "Recommendation icons created by lakonicon - Flaticon",
+                  " https://www.flaticon.com/free-icon/quality-service_15204340?term=recommend&page=1&position=4&origin=search&related_id=15204340"
                   )}
                   onMouseLeave={() => hideAttribution()}
                   onClick={() => navigate('/src/component/university/university', { state: { userDetails: userDetails } })} 
                   className={`sidebar-link ${theme}`}>
-            <img src="/src/assets/degrees.png"
+            <img src="/src/assets/recommended-courses.png"
             //Icon source from 
-            //https://www.flaticon.com/free-icon/degrees_3424711?term=university+program&page=1&position=4&origin=search&related_id=342471
-            //Degree icons created by Pixel perfect - Flaticon
+            //https://www.flaticon.com/free-icon/quality-service_15204340?term=recommend&page=1&position=4&origin=search&related_id=15204340
+            //Recommendation icons created by lakonicon - Flaticon
             alt="IntoUniversity"
             className={`sidebar-list-icon ${theme}`}
             /> 
-            Их Сургууль
+            Санал болгох төлөвлөгөө
           </button>
         </li>
         <li className="sidebar-item">
         <button onMouseEnter={() => showAttribution(
-                  "Semester icons created by kmg design - Flaticon",
-                  " https://www.flaticon.com/free-icon/calendar_3172207?term=semester&page=1&position=6&origin=tag&related_id=3172207")}
+                  "Account settings icons created by Iconjam - Flaticon",
+                  " https://www.flaticon.com/free-icon/account-settings_13097809?term=personal+settings&page=1&position=11&origin=search&related_id=13097809"
+                  )}
                   onMouseLeave={() => hideAttribution()}
                   onClick={() => navigate('/courses', { state: { userDetails: userDetails } })} 
                   className={`sidebar-link ${theme}`}>
-          <img src="/src/assets/calendar.png"
+          <img src="/src/assets/personal-planning.png"
           //Icon source from 
-          //https://www.flaticon.com/free-icon/calendar_3172207?term=semester&page=1&position=6&origin=tag&related_id=3172207
-          //Semester icons created by kmg design - Flaticon
+          //https://www.flaticon.com/free-icon/account-settings_13097809?term=personal+settings&page=1&position=11&origin=search&related_id=13097809
+          //Account settings icons created by Iconjam - Flaticon
               alt="Calendar"
               className={`sidebar-list-icon ${theme}`}
           /> 
-            Календарь
+            Хувийн төлөвлөгөө
           </button>
         </li>
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
-                  "University icons created by Freepik - Flaticon",
-                  " https://www.flaticon.com/free-icon/university_2825156?term=university+clubs&page=1&position=8&origin=search&related_id=2825156"
+                  "Ebook icons created by Pongsakorn Sarunsatta - Flaticon",
+                  " https://www.flaticon.com/free-icon/ebook_3517104?term=add+lesson&page=1&position=1&origin=search&related_id=3517104"
                   )}
                   onMouseLeave={() => hideAttribution()}
                   onClick={() => navigate('/clubs', { state: { userDetails: userDetails } })} 
                   className={`sidebar-link ${theme}`}>
-            <img src="/src/assets/universityClubs.png"
+            <img src="/src/assets/lesson-selection.png"
             //Icon source from 
-            //https://www.flaticon.com/free-icon/university_2825156?term=university+clubs&page=1&position=8&origin=search&related_id=2825156
-            //University icons created by Freepik - Flaticon
+            //https://www.flaticon.com/free-icon/ebook_3517104?term=add+lesson&page=1&position=1&origin=search&related_id=3517104
+            //Ebook icons created by Pongsakorn Sarunsatta - Flaticon
             alt="StudentClubs"
             className={`sidebar-list-icon ${theme}`}
             /> 
-            Клубууд
+            Хичээл сонголт
           </button>
         </li>
         <li className="sidebar-item">

@@ -156,7 +156,7 @@ export const RenderSidebar = ({ user }) => {
                   " https://www.flaticon.com/free-icon/degrees_3424711?term=university+program&page=1&position=4&origin=search&related_id=3424711"
                   )}
                   onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/src/component/university/university', { state: { user: userDetails } })} 
+                  onClick={() => navigate('/university', { state: { user: userDetails } })} 
                   className={`sidebar-link ${theme}`}>
             <img src="/src/assets/degrees.png"
             //Icon source from 

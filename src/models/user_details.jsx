@@ -1,7 +1,7 @@
 class UserDetails {
     constructor({
       user,
-      authuserpreferences = null,
+      userpreferences = null,
       teacher = null,
       student = null,
       major = null,
@@ -11,7 +11,7 @@ class UserDetails {
       teachersCoursePlanning = null,
     }) {
       this.user = user;
-      this.authuserpreferences = authuserpreferences;
+      this.userpreferences = userpreferences;
       this.teacher = teacher;
       this.student = student;
       this.major = major;

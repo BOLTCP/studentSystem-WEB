@@ -790,7 +790,7 @@ model usercard {
 model userpreferences {
   user_preferences_id Int       @id @default(autoincrement())
   app_theme           String    @db.VarChar(20)
-  user_id             Int
+  user_id             Int       @unique
   auth_user           auth_user @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_auth_user")
 }
 

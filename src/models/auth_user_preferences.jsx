@@ -1,6 +1,6 @@
 import React from 'react';
 
-class AuthUserPreferences {
+class UserPreferences {
   constructor({
     userPreferencesId,
     appTheme,
@@ -11,22 +11,22 @@ class AuthUserPreferences {
     this.userId = userId;
   }
 
-  static fromJsonAuthUserPreferences(json) {
+  static fromJsonUserPreferences(json) {
     try {
-      return new AuthUserPreferences({
-        userPreferencesId: json.user_preferences_id ?? 0,
-        appTheme: json.app_theme ?? 'Light Mode',
-        userId: json.user_id ?? 0
+      return new UserPreferences({
+        userPreferencesId: json.user_preferences_id,
+        appTheme: json.app_theme,
+        userId: json.user_id
       });
     } catch (error) {
-      console.error('Error parsing AuthUserPreferences from JSON:', error);
+      console.error('Error parsing UserPreferences from JSON:', error);
       return null; // Or throw the error, depending on your error handling strategy
     }
   }
 
   toString() {
-    return `AuthUserPreferences(user_role: ${this.userRole})`;
+    return `UserPreferences(user_role: ${this.userRole})`;
   }
 }
 
-export default AuthUserPreferences;
+export default UserPreferences;

@@ -12,8 +12,9 @@ import './profile_screen';
 export const RenderSidebar = ({ user }) => {
 
   const [userDetails, setUserDetails] = useState(new UserDetails(user));
+  console.log("userDetails: ", userDetails.userpreferences?.appTheme);
   const [theme, setTheme] = useState(
-    `${userDetails.authuserpreferences?.appTheme === 'Light_Mode'
+    `${userDetails.userpreferences?.appTheme === 'Light_Mode'
       ? 'light'
       : 'dark'
     }`
@@ -155,7 +156,7 @@ export const RenderSidebar = ({ user }) => {
                   " https://www.flaticon.com/free-icon/degrees_3424711?term=university+program&page=1&position=4&origin=search&related_id=3424711"
                   )}
                   onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/clubs', { state: { userDetails: userDetails } })} 
+                  onClick={() => navigate('/src/component/university/university', { state: { user: userDetails } })} 
                   className={`sidebar-link ${theme}`}>
             <img src="/src/assets/degrees.png"
             //Icon source from 

@@ -6,7 +6,7 @@ import UserDetails from '../models/user_details';
 import StudentUser from '../models/student_user';
 import MajorClass from '../models/major';
 import Department from '../models/department';
-import AuthUserPreferences from '../models/auth_user_preferences';
+import UserPreferences from '../models/auth_user_preferences';
 import { RenderSidebar, RenderSidebarRight } from './side_bars';
 import '../styles/student_dashboard.css';
 import './profile_screen';
@@ -31,7 +31,7 @@ const StudentDashboard = () => {
           if (response.status === 200) {
             console.log('User data fetched!', response.data);
             let student = StudentUser.fromJsonStudent(response.data.student);
-            const authuserpreferences = AuthUserPreferences.fromJsonAuthUserPreferences(response.data.userPreferences);
+            const userpreferences = UserPreferences.fromJsonUserPreferences(response.data.userpreferences);
             const major = MajorClass.fromJsonMajor(response.data.major);
             const department = Department.fromJsonDepartment(response.data.department);
             const year_classification_fix = student.yearClassification === 'freshman' 
@@ -44,7 +44,7 @@ const StudentDashboard = () => {
 
             student.yearClassification = year_classification_fix;
 
-            setUserDetails(new UserDetails({ user, authuserpreferences, student, major, department }));
+            setUserDetails(new UserDetails({ user, userpreferences, student, major, department }));
           } else {
             console.error('Error fetching user details:', response.status, response.data);
             setError('Failed to fetch user details.');
@@ -67,8 +67,8 @@ const StudentDashboard = () => {
   const buildDashboardCourses = (label, value) => (
     <div className="dashboard-courses-card">
       <img src="src/assets/curriculum.png" alt="courses-picture" className="dashboard-courses-picture" />
-      <h6 className="dashboard-courses-card-label">{label}</h6>
-      <p className="dashboard-courses-card-value">{value}</p>
+      <h6 className="dashboard-courses-card-label">{label} {value}</h6>
+      {/* <p className="dashboard-courses-card-value">{value}</p> */}
     </div>
   );
 

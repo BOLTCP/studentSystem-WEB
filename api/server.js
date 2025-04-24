@@ -65,7 +65,7 @@ app.post('/User/Login/Student', async (req, res) => {
       where: { user_id: userId }, 
     });
 
-    const userpreferences = await prisma.userpreferences.findMany({
+    const userpreferences = await prisma.userpreferences.findUnique({
       where: { user_id: userId }, 
     });
 
@@ -76,10 +76,10 @@ app.post('/User/Login/Student', async (req, res) => {
     const major = await prisma.major.findUnique({
       where: { major_id: student.major_id },
     });
-    console.log(student, department, major);
+    console.log(student, department, major, userpreferences );
     if (student) {
         console.log(`Мэдээллийг амжилттай авлаа.`);
-        res.status(200).json({ student: student, userPreferences: userpreferences, department: department, major: major });
+        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, major: major });
       } else {
         res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
       }
@@ -99,17 +99,17 @@ app.post('/Save/User/Preferences', async (req, res) => {
   }
 
   try {
-    const authuserpreferences = await prisma.authuserpreferences.update({
+    const userpreferences = await prisma.userpreferences.update({
       where:  { user_id: userId },
       data: {
         app_theme: appTheme
       },
     });
 
-    console.log(authuserpreferences);
-    if (authuserpreferences) {
+    console.log(userpreferences);
+    if (userpreferences) {
         console.log(`Мэдээллийг амжилттай хадгаллаа.`);
-        res.status(200).json({ authuserpreferences: authuserpreferences});
+        res.status(200).json({ userpreferences: userpreferences});
       } else {
         res.status(401).json({ error: 'Мэдээлэл хадгалсангүй!' });
       }

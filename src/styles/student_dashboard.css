@@ -171,7 +171,7 @@ body.dark .dashboard-courses-card {
   min-width: 200px;
   height: auto;
   aspect-ratio: 1 / 1;
-  background-color: rgb(217, 240, 246);
+  background-color: rgb(100, 181, 246);
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   border-radius: 9px;
   padding: 1rem;
@@ -188,14 +188,13 @@ body.dark .dashboard-courses-card:hover {
 }
 
 body.light .dashboard-courses-card {
-  
   flex: 1 1 calc(33.33% - 2rem);
   max-width: 250px; 
   min-width: 200px;
   height: auto;
   aspect-ratio: 1 / 1;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
-  border-radius: 9px;
+  border-radius: 29px;
   padding: 1rem;
   transition: background-color 0.3s ease-in-out;
   background-color: white;
@@ -520,7 +519,5 @@ button.sidebar-link.dark {
 .visible {
   opacity: 1;
 }
-* {
-  border: 1px solid red;
-}
+
 

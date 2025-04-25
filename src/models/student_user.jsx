@@ -75,6 +75,31 @@ class StudentUser {
     };
   }
 
+  static fromJsonButInApp(json) {
+    try {
+      return new StudentUser({
+        studentId: json.studentId ?? 0,
+        userId: json.userId ?? 0,
+        studentClubId: json.studentClubId ?? null,
+        additionalRoles: json.additionalRoles ?? 'none',
+        studentCode: json.studentCode ?? '',
+        studentEmail: json.studentEmail ?? '',
+        studentFile: json.studentFile ? { ...json.studentFile } : {},
+        enrollmentNumber: json.enrollmentNumber ?? '',
+        enrollmentYear: json.enrollmentYear ?? '',
+        yearClassification: json.yearClassification ?? '',
+        isActive: json.isActive ?? true,
+        currentAcademicDegree: json.currentAcademicDegree ?? '',
+        academicDegreeFile: json.academicDegreeFile ?? null,
+        majorId: json.majorId ?? 0,
+        createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
+      });
+    } catch (error) {
+      console.error('Error parsing StudentUser from JSON string:', error);
+      return null; // Handle errors gracefully
+    }
+  }
+
   static fromJson(source) {
     try {
       const map = JSON.parse(source);

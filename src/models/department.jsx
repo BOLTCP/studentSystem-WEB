@@ -52,6 +52,24 @@ class Department {
     };
   }
 
+  static fromJsonButInApp(json) {
+    try {
+      return new Department({
+        departmentId: json.departmentId ?? 0,
+        departmentName: json.departmentName ?? '',
+        departmentCode: json.departmentCode ?? '',
+        departmentEmail: json.departmentEmail ?? '',
+        numberOfStaff: parseInt(json.numberOfStaff, 10) || 0,
+        logo: json.logo ?? '',
+        createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
+        departmentOfEduId: json.departmentOfEduId ?? 0,
+      });
+    } catch (error) {
+      console.error('Error parsing Department from JSON string:', error);
+      return null; // Handle errors gracefully
+    }
+  }
+
   toString() {
     return `Department(departmentId: ${this.departmentId}, departmentName: ${this.departmentName}, departmentCode: ${this.departmentCode}, departmentEmail: ${this.departmentEmail}, numberOfStaff: ${this.numberOfStaff}, logo: ${this.logo}, createdAt: ${this.createdAt}, departmentOfEduId: ${this.departmentOfEduId})`;
   }

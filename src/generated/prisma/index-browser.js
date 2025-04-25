@@ -818,12 +818,14 @@ exports.course_type_enum = exports.$Enums.course_type_enum = {
   bachelors: 'bachelors',
   masters: 'masters',
   doctors: 'doctors',
-  professors: 'professors'
+  professors: 'professors',
+  selective: 'selective',
+  mandatory: 'mandatory'
 };
 
 exports.course_season_type_enum = exports.$Enums.course_season_type_enum = {
-  AutumWinterSpringSummer: 'AutumWinterSpringSummer',
-  AutumWinterSummer: 'AutumWinterSummer',
+  AutumnWinterSpringSummer: 'AutumnWinterSpringSummer',
+  AutumnWinterSummer: 'AutumnWinterSummer',
   Autumn: 'Autumn',
   Spring: 'Spring',
   AutumnSpring: 'AutumnSpring',

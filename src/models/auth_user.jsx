@@ -148,8 +148,111 @@ class AuthUser {
     }
   }
 
+  static toJson(authUser) {
+    return {
+      user_id: authUser.userId,
+      login_name: authUser.loginName,
+      password_hash: authUser.passwordHash,
+      profile_picture: authUser.profilePicture,
+      registry_number: authUser.registryNumber,
+      family_tree_name: authUser.familyTreeName,
+      fname: authUser.fname,
+      lname: authUser.lname,
+      birthday: authUser.birthday ? authUser.birthday.toISOString() : null, // Convert Date to ISO string
+      gender: authUser.gender,
+      citizenship: authUser.citizenship,
+      state_city: authUser.stateCity,
+      town_district: authUser.townDistrict,
+      valid_address: authUser.validAddress,
+      state_city_living: authUser.stateCityLiving,
+      town_district_living: authUser.townDistrictLiving,
+      valid_address_living: authUser.validAddressLiving,
+      postal_address: authUser.postalAddress,
+      home_phone_number: authUser.homePhoneNumber,
+      phone_number: authUser.phoneNumber,
+      phone_number_emergency: authUser.phoneNumberEmergency,
+      country: authUser.country,
+      ethnicity: authUser.ethnicity,
+      social_background: authUser.socialBackground,
+      state_city_of_birth: authUser.stateCityOfBirth,
+      town_district_of_birth: authUser.townDistrictOfBirth,
+      place_of_birth: authUser.placeOfBirth,
+      education: authUser.education,
+      current_academic_degree: authUser.currentAcademicDegree,
+      profession: authUser.profession,
+      profession_certification: authUser.professionCertification,
+      f_passport_number: authUser.fPassportNumber,
+      married: authUser.married,
+      military_service: authUser.militaryService,
+      pensions_established: authUser.pensionsEstablished,
+      additional_notes: authUser.additionalNotes,
+      blood_type: authUser.bloodType,
+      drivers_certificate: authUser.driversCertificate,
+      drivers_certificate_number: authUser.driversCertificateNumber,
+      disabled: authUser.disabled,
+      user_role: authUser.userRole,
+      is_active: authUser.isActive,
+      email: authUser.email,
+      created_at: authUser.createdAt ? authUser.createdAt.toISOString() : null, // Convert Date to ISO string
+    };
+  }
+
+  static fromJsonButInApp(json) {
+    try {
+      return new AuthUser({
+        userId: json.userId ?? 0,
+        loginName: json.loginName ?? '',
+        passwordHash: json.passwordHash ?? '',
+        profilePicture: json.profilePicture ?? '',
+        registryNumber: json.registryNumber ?? '',
+        familyTreeName: json.familyTreeName ?? '',
+        fname: json.fname ?? '',
+        lname: json.lname ?? '',
+        birthday: json.birthday ? new Date(json.birthday) : null, // Convert ISO string back to Date
+        gender: json.gender ?? '',
+        citizenship: json.citizenship ?? '',
+        stateCity: json.stateCity ?? '',
+        townDistrict: json.townDistrict ?? '',
+        validAddress: json.validAddress ?? '',
+        stateCityLiving: json.stateCityLiving ?? '',
+        townDistrictLiving: json.townDistrictLiving ?? '',
+        validAddressLiving: json.validAddressLiving ?? '',
+        postalAddress: json.postalAddress ?? '',
+        homePhoneNumber: json.homePhoneNumber ?? '',
+        phoneNumber: json.phoneNumber ?? '',
+        phoneNumberEmergency: json.phoneNumberEmergency ?? '',
+        country: json.country ?? '',
+        ethnicity: json.ethnicity ?? '',
+        socialBackground: json.socialBackground ?? '',
+        stateCityOfBirth: json.stateCityOfBirth ?? '',
+        townDistrictOfBirth: json.townDistrictOfBirth ?? '',
+        placeOfBirth: json.placeOfBirth ?? '',
+        education: json.education ?? '',
+        currentAcademicDegree: json.currentAcademicDegree ?? '',
+        profession: json.profession ?? '',
+        professionCertification: json.professionCertification ?? '',
+        fPassportNumber: json.fPassportNumber ?? '',
+        married: json.married ?? '',
+        militaryService: json.militaryService ?? '',
+        pensionsEstablished: json.pensionsEstablished ?? '',
+        additionalNotes: json.additionalNotes ?? '',
+        bloodType: json.bloodType ?? '',
+        driversCertificate: json.driversCertificate ?? '',
+        driversCertificateNumber: json.driversCertificateNumber ?? '',
+        disabled: json.disabled ?? '',
+        userRole: json.userRole ?? '',
+        isActive: json.isActive ?? true,
+        email: json.email ?? '',
+        createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
+      });
+    } catch (error) {
+      console.error('Error parsing AuthUser from JSON string:', error);
+      return null; // Handle errors gracefully
+    }
+  }
+
   toString() {
-    return `AuthUser(user_role: ${this.userRole})`;
+    return `AuthUser(userId: ${this.userId}, loginName: ${this.loginName}, userRole: ${this.userRole}, isActive: ${this.isActive})`;
   }
 }
 

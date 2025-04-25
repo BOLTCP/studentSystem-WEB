@@ -118,3 +118,30 @@ app.post('/Save/User/Preferences', async (req, res) => {
     res.status(500).json({ error: 'Operation Failed' });
   }
 });
+
+//src/component/university/curriculum.jsx
+app.post('/Get/Majors/Curriculum', async (req, res) => {
+  const { majorId } = req.body;
+  console.log("Received major_id:", majorId);
+
+  if (!majorId) {
+    return res.status(400).json({ message: 'Major ID is required' });
+  }
+
+  try {
+    const courses = await prisma.courses.findMany({
+      where: { major_id: majorId }, 
+    });
+
+    if (courses) {
+      console.log(courses.length);
+      console.log(`Мэдээллийг амжилттай авлаа.`);
+      res.status(200).json({ courses: courses });
+      } else {
+        res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
+      }
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});

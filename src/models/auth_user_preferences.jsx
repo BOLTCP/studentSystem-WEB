@@ -24,6 +24,19 @@ class UserPreferences {
     }
   }
 
+  static fromJsonButInApp(json) {
+    try {
+      return new UserPreferences({
+        userPreferencesId: json.userPreferencesId,
+        appTheme: json.appTheme,
+        userId: json.userId
+      });
+    } catch (error) {
+      console.error('Error parsing UserPreferences from JSON string:', error);
+      return null; 
+    }
+  }
+
   toString() {
     return `UserPreferences(user_role: ${this.userRole})`;
   }

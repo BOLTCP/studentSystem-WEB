@@ -106,6 +106,36 @@ class MajorClass {
     };
   }
 
+  static fromJsonButInApp(json) {
+    try {
+      return new MajorClass({
+        majorId: json.majorId ?? 0,
+        majorName: json.majorName ?? '',
+        majorsYear: json.majorsYear ? new Date(json.majorsYear) : null, // Convert ISO string back to Date
+        majorsType: json.majorsType ?? '',
+        creditUnitRate: parseFloat(json.creditUnitRate) || 0.0,
+        majorTuition: parseFloat(json.majorTuition) || 0.0,
+        academicDegree: json.academicDegree ?? '',
+        totalYears: json.totalYears ?? 0,
+        totalCreditsPerYear: json.totalCreditsPerYear ?? 0,
+        departmentsOfEducationiD: json.departmentsOfEducationiD ?? 0,
+        createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
+        exam1: parseFloat(json.exam1) || 0.0,
+        exam2: parseFloat(json.exam2) || 0.0,
+        majorsDescription: json.majorsDescription ?? '',
+        descriptionBrief: json.descriptionBrief ?? '',
+        qualifications: json.qualifications ? { ...json.qualifications } : null,
+        qualifications1: json.qualifications1 ?? '',
+        qualifications2: json.qualifications2 ?? '',
+        signUps: json.signUps ?? null,
+        departmentId: json.departmentId ?? 0,
+      });
+    } catch (error) {
+      console.error('Error parsing MajorClass from JSON string:', error);
+      return null; // Handle errors gracefully
+    }
+  }
+
   toString() {
     return `Major: ${this.majorName}, Year: ${this.majorsYear}, Type: ${this.majorsType}, Credit Unit Rate: ${this.creditUnitRate}, Major Tuition: ${this.majorTuition}, Academic Degree: ${this.academicDegree}, Total Years: ${this.totalYears}, Total Credits per Year: ${this.totalCreditsPerYear}, Created At: ${this.createdAt}, Exam1: ${this.exam1}, Exam2: ${this.exam2}, Description: ${this.majorsDescription}, Brief Description: ${this.descriptionBrief}, Qualifications: ${JSON.stringify(this.qualifications)}, Qualifications1: ${this.qualifications1}, Qualifications2: ${this.qualifications2}, DepartmentId: ${this.departmentId}`;
   }

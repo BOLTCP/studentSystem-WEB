@@ -1,7 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
   output        = "../src/generated/prisma"
-  binaryTargets = ["native", "windows"]
+  binaryTargets = ["native", "darwin", "windows"]
 }
 
 datasource db {
@@ -864,8 +864,8 @@ enum course_season_type_enum {
   // Хавар @map("Хавар")
   // Намар, Хавар @map("Намар, Хавар")
   // Өвөл, Хавар, Зун @map("Өвөл, Хавар, Зун")
-  AutumWinterSpringSummer
-  AutumWinterSummer
+  AutumnWinterSpringSummer
+  AutumnWinterSummer
   Autumn
   Spring
   AutumnSpring
@@ -877,6 +877,8 @@ enum course_type_enum {
   masters
   doctors
   professors
+  selective
+  mandatory
   // Заавал судлах @map("Заавал судлах")
   // Сонгон судлах @map("Сонгон судлах")
 }

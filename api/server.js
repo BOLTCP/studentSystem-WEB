@@ -131,8 +131,13 @@ app.post('/Get/Majors/Curriculum', async (req, res) => {
   try {
     const courses = await prisma.courses.findMany({
       where: { major_id: majorId }, 
+      orderBy: [
+        { course_year: 'asc' }, 
+        { course_type: 'asc' },
+        { course_code: 'asc'}
+      ]
     });
-
+    console.log(courses);
     if (courses) {
       console.log(courses.length);
       console.log(`Мэдээллийг амжилттай авлаа.`);

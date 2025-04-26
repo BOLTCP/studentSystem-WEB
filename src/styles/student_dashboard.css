@@ -171,20 +171,20 @@ body.dark .dashboard-courses-card {
   min-width: 200px;
   height: auto;
   aspect-ratio: 1 / 1;
-  background-color: rgb(100, 181, 246);
+  background-color: #666666;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   border-radius: 9px;
   padding: 1rem;
-  border: 3px solid rgb(28, 15, 237);
+  border: 3px solid white;
   transition: background-color 0.3s ease-in-out;
 }
 
 body.dark .dashboard-courses-card:hover {
-  background-color: rgb(125, 223, 247);
+  background-color: #008F8F;
   transform: translateY(-4px);
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0s;
 }
 
 body.light .dashboard-courses-card {
@@ -206,8 +206,13 @@ body.light .dashboard-courses-card:hover {
   border-color: #00bcd4;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   cursor: pointer;
+  background-color: #e4e4e4;
   transform: translateY(-4px);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0s;
+}
+
+body.light .dashboard-courses-card-label {
+  color: black;
 }
 
 .sidebar-header {
@@ -469,13 +474,13 @@ button.sidebar-link.dark {
 }
 
 .dashboard-courses-card-label {
-  color: #333;
+  color: white;
   font-weight: 900;
   font-size: 1rem;
 }
 
 .dashboard-courses-card-value {
-  color: #333;
+  color: white;
   font-size: 1rem;
 }
 

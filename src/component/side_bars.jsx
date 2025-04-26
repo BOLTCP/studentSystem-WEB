@@ -21,14 +21,15 @@ export const RenderSidebar = ({ user }) => {
       : 'dark'
     }`
   );
-  const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
+  const [themeIcon, setThemeIcon] = useState();
+
   const navigate = useNavigate();
 
   useEffect(() => {
     if (theme === 'light') {
-      setThemeIcon("/src/assets/lightMode.png");
-    } else {
       setThemeIcon("/src/assets/darkMode.png");
+    } else {
+      setThemeIcon("/src/assets/lightMode.png");
     }
     document.body.className = theme;
   }, [theme]);
@@ -57,6 +58,12 @@ export const RenderSidebar = ({ user }) => {
         );
   
         if (response.status === 200) {
+          let parsedUser = JSON.parse(localStorage.getItem('userDetails'));
+          parsedUser.userpreferences.appTheme = selectedTheme === 'light' 
+                                                                        ? 'Light_Mode'
+                                                                        : 'Dark_Mode';
+          localStorage.setItem('userDetails', JSON.stringify(parsedUser));
+          
           console.log('User preferences saved!', response.data);
         } else {
           console.error('Error saving user preferences :', response.status, response.data);
@@ -279,7 +286,7 @@ export const RenderSidebar = ({ user }) => {
             alt="LightModeIcon"
             className={`sidebar-theme-icon ${theme}`}
             /> 
-            {theme === 'light' ? "Light Mode" : "Dark Mode"}
+            {theme === 'light' ? "Dark Mode" : "Ligth Mode"}
           </button>
         </li>
         

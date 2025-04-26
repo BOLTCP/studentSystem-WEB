@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/profile_screen.css';
+import UserDetailsUtil from '../utils/userDetails_util';
 //import '../styles/student_dashboard.css';
 import { RenderSidebar, RenderSidebarRight } from './side_bars';
 import UserDetails from '../models/user_details';
@@ -9,7 +10,7 @@ import moment from 'moment';
 
 const ProfileScreen = ( ) => {
     const location = useLocation();
-    const userDetails = new UserDetails(location.state?.userDetails);
+    const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 

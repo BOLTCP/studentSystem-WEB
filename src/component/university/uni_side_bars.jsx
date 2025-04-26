@@ -17,7 +17,7 @@ export const RenderSidebar = () => {
       : 'dark'
     }`
   );
-  const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
+  const [themeIcon, setThemeIcon] = useState();
   const navigate = useNavigate();
 
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -28,9 +28,9 @@ export const RenderSidebar = () => {
 
   useEffect(() => {
     if (theme === 'light') {
-      setThemeIcon("/src/assets/lightMode.png");
-    } else {
       setThemeIcon("/src/assets/darkMode.png");
+    } else {
+      setThemeIcon("/src/assets/lightMode.png");
     }
     document.body.className = theme;
   }, [theme]);
@@ -287,7 +287,7 @@ export const RenderSidebar = () => {
             alt="LightModeIcon"
             className={`sidebar-theme-icon ${theme}`}
             /> 
-            {theme === 'light' ? "Light Mode" : "Dark Mode"}
+            {theme === 'light' ? "Dark Mode" : "Ligth Mode"}
           </button>
         </li>
         

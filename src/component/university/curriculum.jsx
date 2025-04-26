@@ -11,8 +11,10 @@ import moment from 'moment';
 const Curriculum = ({ user }) => {
   const location = useLocation();
   const userDetails = new UserDetails(user);
-	console.log(userDetails);
 	const [curriculum, setCurriculum] = useState(null);
+  const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
+  let courseYear = null;
+  const [maxRows, setMaxRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,11 +35,9 @@ const Curriculum = ({ user }) => {
 
 						if (response.status === 200) {
 							console.log('Curriculum data fetched!', response.data);
-							const pizda = response.data.courses[0];
-							console.log(pizda);
 							const courses = response.data.courses.map(course => 
 								Courses.fromJsonCourse(course));
-
+              setMaxRows(courses.length);
 							setCurriculum(courses);
 						} else {
 							console.log('Error fetching curriculum:', response.status, response.data);
@@ -55,49 +55,157 @@ const Curriculum = ({ user }) => {
 		fetchCurriculum();
 	}, []);
 
+  const getTotalCredits = (i) => {
+
+    courseYear = i === 0 ? '1-р курс' 
+                                : i === 1 ? '2-р курс' 
+                                : i === 2 ? '3-р курс' 
+                                : i === 3 ? '4-р курс' 
+                                : i === 4 ? '5-р курс' 
+                                : '6-р курс';
+    const totalCreditOfYear = curriculum
+    .filter(course => course.courseYear === courseYear
+      && course.courseType === 'mandatory') 
+    .reduce((sum, course) => sum + parseInt(course.totalCredits), 0);
+    
+    return totalCreditOfYear;
+  }
+
+  const getTotalCreditsSelective = (i) => { 
+
+    courseYear = i === 0 ? '1-р курс' 
+                                : i === 1 ? '2-р курс' 
+                                : i === 2 ? '3-р курс' 
+                                : i === 3 ? '4-р курс' 
+                                : i === 4 ? '5-р курс' 
+                                : '6-р курс';
+    const totalCreditOfYearSelective = curriculum.filter(course => course.courseYear === courseYear
+      && course.courseType === 'selective')
+      .reduce((sum, course) => sum + parseInt(course.totalCredits), 0);
+      
+    return totalCreditOfYearSelective;
+  };
+
 	if (!userDetails) {
 			return <div className="no-data">Хэрэглэгч олдсонгүй.</div>;
 	}
-
   
-
-
 	const { student, major, department } = userDetails;
 
 	if ( curriculum ) {
 		return (
 			<>
 				<div className="curriculum-container">
-					<div className="curriculum-table">
-						<div className="table-header">
-						lalar
-						</div>
-					</div>
-					<div className="curriculum-table">
-						<div className="table-header">
-							lalar
-						</div>
-					</div>
-					<div className="curriculum-table">
-						<div className="table-header">
-						lalar
-						</div>
-					</div>
-					<div className="curriculum-table">
-						<div className="table-header">
-							lalar
-						</div>
-					</div>
-					<div className="curriculum-table">
-						<div className="table-header">
-						lalar
-						</div>
-					</div>
-					<div className="curriculum-table">
-						<div className="table-header">
-							lalar
-						</div>
-					</div>
+          {Array.from({ length: majorYears }, (_, i) => (
+            <div key={i} className="tables-container">
+              <div className="curriculum-table">
+                <table>
+                  <thead>
+                      <tr className="table-header">
+                        <th>№</th>
+                        <th>Хичээлийн нэр</th>
+                        <th>Код</th>
+                        <th>Кредит</th>
+                        <th>Дүн</th>
+                        <th>Үсгэн үнэлгээ</th>
+                        <th>Улирал</th>
+                      </tr>
+                      
+                      <tr className="sub-header-row">
+                        <th colSpan="3">
+                          {i === 0 
+                                  ? 
+                                  "1-р курс"
+                                  : i === 1
+                                  ?
+                                  "2-р курс"
+                                  : i === 2
+                                  ?
+                                  "3-р курс"
+                                  : i === 3
+                                  ?
+                                  "4-р курс"
+                                  : i === 4
+                                  ?
+                                  "5-р курс"
+                                  : '6-р курс'
+                                  }
+                            &nbsp; Заавал судлах хичээл
+                        </th>
+                        <th colSpan="1">
+                          {getTotalCredits(i)}
+                        </th>
+                        <th></th>
+                        <th colSpan="2"></th>
+                      </tr>
+                  </thead>
+                          
+                  <tbody>
+
+                    {curriculum
+                      .filter(course => course.courseYear === courseYear
+                                && course.courseType === 'mandatory')
+                      .map((course, index) => (
+                        <tr key={index} className="table-row">
+                          <td>{index + 1}</td>
+                          <td>{course.courseName}</td>
+                          <td>{course.courseCode}</td>
+                          <td>{course.totalCredits}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      ))}
+
+                    <tr className="sub-header-row">
+                      <th colSpan="3">
+                        {i === 0 
+                                ? 
+                                "1-р курс"
+                                : i === 1
+                                ?
+                                "2-р курс"
+                                : i === 2
+                                ?
+                                "3-р курс"
+                                : i === 3
+                                ?
+                                "4-р курс"
+                                : i === 4
+                                ?
+                                "5-р курс"
+                                : '6-р курс'
+                                }
+                          &nbsp; Сонгон судлах хичээл
+                      </th>
+                      <th colSpan="1">
+                        {getTotalCreditsSelective(i)}
+                      </th>
+                      <th></th>
+                      <th colSpan="2"></th>
+                    </tr>
+
+                    {curriculum
+                    .filter(course => course.courseYear === courseYear 
+                              && course.courseType === 'selective')
+                    .map((course, index) => (
+                        <tr key={index} className="table-row">
+                          <td>{index + 1}</td>
+                          <td>{course.courseName}</td>
+                          <td>{course.courseCode}</td>
+                          <td>{course.totalCredits}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      ))}
+                      
+                  </tbody>
+                  
+                </table>
+              </div>
+            </div>
+          ))}
 				</div>
 			</>
 		);

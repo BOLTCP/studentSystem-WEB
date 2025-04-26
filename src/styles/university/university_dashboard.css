@@ -275,6 +275,10 @@ body.dark .sidebar-right-classroom-icon {
   filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }
 
+body.dark .dashboard-courses-picture {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
 button.sidebar-link.light {
   color: #2e3035; 
 }
@@ -436,6 +440,7 @@ button.sidebar-link.dark {
 }
 
 .dashboard-body {
+  height: 100%;
   grid-template-columns: auto;
 }
 
@@ -453,7 +458,7 @@ button.sidebar-link.dark {
 .dashboard-courses-picture {
   width: 100%;
   height: 50%;
-  border: 1px solid #e0e0e0;
+  border: none;
 }
 
 .courses-picture {
@@ -463,6 +468,7 @@ button.sidebar-link.dark {
   object-fit: cover;
 }
 
+/*
 .dashboard-courses-card-label {
   color: #333;
   font-weight: 900;
@@ -473,6 +479,7 @@ button.sidebar-link.dark {
   color: #333;
   font-size: 1rem;
 }
+*/
 
 /* Loading, Error, and No Data Containers */
 .loading-container,

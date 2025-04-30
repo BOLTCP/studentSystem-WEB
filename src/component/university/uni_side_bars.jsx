@@ -18,6 +18,7 @@ export const RenderSidebar = () => {
     }`
   );
   const [themeIcon, setThemeIcon] = useState();
+  const [selectedSubmenu, setSelectedSubmenu] = useState(null);
   const navigate = useNavigate();
 
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -164,12 +165,20 @@ export const RenderSidebar = () => {
             <ul className="dropdown-menu">
               {/* Submenu items */}
               <li className="dropdown-item">
-                <button className="dashboard-submenu-button" onClick={() => navigate('/university', { state: { condRender: 0 } })}>
+                <button className={`dashboard-submenu-button ${selectedSubmenu === 0 ? 'active' : ''}`} 
+                        onClick={() => {
+                          setSelectedSubmenu(1);
+                          navigate('/university', { state: { condRender: 0 } })
+                          }}>
                   Сургалтын төлөвлөгөө
                 </button>
               </li>
               <li className="dropdown-item">
-                <button className="dashboard-submenu-button" onClick={() => navigate('/university', { state: { condRender: 1 } })}>
+                <button className={`dashboard-submenu-button ${selectedSubmenu === 0 ? 'active' : ''}`} 
+                        onClick={() => {
+                          setSelectedSubmenu(1);
+                          navigate('/university', { state: { condRender: 1 } })
+                          }}>
                   Санал болгох төлөвлөгөө
                 </button>
               </li>

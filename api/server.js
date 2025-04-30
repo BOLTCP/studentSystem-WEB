@@ -3,6 +3,8 @@ import express from 'express';
 import { PrismaClient } from '../src/generated/prisma/index.js';
 import cors from 'cors'
 import bcrypt from 'bcrypt';
+import pkg from 'prop-types';
+const { array } = pkg;
 
 const prisma = new PrismaClient();
 const app = express();
@@ -76,7 +78,7 @@ app.post('/User/Login/Student', async (req, res) => {
     const major = await prisma.major.findUnique({
       where: { major_id: student.major_id },
     });
-    console.log(student, department, major, userpreferences );
+
     if (student) {
         console.log(`Мэдээллийг амжилттай авлаа.`);
         res.status(200).json({ student: student, userpreferences: userpreferences, department: department, major: major });
@@ -137,9 +139,7 @@ app.post('/Get/Majors/Curriculum', async (req, res) => {
         { course_code: 'asc'}
       ]
     });
-    console.log(courses);
     if (courses) {
-      console.log(courses.length);
       console.log(`Мэдээллийг амжилттай авлаа.`);
       res.status(200).json({ courses: courses });
       } else {
@@ -166,12 +166,78 @@ app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
       where: { major_id: majorId },
     });
 
-    if (!recommended_courses) {
+    if (recommended_courses.recommended_curriculum === null) {
+      console.log('Хөтөлбөрт санал болгох төлөвлөгөө байхгүй')
       return res.status(404).json({ error: 'Recommended courses not found' });
     } else {
-      const recommended_curricuum = recommended_courses.recommended_curriculum;
-      console.log(recommended_curricuum);
-    }  
+      const recommended_curriculum = recommended_courses.recommended_curriculum;
+
+      const firstYearCourses = recommended_curriculum['first_year'];
+      const secondYearCourses = recommended_curriculum['second_year'];
+
+      let firstYearCoursesOfMajor = new Set();
+      for (let i = 0;  i < firstYearCourses.length; i++) {
+        let courseQuery = await prisma.courses.findUnique({
+          where: { course_id: firstYearCourses[i] }
+        });
+        firstYearCoursesOfMajor.add(courseQuery);
+      }
+
+      let secondYearCoursesOfMajor = new Set();
+      for (let i = 0;  i < secondYearCourses.length; i++) {
+        let courseQuery = await prisma.courses.findUnique({
+          where: { course_id: secondYearCourses[i] },
+        })
+        if (courseQuery) {
+          secondYearCoursesOfMajor.add(courseQuery);
+        }
+      }
+
+      let thirdYearCoursesOfMajor = new Set();
+      if (recommended_curriculum['third_year']) {
+        const thirdYearCourses = recommended_curriculum['third_year'];
+        for (let i = 0;  i < thirdYearCourses.length; i++) {
+          let courseQuery = await prisma.courses.findUnique({
+            where: { course_id: thirdYearCourses[i] },
+          })
+          if (courseQuery) {
+            thirdYearCoursesOfMajor.add(courseQuery);
+          }
+        }
+      }
+
+      let fourthYearCoursesOfMajor = new Set();
+      if (recommended_curriculum['fourth_year']) {
+        const fourthYearCourses = recommended_curriculum['fourth_year'];
+        for (let i = 0;  i < fourthYearCourses.length; i++) {
+          let courseQuery = await prisma.courses.findUnique({
+            where: { course_id: fourthYearCourses[i] },
+          })
+          if (courseQuery) {
+            fourthYearCoursesOfMajor.add(courseQuery);
+          }
+        }
+      }
+      
+      const firstYearCoursesArray = Array.from(firstYearCoursesOfMajor);
+      const secondYearCoursesArray = Array.from(secondYearCoursesOfMajor);
+      const thirdYearCoursesArray = Array.from(thirdYearCoursesOfMajor);
+      const fourthYearCoursesArray = Array.from(fourthYearCoursesOfMajor);
+
+      return res.status(200).json({ message: 'Санал болгох хөтөлбөрийг амжилттай татлаа!',
+                                    recommended_curriculum: {
+                                      first: firstYearCoursesArray,
+                                      second: secondYearCoursesArray,
+                                      third: thirdYearCoursesArray !== undefined
+                                      ? thirdYearCoursesArray
+                                      : null,
+                                      fourth: fourthYearCoursesArray !== undefined
+                                      ? fourthYearCoursesArray
+                                      : null,
+                                    }
+      })
+
+    }
   } catch (error) {
     console.error('Server error:', error);
     res.status(500).json({ error: 'Server failed' });

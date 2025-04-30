@@ -11,7 +11,6 @@ import '../profile_screen';
 const University = () => {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
-  console.log(userDetails.userpreferences);
   const [loading, setLoading] = useState(true);
   const condRender = location.state?.condRender;
   
@@ -23,8 +22,10 @@ const University = () => {
       setCondRender(location.state?.condRender);
     }
     
-  }, []);
+  }, [location.state?.condRender]);
+  
   console.log(condRender);
+
   return (
     <div className="dashboard-container-layout">
       <nav className="dashboard-nav">

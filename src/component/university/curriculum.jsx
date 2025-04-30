@@ -34,11 +34,11 @@ const Curriculum = ({ user }) => {
 						});
 
 						if (response.status === 200) {
-							console.log('Curriculum data fetched!', response.data);
 							const courses = response.data.courses.map(course => 
 								Courses.fromJsonCourse(course));
               setMaxRows(courses.length);
 							setCurriculum(courses);
+              console.log(courses);
 						} else {
 							console.log('Error fetching curriculum:', response.status, response.data);
 							setError('Failed to fetch curriculum.');

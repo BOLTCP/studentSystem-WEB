@@ -22,6 +22,8 @@ class MajorClass {
     qualifications2,
     signUps,
     departmentId,
+    recommendedCurriculum,
+    recommendedCurriculum1,
   }) {
     this.majorId = majorId;
     this.majorName = majorName;
@@ -43,6 +45,8 @@ class MajorClass {
     this.qualifications2 = qualifications2 || '';
     this.signUps = signUps;
     this.departmentId = departmentId;
+    this.recommendedCurriculum = recommendedCurriculum;
+    this.recommendedCurriculum1 = recommendedCurriculum1;
   }
 
   static fromJsonMajor(json) {
@@ -74,6 +78,8 @@ class MajorClass {
         qualifications2: json.qualifications2,
         signUps: json.sign_ups,
         departmentId: json.department_id,
+        recommendedCurriculum: json.recommended_curriculum,
+        recommendedCurriculum1: json.recommended_curriculum1,
       });
     } catch (error) {
       console.error('Error parsing Major from JSON:', error);
@@ -103,6 +109,8 @@ class MajorClass {
       qualifications2: this.qualifications2,
       sign_ups: this.signUps,
       department_id: this.departmentId,
+      recommended_curriculum: this.recommendedCurriculum,
+      recommended_curriculum1: this.recommendedCurriculum1,
     };
   }
 
@@ -129,6 +137,8 @@ class MajorClass {
         qualifications2: json.qualifications2 ?? '',
         signUps: json.signUps ?? null,
         departmentId: json.departmentId ?? 0,
+        recommendedCurriculum: json.recommendedCurriculum,
+        recommendedCurriculum1: json.recommendedCurriculum1,
       });
     } catch (error) {
       console.error('Error parsing MajorClass from JSON string:', error);
@@ -137,7 +147,19 @@ class MajorClass {
   }
 
   toString() {
-    return `Major: ${this.majorName}, Year: ${this.majorsYear}, Type: ${this.majorsType}, Credit Unit Rate: ${this.creditUnitRate}, Major Tuition: ${this.majorTuition}, Academic Degree: ${this.academicDegree}, Total Years: ${this.totalYears}, Total Credits per Year: ${this.totalCreditsPerYear}, Created At: ${this.createdAt}, Exam1: ${this.exam1}, Exam2: ${this.exam2}, Description: ${this.majorsDescription}, Brief Description: ${this.descriptionBrief}, Qualifications: ${JSON.stringify(this.qualifications)}, Qualifications1: ${this.qualifications1}, Qualifications2: ${this.qualifications2}, DepartmentId: ${this.departmentId}`;
+    return `Major: ${this.majorName}, Year: ${this.majorsYear}, 
+    Type: ${this.majorsType}, Credit Unit Rate: ${this.creditUnitRate},
+    Major Tuition: ${this.majorTuition}, Academic Degree: 
+    ${this.academicDegree}, Total Years: ${this.totalYears},
+    Total Credits per Year: ${this.totalCreditsPerYear}, 
+    Created At: ${this.createdAt}, Exam1: ${this.exam1}, 
+    Exam2: ${this.exam2}, Description: ${this.majorsDescription},
+    Brief Description: ${this.descriptionBrief}, Qualifications: 
+    ${JSON.stringify(this.qualifications)}, Qualifications1: 
+    ${this.qualifications1}, Qualifications2: ${this.qualifications2}, 
+    DepartmentId: ${this.departmentId}
+    recommendedCurriculum: ${this.recommendedCurriculum}
+    recommendedCurriculum1: ${this.recommendedCurriculum1}`;
   }
 }
 

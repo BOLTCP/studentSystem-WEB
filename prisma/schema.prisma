@@ -354,6 +354,8 @@ model major {
   invitations                                       invitations[]
   department_major_department_idTodepartment        department         @relation("major_department_idTodepartment", fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department_id")
   department_major_department_of_edu_idTodepartment department         @relation("major_department_of_edu_idTodepartment", fields: [department_of_edu_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")
+  recommended_curriculum                            Json?                 
+  recommended_curriculum1                           Json?
   student                                           student[]
   studentclubs                                      studentclubs[]
   surveys                                           surveys[]

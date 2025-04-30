@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Curriculum from './curriculum';
+import RecommendedCurriculum from './recommended_curriculum';
 import { RenderSidebar, RenderSidebarRight } from './uni_side_bars';
 import UserDetailsUtil from '../../utils/userDetails_util';
 import '../../styles/university/university_dashboard.css';
@@ -40,6 +41,9 @@ const University = () => {
             condRender === 0 
             ?
             <Curriculum user = {userDetails} />
+            : condRender === 1 
+            ?
+            <RecommendedCurriculum user = {userDetails} />
             : null
           }
         </div>

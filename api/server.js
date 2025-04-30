@@ -146,7 +146,35 @@ app.post('/Get/Majors/Curriculum', async (req, res) => {
         res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
       }
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Server failed' });
   }
+});
+
+//src/component/university/recommended_curriculum.jsx
+app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
+  const { majorId } = req.body;
+  console.log('Received major_id:', majorId);
+
+  if (!majorId) {
+    return res.status(400).json({ message: 'Major ID is required' });
+  }
+
+  try {
+
+    const recommended_courses = await prisma.major.findUnique({
+      where: { major_id: majorId },
+    });
+
+    if (!recommended_courses) {
+      return res.status(404).json({ error: 'Recommended courses not found' });
+    } else {
+      const recommended_curricuum = recommended_courses.recommended_curriculum;
+      console.log(recommended_curricuum);
+    }  
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Server failed' });
+  }
+
 });

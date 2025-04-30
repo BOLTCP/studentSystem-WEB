@@ -376,7 +376,9 @@ exports.Prisma.MajorScalarFieldEnum = {
   qualifications1: 'qualifications1',
   qualifications2: 'qualifications2',
   sign_ups: 'sign_ups',
-  department_id: 'department_id'
+  department_id: 'department_id',
+  recommended_curriculum: 'recommended_curriculum',
+  recommended_curriculum1: 'recommended_curriculum1'
 };
 
 exports.Prisma.NotificationstudentsScalarFieldEnum = {

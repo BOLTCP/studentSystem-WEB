@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/university/personal_curriculum.css';
 import axios from 'axios';
@@ -9,7 +9,9 @@ import UserDetails from '../../models/user_details';
 const PersonalCurriculum = ({ user }) => {
   const location = useLocation();
   const userDetails = new UserDetails(user);
-  const [curriculum, setCurriculum] = useState(null);
+  const [isCurriculumClosed, setIsCurriculumClosed] = useState(userDetails.student.isCurriculumClosed);
+  const hasFetched = useRef(false);
+  const [studentsCurriculum, setStudentsCurriculum] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   const [firstYear, setFirstYear] = useState();
   const [secondYear, setSecondYear] = useState(null);
@@ -19,10 +21,15 @@ const PersonalCurriculum = ({ user }) => {
   const [maxRows, setMaxRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
 
     const fetchPersonalCurriculum = async () => {
+      
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+
       if( !userDetails.major ) {
         setError('Мэдээлэл олдсонгүй!');
 				setLoading(false);
@@ -41,12 +48,18 @@ const PersonalCurriculum = ({ user }) => {
 						});
 
             if (response.status === 200) {
-
-              setFirstYear(response.data.recommended_curriculum.first);
-              setSecondYear(response.data.recommended_curriculum.second);
-              setThirdYear(response.data.recommended_curriculum.third);
-              setFourthYear(response.data.recommended_curriculum.fourth);
+              setFirstYear(response.data.first);
+              setSecondYear(response.data.second);
+              setThirdYear(response.data.third);
+              setFourthYear(response.data.fourth);
               setResponseCode(200);
+              
+            } else if (response.status === 201) {
+              setFirstYear(response.data.first);
+              setSecondYear(response.data.second);
+              setThirdYear(response.data.third);
+              setFourthYear(response.data.fourth);
+              setResponseCode(201);
 
             } else {
               setResponseCode(404);
@@ -61,13 +74,30 @@ const PersonalCurriculum = ({ user }) => {
 				}
 			}
 		};
-  
-		fetchPersonalCurriculum();
+
+    fetchPersonalCurriculum();
 	}, []);
 
 
+  const showAttribution = (attributionComment, attrLink) => {
+    const el = document.getElementById("hover-attribution");
+    if (el) {
+      el.textContent = attributionComment + attrLink;
+      el.classList.remove("hidden");
+      el.classList.add("visible");
+    }
+  }
+  
+  const hideAttribution = () => {
+    const el = document.getElementById("hover-attribution");
+    if (el) {
+      el.classList.remove("visible");
+      el.classList.add("hidden");
+    }
+  }
+
   const getTotalCreditsFirstHalf = (courseOfCurriculum) => {
-    
+    console.log(courseOfCurriculum);
     const totalCreditOfYear = courseOfCurriculum
     .slice(0, Math.floor(courseOfCurriculum.length / 2))
     .reduce((sum, course) => sum + parseInt(course.total_credits), 0);
@@ -96,28 +126,53 @@ const PersonalCurriculum = ({ user }) => {
           <td>{course.course_name}</td>
           <td>{course.course_code}</td>
           <td>{course.total_credits}</td>
+          <td>{isCurriculumClosed === false 
+                                      ?
+                                      <img
+                                          onClick={() => navigate('/login_screen', { state: { user: userDetails.user } })}
+                                          onMouseEnter={() => showAttribution(
+                                          "Plus icons created by srip - Flaticon",
+                                          " https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946"
+                                          )} 
+                                          onMouseLeave={() => hideAttribution()}
+                                          src="/src/assets/add.png"
+                                          //Icon source from 
+                                          //https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946
+                                          title="Plus icons created by srip - Flaticon"
+                                          alt="UserIcon"
+                                          className="add-icon"
+                                      />
+                                      :
+                                      null
+                                      }
+          </td>
         </tr>
       ))}
 
-    <tr className="sub-header-row">
-      <th colSpan="3">
-      {yearSpecification === '1'
-        ?
-        '1-р курс, Хавар'
-        : yearSpecification === '2'
-        ?
-        '2-р курс, Хавар'
-        : yearSpecification === '3'
-        ?
-        '3-р курс, Хавар'
-        : 
-        '4-р курс, Хавар'
-      }
-      </th>
-      <th colSpan="1">
-      {getTotalCreditsLastHalf(firstYear)}
-      </th>
-    </tr>
+      <tr>
+        <td className="spacer"></td>
+      </tr>
+
+      <tr className="sub-header-row">
+        <th colSpan="3">
+        {yearSpecification === '1'
+          ?
+          '1-р курс, Хавар'
+          : yearSpecification === '2'
+          ?
+          '2-р курс, Хавар'
+          : yearSpecification === '3'
+          ?
+          '3-р курс, Хавар'
+          : 
+          '4-р курс, Хавар'
+        }
+        </th>
+        <th>
+        {getTotalCreditsLastHalf(firstYear)}
+        </th>
+        <th></th>
+      </tr>
 
     {courseOfCurriculum
     .slice(Math.floor(courseOfCurriculum.length / 2), courseOfCurriculum.length)
@@ -127,57 +182,75 @@ const PersonalCurriculum = ({ user }) => {
           <td>{course.course_name}</td>
           <td>{course.course_code}</td>
           <td>{course.total_credits}</td>
+          <td>{isCurriculumClosed === false 
+                                      ?
+                                      <img
+                                          onMouseEnter={() => showAttribution(
+                                          "Plus icons created by srip - Flaticon",
+                                          " https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946"
+                                          )} 
+                                          onMouseLeave={() => hideAttribution()}
+                                          src="/src/assets/add.png"
+                                          //Icon source from 
+                                          //https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946
+                                          title="Plus icons created by srip - Flaticon"
+                                          alt="UserIcon"
+                                          className="add-icon"
+                                      />
+                                      :
+                                      null
+                                      }
+          </td>
         </tr>
       ))}
-      </>
+
+    </>
     );
 
   };
 
-	if (!userDetails) {
-			return <div className="no-data">Хэрэглэгч олдсонгүй.</div>;
-	}
-  
-	const { student, major, department } = userDetails;
+  if (!userDetails) {
+    return <div className="no-data">Хэрэглэгч олдсонгүй.</div>;
+  }
 
-	if ( responseCode === 200 ) {
+  const { student, major, department } = userDetails;
+  
+  if ( responseCode === 200 || responseCode === 201) {
 		return (
 			<>
 				<div className="curriculum-container">
 
           <div className="tables-container">
             <div className="curriculum-table">
-            <div className="personal-curriculum-overheader-container">
-              <div className="personal-curriculum-overheader">
-                Салбар сургууль: {userDetails.departmentOfEducation.edDepartmentName}
-              </div>
-              <div className="personal-curriculum-overheader">
-                Тэнхим: {userDetails.department.departmentName}
-              </div>  
-              <div className="personal-curriculum-overheader">
-                Хөтөлбөр: {userDetails.major.majorName}
-              </div>
-              <div className="personal-curriculum-overheader">
-                Зэрэг: {userDetails.major.academicDegree}
-              </div>
-              <div className="personal-curriculum-overheader">
-                Хэлбэр: {userDetails.major.majorsType === 'afternoon'
-                                                          ? 'Өдөр'
-                                                          : 'Орой'}
-              </div>
-              <div className="personal-curriculum-overheader">
-                Оюутны код: {userDetails.student.studentCode.toUpperCase()}
-              </div>
-              <div className="personal-curriculum-overheader">
-                Овог нэр: {`${userDetails.user.fname} ${userDetails.user.lname}`}
-              </div>
-              <div className="personal-curriculum-overheader">
-                Регистрийн дугаар: {userDetails.user.registryNumber}
+              <div className="personal-curriculum-overheader-container">
+                <div className="personal-curriculum-overheader">
+                  Салбар сургууль: {userDetails.departmentOfEducation.edDepartmentName}
+                </div>
+                <div className="personal-curriculum-overheader">
+                  Тэнхим: {userDetails.department.departmentName}
+                </div>  
+                <div className="personal-curriculum-overheader">
+                  Хөтөлбөр: {userDetails.major.majorName}
+                </div>
+                <div className="personal-curriculum-overheader">
+                  Зэрэг: {userDetails.major.academicDegree}
+                </div>
+                <div className="personal-curriculum-overheader">
+                  Хэлбэр: {userDetails.major.majorsType === 'afternoon'
+                                                            ? 'Өдөр'
+                                                            : 'Орой'}
+                </div>
+                <div className="personal-curriculum-overheader">
+                  Оюутны код: {userDetails.student.studentCode.toUpperCase()}
+                </div>
+                <div className="personal-curriculum-overheader">
+                  Овог нэр: {`${userDetails.user.fname} ${userDetails.user.lname}`}
+                </div>
+                <div className="personal-curriculum-overheader">
+                  Регистрийн дугаар: {userDetails.user.registryNumber}
+                </div>
               </div>
               
-             
-              
-            </div>
               <table>
                 <thead>
                     <tr className="table-header">
@@ -185,22 +258,22 @@ const PersonalCurriculum = ({ user }) => {
                       <th>Хичээлийн нэр</th>
                       <th>Код</th>
                       <th>Кредит</th>
+                      <th></th>
                     </tr>
                     
                     <tr className="sub-header-row">
                       <th colSpan="3">
                         1-р курс, Намар
                       </th>
-                      <th colSpan="1">
+                      <th>
                       {getTotalCreditsFirstHalf(firstYear)}
                       </th>
+                      <th></th>
                     </tr>
                 </thead>
                         
                 <tbody>
-
                   {printCoursesOfFirstHalf(firstYear, '1')}
-
                 </tbody>
               </table>
             </div>
@@ -217,15 +290,17 @@ const PersonalCurriculum = ({ user }) => {
                         <th>Хичээлийн нэр</th>
                         <th>Код</th>
                         <th>Кредит</th>
+                        <th></th>
                       </tr>
                       
                       <tr className="sub-header-row">
                         <th colSpan="3">
                           2-р курс, Намар
                         </th>
-                        <th colSpan="1">
+                        <th>
                         {getTotalCreditsFirstHalf(secondYear)}
                         </th>
+                        <th></th>
                       </tr>
                   </thead>
                           
@@ -253,15 +328,17 @@ const PersonalCurriculum = ({ user }) => {
                       <th>Хичээлийн нэр</th>
                       <th>Код</th>
                       <th>Кредит</th>
+                      <th></th>
                     </tr>
                     
                     <tr className="sub-header-row">
                       <th colSpan="3">
                         3-р курс, Намар
                       </th>
-                      <th colSpan="1">
+                      <th>
                       {getTotalCreditsFirstHalf(thirdYear)}
                       </th>
+                      <th></th>
                     </tr>
                 </thead>
                         
@@ -288,15 +365,17 @@ const PersonalCurriculum = ({ user }) => {
                       <th>Хичээлийн нэр</th>
                       <th>Код</th>
                       <th>Кредит</th>
+                      <th></th>
                     </tr>
                     
                     <tr className="sub-header-row">
                       <th colSpan="3">
                         4-р курс, Намар
                       </th>
-                      <th colSpan="1">
+                      <th>
                       {getTotalCreditsFirstHalf(fourthYear)}
                       </th>
+                      <th></th>
                     </tr>
                 </thead>
                         
@@ -312,17 +391,13 @@ const PersonalCurriculum = ({ user }) => {
         :
         null
         }
-          
-          {/*
-          <Curriculum user = {userDetails} />
-          */}
-
+         
 				</div>
 			</>
 		);
 	} else {
 		return <div className="placeholder">Хөтөлбөрийн санал болгох төлөвлөгөө олдсонгүй</div>;
 	}
-};
-    
+}
+
 export default PersonalCurriculum;

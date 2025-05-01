@@ -17,6 +17,8 @@ class StudentUser {
     academicDegreeFile,
     majorId,
     createdAt,
+    departmentId,
+    isCurriculumClosed,
   }) {
     this.studentId = studentId;
     this.userId = userId;
@@ -33,6 +35,8 @@ class StudentUser {
     this.academicDegreeFile = academicDegreeFile;
     this.majorId = majorId;
     this.createdAt = createdAt ? new Date(createdAt) : new Date();
+    this.departmentId = departmentId;
+    this.isCurriculumClosed = isCurriculumClosed;
   }
 
   static fromJsonStudent(json) {
@@ -52,6 +56,8 @@ class StudentUser {
       academicDegreeFile: json.academic_degree_file,
       majorId: json.major_id,
       createdAt: json.created_at,
+      departmentId: json.department_id,
+      isCurriculumClosed: json.is_curriculum_closed,
     });
   }
 
@@ -72,6 +78,8 @@ class StudentUser {
       academic_degree_file: this.academicDegreeFile,
       major_id: this.majorId,
       created_at: this.createdAt ? this.createdAt.toISOString() : new Date().toISOString(),
+      department_id: this.departmentId,
+      is_curriculum_closed: this.isCurriculumClosed,
     };
   }
 
@@ -93,6 +101,8 @@ class StudentUser {
         academicDegreeFile: json.academicDegreeFile ?? null,
         majorId: json.majorId ?? 0,
         createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
+        departmentId: json.departmentId,
+        isCurriculumClosed: json.isCurriculumClosed,
       });
     } catch (error) {
       console.error('Error parsing StudentUser from JSON string:', error);

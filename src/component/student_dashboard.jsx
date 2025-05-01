@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import getApiUrl from '../../api/get_Api_Url';
@@ -15,13 +15,18 @@ import './profile_screen';
 const StudentDashboard = () => {
   const location = useLocation();
   const user = location.state?.user;
+  const hasFetched = useRef(false);
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    
     const fetchDetails = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+
       if (user?.userId) {
         try {
           const response = await axios.post(getApiUrl('/User/Login/Student'), { userId: user.userId }, {
@@ -64,7 +69,7 @@ const StudentDashboard = () => {
     };
 
     fetchDetails();
-  }, [user]);
+  }, []);
 
   const buildDashboardCourses = (label, value) => (
     <div className="dashboard-courses-card">

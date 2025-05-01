@@ -481,7 +481,8 @@ exports.Prisma.StudentScalarFieldEnum = {
   major_id: 'major_id',
   created_at: 'created_at',
   contracts: 'contracts',
-  department_id: 'department_id'
+  department_id: 'department_id',
+  is_curriculum_closed: 'is_curriculum_closed'
 };
 
 exports.Prisma.StudentansweredsurveyScalarFieldEnum = {

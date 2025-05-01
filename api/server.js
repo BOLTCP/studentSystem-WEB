@@ -56,7 +56,7 @@ app.post('/login', async (req, res) => {
 //app/student/student_dashboard
 app.post('/User/Login/Student', async (req, res) => {
   const { userId } = req.body;
-  console.log("Received user_id:", userId);
+  console.log("/User/Login/Student Received user_id:", userId);
 
   if (!userId) {
     return res.status(400).json({ message: 'User ID is required' });
@@ -128,7 +128,7 @@ app.post('/Save/User/Preferences', async (req, res) => {
 //src/component/university/curriculum.jsx
 app.post('/Get/Majors/Curriculum', async (req, res) => {
   const { majorId } = req.body;
-  console.log("Received major_id:", majorId);
+  console.log("/Get/Majors/Curriculum Received major_id:", majorId);
 
   if (!majorId) {
     return res.status(400).json({ message: 'Major ID is required' });
@@ -158,7 +158,7 @@ app.post('/Get/Majors/Curriculum', async (req, res) => {
 //src/component/university/recommended_curriculum.jsx
 app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
   const { majorId } = req.body;
-  console.log('Received major_id:', majorId);
+  console.log('/Get/Majors/Recommended/Curriculum Received major_id:', majorId);
 
   if (!majorId) {
     return res.status(400).json({ message: 'Major ID is required' });
@@ -252,8 +252,11 @@ app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
 app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
 
   const { majorId, recommendedCurriculum, studentId, studentCode } = req.body;
-  console.log(majorId, studentId, recommendedCurriculum, studentCode);
+  console.log('/Get/Students/Personal/Curriculum: ', studentId);
 
+  if ( !studentId || !majorId || !recommendedCurriculum ) {
+    return res.status(200).json({ message: 'Bad request!' });
+  }
   try {
 
     const check_for_students_curriculum = await prisma.studentcurriculum.findUnique({
@@ -272,8 +275,137 @@ app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
           student_code: studentCode
         }
       });
+      const studentsCurriculum = insert_recommended_curriculum_to_student.students_curriculum;
+
+      const firstYearCourses = studentsCurriculum['first_year'];
+      const secondYearCourses = studentsCurriculum['second_year'];
+
+      let firstYearCoursesOfMajor = new Set();
+      for (let i = 0;  i < firstYearCourses.length; i++) {
+        let courseQuery = await prisma.courses.findUnique({
+          where: { course_id: firstYearCourses[i] }
+        });
+        firstYearCoursesOfMajor.add(courseQuery);
+      }
+
+      let secondYearCoursesOfMajor = new Set();
+      for (let i = 0;  i < secondYearCourses.length; i++) {
+        let courseQuery = await prisma.courses.findUnique({
+          where: { course_id: secondYearCourses[i] },
+        })
+        if (courseQuery) {
+          secondYearCoursesOfMajor.add(courseQuery);
+        }
+      }
+
+      let thirdYearCoursesOfMajor = new Set();
+      if (studentsCurriculum['third_year']) {
+        const thirdYearCourses = studentsCurriculum['third_year'];
+        for (let i = 0;  i < thirdYearCourses.length; i++) {
+          let courseQuery = await prisma.courses.findUnique({
+            where: { course_id: thirdYearCourses[i] },
+          })
+          if (courseQuery) {
+            thirdYearCoursesOfMajor.add(courseQuery);
+          }
+        }
+      }
+
+      let fourthYearCoursesOfMajor = new Set();
+      if (studentsCurriculum['fourth_year']) {
+        const fourthYearCourses = studentsCurriculum['fourth_year'];
+        for (let i = 0;  i < fourthYearCourses.length; i++) {
+          let courseQuery = await prisma.courses.findUnique({
+            where: { course_id: fourthYearCourses[i] },
+          })
+          if (courseQuery) {
+            fourthYearCoursesOfMajor.add(courseQuery);
+          }
+        }
+      }
+      
+      const firstYearCoursesArray = Array.from(firstYearCoursesOfMajor);
+      const secondYearCoursesArray = Array.from(secondYearCoursesOfMajor);
+      const thirdYearCoursesArray = Array.from(thirdYearCoursesOfMajor);
+      const fourthYearCoursesArray = Array.from(fourthYearCoursesOfMajor);
+
+      return res.status(200).json({ message: 'Оюутанд ганцаарчилсан төлөвлөгөөг автоматаар оноов.',
+                                    recommended_curriculum: {
+                                      first: firstYearCoursesArray,
+                                      second: secondYearCoursesArray,
+                                      third: thirdYearCoursesArray !== undefined
+                                      ? thirdYearCoursesArray
+                                      : null,
+                                      fourth: fourthYearCoursesArray !== undefined
+                                      ? fourthYearCoursesArray
+                                      : null,
+                                    }
+                                  });
     } else {
-      return res.status(200);
+
+      const studentsCurriculum = check_for_students_curriculum.students_curriculum;
+      const firstYearCourses = studentsCurriculum['first_year'];
+      const secondYearCourses = studentsCurriculum['second_year'];
+
+      let firstYearCoursesOfMajor = new Set();
+      for (let i = 0;  i < firstYearCourses.length; i++) {
+        let courseQuery = await prisma.courses.findUnique({
+          where: { course_id: firstYearCourses[i] }
+        });
+        firstYearCoursesOfMajor.add(courseQuery);
+      }
+
+      let secondYearCoursesOfMajor = new Set();
+      for (let i = 0;  i < secondYearCourses.length; i++) {
+        let courseQuery = await prisma.courses.findUnique({
+          where: { course_id: secondYearCourses[i] },
+        })
+        if (courseQuery) {
+          secondYearCoursesOfMajor.add(courseQuery);
+        }
+      }
+
+      let thirdYearCoursesOfMajor = new Set();
+      if (studentsCurriculum['third_year']) {
+        const thirdYearCourses = studentsCurriculum['third_year'];
+        for (let i = 0;  i < thirdYearCourses.length; i++) {
+          let courseQuery = await prisma.courses.findUnique({
+            where: { course_id: thirdYearCourses[i] },
+          })
+          if (courseQuery) {
+            thirdYearCoursesOfMajor.add(courseQuery);
+          }
+        }
+      }
+
+      let fourthYearCoursesOfMajor = new Set();
+      if (studentsCurriculum['fourth_year']) {
+        const fourthYearCourses = studentsCurriculum['fourth_year'];
+        for (let i = 0;  i < fourthYearCourses.length; i++) {
+          let courseQuery = await prisma.courses.findUnique({
+            where: { course_id: fourthYearCourses[i] },
+          })
+          if (courseQuery) {
+            fourthYearCoursesOfMajor.add(courseQuery);
+          }
+        }
+      }
+      
+      const firstYearCoursesArray = Array.from(firstYearCoursesOfMajor);
+      const secondYearCoursesArray = Array.from(secondYearCoursesOfMajor);
+      const thirdYearCoursesArray = Array.from(thirdYearCoursesOfMajor);
+      const fourthYearCoursesArray = Array.from(fourthYearCoursesOfMajor);
+
+      return res.status(201).json({ message: 'Оюутны ганцаарчилсан төлөвлөгөөг татсан.', 
+                                    first: firstYearCoursesArray,
+                                    second: secondYearCoursesArray,
+                                    third: thirdYearCoursesArray !== undefined
+                                    ? thirdYearCoursesArray
+                                    : null,
+                                    fourth: fourthYearCoursesArray !== undefined
+                                    ? fourthYearCoursesArray
+                                    : null,
+                                  });
     }
 
   } catch (error) {

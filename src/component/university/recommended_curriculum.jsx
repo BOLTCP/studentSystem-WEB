@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/university/recommended_curriculum.css';
 import axios from 'axios';
@@ -11,6 +11,7 @@ import moment from 'moment';
 const RecommendedCurriculum = ({ user }) => {
   const location = useLocation();
   const userDetails = new UserDetails(user);
+  const hasFetched = useRef(false);
 	const [curriculum, setCurriculum] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   const [firstYear, setFirstYear] = useState();
@@ -25,6 +26,9 @@ const RecommendedCurriculum = ({ user }) => {
   useEffect(() => {
 
 		const fetchRecommendedCurriculum = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+
 			if( !userDetails.major ) {
 				setError('Мэдээлэл олдсонгүй!');
 				setLoading(false);

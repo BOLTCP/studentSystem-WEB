@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import getApiUrl from '../../api/get_Api_Url';
@@ -7,16 +7,19 @@ import AuthUser from '../models/auth_user'
 import '../styles/login_screen.css';
 
 const LoginScreen = () => {
-
   const [loginName, setLoginName] = useState('');
+  const hasFetched = useRef(false);
   const [passwordHash, setPasswordHash] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     if (!loginName.trim() || !passwordHash.trim()) {
       setErrorMessage('Please enter your login name and password.');
       return;
@@ -40,12 +43,12 @@ const LoginScreen = () => {
         console.log('Login successful!');
         const userType = response.data.authUser;
 
-        if (rememberMe) {
-          localStorage.setItem('username', loginName);
-          localStorage.setItem('password', passwordHash);
+       if (rememberMe) {
+        localStorage.setItem('username', loginName);
+        localStorage.setItem('password', passwordHash);
         } else {
-          localStorage.removeItem('username');
-          localStorage.removeItem('password');
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
         }
         
         const user = AuthUser.fromJson(userType);
@@ -75,7 +78,7 @@ const LoginScreen = () => {
     setRememberMe(event.target.checked);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     const storedPassword = localStorage.getItem('password');
     if (storedUsername && storedPassword) {

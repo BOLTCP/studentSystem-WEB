@@ -19,12 +19,15 @@ const University = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
-    if (location.state?.condRender === null) {
+    console.log("University: location.state?.condRender changed:", location.state?.condRender, "condRender:", condRender);
+    if (location.state?.condRender !== condRender) {
       setCondRender(location.state?.condRender);
     }
-    
-  }, [location.state?.condRender]);
+  }, []);
+
+  useEffect(() => {
+    console.log("University: Render. condRender:", condRender);
+  }, []);
   
   console.log(condRender);
 
@@ -40,19 +43,9 @@ const University = () => {
       <div className="dashboard-main-content">
         {userDetails && <RenderSidebar />}
         <div className="dashboard-body">
-          {
-            condRender === 0 
-            ?
-            <Curriculum user = {userDetails} />
-            : condRender === 1 
-            ?
-            <RecommendedCurriculum user = {userDetails} />
-            : condRender === 2
-            ?
-            <PersonalCurriculum user = {userDetails} />
-            :
-            null
-          }
+          {condRender === 0 && <Curriculum user={userDetails} />}
+          {condRender === 1 && <RecommendedCurriculum user={userDetails} />}
+          {condRender === 2 && <PersonalCurriculum user={userDetails} />}
         </div>
         {userDetails && <RenderSidebarRight user = {userDetails} />}
         

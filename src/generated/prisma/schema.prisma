@@ -214,7 +214,6 @@ model courses {
   grades                 grades[]
   invitations            invitations[]
   notificationstudents   notificationstudents[]
-  studentcurriculum      studentcurriculum[]
   studentschedule        studentschedule[]
   studentstoadvise       studentstoadvise[]
   teacherscourseplanning teacherscourseplanning[]
@@ -580,14 +579,13 @@ model studentclubs {
 
 model studentcurriculum {
   student_curriculum_id   Int                       @id @default(autoincrement())
-  student_id              Int
-  course_id               Int
-  credit                  Int
+  student_id              Int                       @unique
+  credit                  Int?
   student_curriculum_year DateTime                  @db.Date
-  semester_year           String                    @db.Char(25)
   modified_at             DateTime?                 @default(now()) @db.Timestamp(6)
+  students_curriculum     Json
+  student_code            String                    @db.Char(8)
   paymentlessonsselection paymentlessonsselection[]
-  courses                 courses                   @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction)
   student                 student                   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
 }
 

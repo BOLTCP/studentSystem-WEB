@@ -4,6 +4,7 @@ import AuthUser from '../../src/models/auth_user';
 import StudentUser from '../../src/models/student_user';
 import MajorClass from '../../src/models/major';
 import Department from '../../src/models/department';
+import DepartmentsOfEducation from '../models/departmentsofeducation';
 import UserPreferences from '../../src/models/auth_user_preferences';
 
 const getUserDetailsFromLocalStorage = () => {
@@ -22,8 +23,10 @@ const getUserDetailsFromLocalStorage = () => {
         MajorClass.fromJsonButInApp(parsedUser.major) : null;
       const department = parsedUser?.department ?
         Department.fromJsonButInApp(parsedUser.department) : null;
+      const departmentOfEducation = parsedUser?.departmentOfEducation ?
+        DepartmentsOfEducation.fromJsonInApp(parsedUser.departmentOfEducation) : null;
 
-      return new UserDetails({ user, userpreferences, student, major, department });
+      return new UserDetails({ user, userpreferences, student, major, department, departmentOfEducation });
 
     } catch (Err) {
       console.log('UserDetails parse Error:', Err);

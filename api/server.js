@@ -75,13 +75,17 @@ app.post('/User/Login/Student', async (req, res) => {
       where: { department_id: student.department_id },
     });
 
+    const departmentsofeducation = await prisma.departmentsofeducation.findUnique({
+      where: { departments_of_education_id: department.department_of_edu_id },
+    });
+
     const major = await prisma.major.findUnique({
       where: { major_id: student.major_id },
     });
 
     if (student) {
         console.log(`Мэдээллийг амжилттай авлаа.`);
-        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, major: major });
+        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, departmentsofeducation: departmentsofeducation, major: major });
       } else {
         res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
       }
@@ -241,6 +245,40 @@ app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
   } catch (error) {
     console.error('Server error:', error);
     res.status(500).json({ error: 'Server failed' });
+  }
+
+});
+
+app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
+
+  const { majorId, recommendedCurriculum, studentId, studentCode } = req.body;
+  console.log(majorId, studentId, recommendedCurriculum, studentCode);
+
+  try {
+
+    const check_for_students_curriculum = await prisma.studentcurriculum.findUnique({
+      where: { student_id: studentId }
+    });
+
+    if (check_for_students_curriculum === null) {
+      let dateValue = new Date();
+      const insert_recommended_curriculum_to_student = await 
+      prisma.studentcurriculum.create({
+        data: {
+          student_id: studentId,
+          student_curriculum_year: dateValue.toISOString(),
+          modified_at: dateValue.toISOString(),
+          students_curriculum: recommendedCurriculum,
+          student_code: studentCode
+        }
+      });
+    } else {
+      return res.status(200);
+    }
+
+  } catch (error) {
+    console.log('Server error:', error);
+    res.status(500).json({ error: 'Server failed '});
   }
 
 });

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Curriculum from './curriculum';
 import RecommendedCurriculum from './recommended_curriculum';
+import PersonalCurriculum from './personal_curriculum';
 import { RenderSidebar, RenderSidebarRight } from './uni_side_bars';
 import UserDetailsUtil from '../../utils/userDetails_util';
 import '../../styles/university/university_dashboard.css';
@@ -11,6 +12,7 @@ import '../profile_screen';
 const University = () => {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
+  console.log(userDetails);
   const [loading, setLoading] = useState(true);
   const condRender = location.state?.condRender;
   
@@ -45,7 +47,11 @@ const University = () => {
             : condRender === 1 
             ?
             <RecommendedCurriculum user = {userDetails} />
-            : null
+            : condRender === 2
+            ?
+            <PersonalCurriculum user = {userDetails} />
+            :
+            null
           }
         </div>
         {userDetails && <RenderSidebarRight user = {userDetails} />}

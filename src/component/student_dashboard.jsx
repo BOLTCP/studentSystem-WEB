@@ -6,6 +6,7 @@ import UserDetails from '../models/user_details';
 import StudentUser from '../models/student_user';
 import MajorClass from '../models/major';
 import Department from '../models/department';
+import DepartmentsOfEducation from '../models/departmentsofeducation';
 import UserPreferences from '../models/auth_user_preferences';
 import { RenderSidebar, RenderSidebarRight } from './side_bars';
 import '../styles/student_dashboard.css';
@@ -34,6 +35,7 @@ const StudentDashboard = () => {
             const userpreferences = UserPreferences.fromJsonUserPreferences(response.data.userpreferences);
             const major = MajorClass.fromJsonMajor(response.data.major);
             const department = Department.fromJsonDepartment(response.data.department);
+            const departmentOfEducation = DepartmentsOfEducation.fromJsonDepartmentsOfEducation(response.data.departmentsofeducation);
             const year_classification_fix = student.yearClassification === 'freshman' 
             ? '1-р курс' 
             : student.yearClassification === 'junior'
@@ -44,7 +46,7 @@ const StudentDashboard = () => {
 
             student.yearClassification = year_classification_fix;
 
-            setUserDetails(new UserDetails({ user, userpreferences, student, major, department }));
+            setUserDetails(new UserDetails({ user, userpreferences, student, major, department, departmentOfEducation }));
           } else {
             console.error('Error fetching user details:', response.status, response.data);
             setError('Failed to fetch user details.');

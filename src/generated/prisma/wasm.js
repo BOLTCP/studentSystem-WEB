@@ -547,11 +547,11 @@ exports.Prisma.StudentclubsScalarFieldEnum = {
 exports.Prisma.StudentcurriculumScalarFieldEnum = {
   student_curriculum_id: 'student_curriculum_id',
   student_id: 'student_id',
-  course_id: 'course_id',
   credit: 'credit',
   student_curriculum_year: 'student_curriculum_year',
-  semester_year: 'semester_year',
-  modified_at: 'modified_at'
+  modified_at: 'modified_at',
+  students_curriculum: 'students_curriculum',
+  student_code: 'student_code'
 };
 
 exports.Prisma.StudentscheduleScalarFieldEnum = {

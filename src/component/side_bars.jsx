@@ -230,24 +230,6 @@ export const RenderSidebar = ({ user }) => {
             Сонордуулага
           </button>
         </li>
-        <li className="sidebar-item">
-          <button onMouseEnter={() => showAttribution(
-                  "Notification bell icons created by Mayor Icons - Flaticon",
-                  "https://www.flaticon.com/free-icon/chat_134808?term=messages&page=1&position=3&origin=search&related_id=134808"
-                  )}    
-                  onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/messages', { state: { userDetails: userDetails } })} 
-                  className={`sidebar-link ${theme}`}>
-            <img src="/src/assets/chat.png"
-            //Icon source from 
-            //https://www.flaticon.com/free-icon/chat_134808?term=messages&page=1&position=3&origin=search&related_id=134808
-            //Notification bell icons created by Mayor Icons - Flaticon
-            alt="Messages"
-            className={`sidebar-list-icon ${theme}`}
-            /> 
-            Мессежүүд
-          </button>
-        </li>
 
         {/*
         <li className="sidebar-item">
@@ -379,15 +361,9 @@ export const RenderSidebarRight = ({ user, theme }) => {
       <ul className="sidebar-list">
 
         <li className="sidebar-right-item">
-
-          <div className="sidebar-right-item-container">
-            <button onMouseEnter={() => showAttribution(
-                    "Checklist icons created by Freepik - Flaticon",
-                    " https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615"
-                    )}
-                    onMouseLeave={() => hideAttribution()}
-                    className={`sidebar-link ${theme}`}>
-
+  
+          <div className="to-do-list-container">
+            <div className="to-do-container">
               <img src="src/assets/toDoList.png"//src/assets/toDoList.png
               //Icon source from 
               //https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615
@@ -395,12 +371,8 @@ export const RenderSidebarRight = ({ user, theme }) => {
               alt="LightModeIcon"
               className={`sidebar-right-icon ${theme}`}
               /> 
-            </button>
-            <span>
               Хичээлүүд
-            </span>
-          </div>
-          <div className="to-do-list-container">
+            </div>
             <div className="to-do-container">
               <div className="to-do-list-bullets"></div>
               <div className="to-do-item"> <a href="">Даалгавар №</a> </div>
@@ -448,27 +420,18 @@ export const RenderSidebarRight = ({ user, theme }) => {
           </div>
           
           <br></br>
-          <div className="sidebar-right-item-container">
-            <button onMouseEnter={() => showAttribution(
-                    "Classroom icons created by Freepik - Flaticon",
-                    " https://www.flaticon.com/free-icon/lecture_5609093?term=classroom&page=1&position=12&origin=search&related_id=5609093"
-                    )}
-                    onMouseLeave={() => hideAttribution()}
-                    className={`sidebar-link ${theme}`}>
-
+          
+          <div className="today-schedule-list-container">
+            <div className="to-do-container">
               <img src="src/assets/classroom.png"//src/assets/toDoList.png
               //Icon source from 
-              //https://www.flaticon.com/free-icon/lecture_5609093?term=classroom&page=1&position=12&origin=search&related_id=5609093
-              //Classroom icons created by Freepik - Flaticon
+              //https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615
+              //Checklist icons created by Freepik - Flaticon
               alt="LightModeIcon"
               className={`sidebar-right-icon ${theme}`}
               /> 
-            </button>
-            <span>
-              Өнөөдрийн хуваарь
-            </span>
-          </div>
-          <div className="today-schedule-list-container">
+              Өнөөдрийн &nbsp; хуваарь
+            </div>
             <div className="today-schedule-container">
               <div>{classroomLocation()}</div>
               <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>

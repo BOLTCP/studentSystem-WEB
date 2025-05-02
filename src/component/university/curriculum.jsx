@@ -99,118 +99,120 @@ const Curriculum = ({ user }) => {
 	if ( curriculum ) {
 		return (
 			<>
-				<div className="curriculum-container">
-          {Array.from({ length: majorYears }, (_, i) => (
-            <div key={i} className="tables-container">
-              <div className="curriculum-table">
-                <table>
-                  <thead>
-                      <tr className="table-header">
-                        <th>№</th>
-                        <th>Хичээлийн нэр</th>
-                        <th>Код</th>
-                        <th>Кредит</th>
-                        <th>Дүн</th>
-                        <th>Үсгэн үнэлгээ</th>
-                        <th>Улирал</th>
-                      </tr>
-                      
-                      <tr className="sub-header-row">
-                        <th colSpan="3">
-                          {i === 0 
-                                  ? 
-                                  "1-р курс"
-                                  : i === 1
-                                  ?
-                                  "2-р курс"
-                                  : i === 2
-                                  ?
-                                  "3-р курс"
-                                  : i === 3
-                                  ?
-                                  "4-р курс"
-                                  : i === 4
-                                  ?
-                                  "5-р курс"
-                                  : '6-р курс'
-                                  }
-                            &nbsp; Заавал судлах хичээл
-                        </th>
-                        <th colSpan="1">
-                          {getTotalCredits(i)}
-                        </th>
-                        <th></th>
-                        <th colSpan="2"></th>
-                      </tr>
-                  </thead>
+        <div className="all-curriculum-container">
+          <div className="curriculum-container">
+              {Array.from({ length: majorYears }, (_, i) => (
+                <div key={i} className="tables-container">
+                  <div className="curriculum-table">
+                    <table>
+                      <thead>
+                          <tr className="table-header">
+                            <th>№</th>
+                            <th>Хичээлийн нэр</th>
+                            <th>Код</th>
+                            <th>Кредит</th>
+                            <th>Дүн</th>
+                            <th>Үсгэн үнэлгээ</th>
+                            <th>Улирал</th>
+                          </tr>
                           
-                  <tbody>
+                          <tr className="sub-header-row">
+                            <th colSpan="3">
+                              {i === 0 
+                                      ? 
+                                      "1-р курс"
+                                      : i === 1
+                                      ?
+                                      "2-р курс"
+                                      : i === 2
+                                      ?
+                                      "3-р курс"
+                                      : i === 3
+                                      ?
+                                      "4-р курс"
+                                      : i === 4
+                                      ?
+                                      "5-р курс"
+                                      : '6-р курс'
+                                      }
+                                &nbsp; Заавал судлах хичээл
+                            </th>
+                            <th colSpan="1">
+                              {getTotalCredits(i)}
+                            </th>
+                            <th></th>
+                            <th colSpan="2"></th>
+                          </tr>
+                      </thead>
+                              
+                      <tbody>
 
-                    {curriculum
-                      .filter(course => course.courseYear === courseYear
-                                && course.courseType === 'mandatory')
-                      .map((course, index) => (
-                        <tr key={index} className="table-row">
-                          <td>{index + 1}</td>
-                          <td>{course.courseName}</td>
-                          <td>{course.courseCode}</td>
-                          <td>{course.totalCredits}</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                        {curriculum
+                          .filter(course => course.courseYear === courseYear
+                                    && course.courseType === 'mandatory')
+                          .map((course, index) => (
+                            <tr key={index} className="table-row">
+                              <td>{index + 1}</td>
+                              <td>{course.courseName}</td>
+                              <td>{course.courseCode}</td>
+                              <td>{course.totalCredits}</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          ))}
+
+                        <tr className="sub-header-row">
+                          <th colSpan="3">
+                            {i === 0 
+                                    ? 
+                                    "1-р курс"
+                                    : i === 1
+                                    ?
+                                    "2-р курс"
+                                    : i === 2
+                                    ?
+                                    "3-р курс"
+                                    : i === 3
+                                    ?
+                                    "4-р курс"
+                                    : i === 4
+                                    ?
+                                    "5-р курс"
+                                    : '6-р курс'
+                                    }
+                              &nbsp; Сонгон судлах хичээл
+                          </th>
+                          <th colSpan="1">
+                            {getTotalCreditsSelective(i)}
+                          </th>
+                          <th></th>
+                          <th colSpan="2"></th>
                         </tr>
-                      ))}
 
-                    <tr className="sub-header-row">
-                      <th colSpan="3">
-                        {i === 0 
-                                ? 
-                                "1-р курс"
-                                : i === 1
-                                ?
-                                "2-р курс"
-                                : i === 2
-                                ?
-                                "3-р курс"
-                                : i === 3
-                                ?
-                                "4-р курс"
-                                : i === 4
-                                ?
-                                "5-р курс"
-                                : '6-р курс'
-                                }
-                          &nbsp; Сонгон судлах хичээл
-                      </th>
-                      <th colSpan="1">
-                        {getTotalCreditsSelective(i)}
-                      </th>
-                      <th></th>
-                      <th colSpan="2"></th>
-                    </tr>
-
-                    {curriculum
-                    .filter(course => course.courseYear === courseYear 
-                              && course.courseType === 'selective')
-                    .map((course, index) => (
-                        <tr key={index} className="table-row">
-                          <td>{index + 1}</td>
-                          <td>{course.courseName}</td>
-                          <td>{course.courseCode}</td>
-                          <td>{course.totalCredits}</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      ))}
+                        {curriculum
+                        .filter(course => course.courseYear === courseYear 
+                                  && course.courseType === 'selective')
+                        .map((course, index) => (
+                            <tr key={index} className="table-row">
+                              <td>{index + 1}</td>
+                              <td>{course.courseName}</td>
+                              <td>{course.courseCode}</td>
+                              <td>{course.totalCredits}</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          ))}
+                          
+                      </tbody>
                       
-                  </tbody>
-                  
-                </table>
-              </div>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-				</div>
+        </div>
 			</>
 		);
 	} else {

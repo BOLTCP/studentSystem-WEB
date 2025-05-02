@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/university/personal_curriculum.css';
+import DeletePrompt from '../../utils/deletePrompt';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
 import UserDetails from '../../models/user_details';
@@ -11,6 +12,9 @@ const PersonalCurriculum = ({ user }) => {
   const userDetails = new UserDetails(user);
   const [isCurriculumClosed, setIsCurriculumClosed] = useState(userDetails.student.isCurriculumClosed);
   const hasFetched = useRef(false);
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [deleteCourse, setDeleteCourse] = useState(null);
+  const [yearSpecification, setYearSpecification] = useState(null);
   const [studentsCurriculum, setStudentsCurriculum] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   const [firstYear, setFirstYear] = useState();
@@ -27,8 +31,8 @@ const PersonalCurriculum = ({ user }) => {
 
     const fetchPersonalCurriculum = async () => {
       
-      if (hasFetched.current) return;
-      hasFetched.current = true;
+      if(hasFetched.current) return;
+      hasFetched.current = false;
 
       if( !userDetails.major ) {
         setError('Мэдээлэл олдсонгүй!');
@@ -48,6 +52,7 @@ const PersonalCurriculum = ({ user }) => {
 						});
 
             if (response.status === 200) {
+              setHas
               setFirstYear(response.data.first);
               setSecondYear(response.data.second);
               setThirdYear(response.data.third);
@@ -97,7 +102,6 @@ const PersonalCurriculum = ({ user }) => {
   }
 
   const getTotalCreditsFirstHalf = (courseOfCurriculum) => {
-    console.log(courseOfCurriculum);
     const totalCreditOfYear = courseOfCurriculum
     .slice(0, Math.floor(courseOfCurriculum.length / 2))
     .reduce((sum, course) => sum + parseInt(course.total_credits), 0);
@@ -126,8 +130,20 @@ const PersonalCurriculum = ({ user }) => {
           <td>{course.course_name}</td>
           <td>{course.course_code}</td>
           <td>{course.total_credits}</td>
-          <td>{isCurriculumClosed === false 
+          <td onClick={() => {setShowDeletePrompt(true), setDeleteCourse(course), setYearSpecification(yearSpecification)}}
+                                          onMouseEnter={() => showAttribution(
+                                          "Minimize icons created by kendis lasman - Flaticon",
+                                          " https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251"
+                                          )} 
+                                          onMouseLeave={() => hideAttribution()}
+                                          //Icon source from 
+                                          //https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251
+                                          title="Minimize icons created by kendis lasman - Flaticon"
+            >
+              {isCurriculumClosed === false 
                                       ?
+                                      /*
+                                       
                                       <img
                                           onClick={() => navigate('/login_screen', { state: { user: userDetails.user } })}
                                           onMouseEnter={() => showAttribution(
@@ -141,6 +157,12 @@ const PersonalCurriculum = ({ user }) => {
                                           title="Plus icons created by srip - Flaticon"
                                           alt="UserIcon"
                                           className="add-icon"
+                                      />
+                                      <a href="https://www.flaticon.com/free-icons/minimize" title="minimize icons">Minimize icons created by kendis lasman - Flaticon</a>
+                                    
+                                      */
+                                      <img className="minus-icon"
+                                          src="/src/assets/minus.png"
                                       />
                                       :
                                       null
@@ -182,20 +204,20 @@ const PersonalCurriculum = ({ user }) => {
           <td>{course.course_name}</td>
           <td>{course.course_code}</td>
           <td>{course.total_credits}</td>
-          <td>{isCurriculumClosed === false 
-                                      ?
-                                      <img
+          <td onClick={() => {setShowDeletePrompt(true), setDeleteCourse(course), setYearSpecification(yearSpecification)}}
                                           onMouseEnter={() => showAttribution(
-                                          "Plus icons created by srip - Flaticon",
-                                          " https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946"
+                                          "Minimize icons created by kendis lasman - Flaticon",
+                                          " https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251"
                                           )} 
                                           onMouseLeave={() => hideAttribution()}
-                                          src="/src/assets/add.png"
                                           //Icon source from 
-                                          //https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946
-                                          title="Plus icons created by srip - Flaticon"
-                                          alt="UserIcon"
-                                          className="add-icon"
+                                          //https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251
+                                          title="Minimize icons created by kendis lasman - Flaticon"
+            >
+              {isCurriculumClosed === false 
+                                      ?
+                                      <img className="minus-icon"
+                                      src="/src/assets/minus.png"
                                       />
                                       :
                                       null
@@ -218,6 +240,14 @@ const PersonalCurriculum = ({ user }) => {
   if ( responseCode === 200 || responseCode === 201) {
 		return (
 			<>
+
+        {showDeletePrompt === true 
+          && deleteCourse !== null 
+          && <DeletePrompt visibility = {showDeletePrompt} 
+                           course = {deleteCourse} 
+                           studentId = {userDetails.student.studentId}
+                           yearSpecification = {yearSpecification} />}
+
 				<div className="curriculum-container">
 
           <div className="tables-container">

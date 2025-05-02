@@ -19,7 +19,6 @@ const University = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("University: location.state?.condRender changed:", location.state?.condRender, "condRender:", condRender);
     if (location.state?.condRender !== condRender) {
       setCondRender(location.state?.condRender);
     }

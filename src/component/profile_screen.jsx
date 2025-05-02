@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import '../styles/profile_screen.css';
+import '../../src/styles/profile_screen.css';
 import UserDetailsUtil from '../utils/userDetails_util';
 //import '../styles/student_dashboard.css';
 import { RenderSidebar, RenderSidebarRight } from './side_bars';
@@ -73,30 +73,34 @@ const ProfileScreen = ( ) => {
                 </div>
               </div>
 
+              <RenderSidebarRight user = {userDetails} />
+
               <div className="profile-content">
                 <div className="profile-container">
                   <div className="profile-card-grid">
-                  <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
+                  <ProfileCard label="Нэр:" value={`${user.fname} ${user.lname}`} />
                   <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
-                  <ProfileCard label="Хэрэглэгч / Сурагчийн код:" value={student?.studentCode} />
-                  <ProfileCard label="Хэрэглэгчийн И-мэйл" value={user.email} />
-                  <ProfileCard label="Суралцах Эрдмийн зэрэг" value={student?.currentAcademicDegree} />
-                  <ProfileCard label="Түвшин" value={student?.yearClassification?.toString()} />
-                  <ProfileCard label="Салбар сургууль" value={department?.departmentName} />
-                  <ProfileCard label="Төлөв" value={student?.isActive ? 'Идэвхтэй' : 'Идэвхгүй'} />
-                  <ProfileCard label="Хүйс" value={user.gender} />
-                  <ProfileCard label="Регистрийн дугаар" value={user.registryNumber} />
-                  <ProfileCard label="Төрсөн өдөр" value={moment(user.birthday).format('YYYY-MM-DD')} />
-                  <ProfileCard label="Утасны дугаар" value={user.phoneNumber} />
-                  <ProfileCard label="Багшийн И-мэйл" value={student?.studentEmail} />
-                  <ProfileCard label="Өмнөх боловсрол" value={user.education} />
-                  <ProfileCard label="Created At" value={moment(user.createdAt).local().toString()} />
+                  <ProfileCard label="Хэрэглэгч код:" value={student?.studentCode} />
+                  <ProfileCard label="И-мэйл:" value={user.email} />
+                  <ProfileCard label="Суралцах Эрдмийн зэрэг:" value={student?.currentAcademicDegree} />
+                  <ProfileCard label="Түвшин:" value={student?.yearClassification?.toString()} />
+                  <ProfileCard label="Салбар сургууль:" value={department?.departmentName} />
+                  <ProfileCard label="Төлөв:" value={student?.isActive ? 'Идэвхтэй' : 'Идэвхгүй'} />
+                  <ProfileCard label="Хүйс:" value={user.gender} />
+                  <ProfileCard label="Регистрийн дугаар:" value={user.registryNumber} />
+                  <ProfileCard label="Төрсөн өдөр:" value={moment(user.birthday).format('YYYY-MM-DD')} />
+                  <ProfileCard label="Утасны дугаар:" value={user.phoneNumber} />
+                  <ProfileCard label="И-мэйл:" value={student?.studentEmail} />
+                  <ProfileCard label="Өмнөх боловсрол:" value={user.education} />
+                  <ProfileCard label="Created At:" value={moment(user.createdAt).local().toString()} />
                   </div>
                 </div>
               </div>
 
             </div>
-            <RenderSidebarRight user = {userDetails} />
+            
+            
+
           </>
         );
       } else {

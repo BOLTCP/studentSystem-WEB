@@ -249,6 +249,7 @@ app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
 
 });
 
+//src/component/university/personal_curriculum.jsx
 app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
 
   const { majorId, recommendedCurriculum, studentId, studentCode } = req.body;
@@ -413,4 +414,48 @@ app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
     res.status(500).json({ error: 'Server failed '});
   }
 
+});
+
+//src/component/university/personal_curriculum.jsx
+app.delete('/Delete/Students/Course/From/Personal/Curriculum', async (req, res) => {
+  const { courseId, studentId, yearSpecification } = req.body;
+  console.log("/Delete/Students/Course/From/Personal/Curriculum' Received courseId and studentId of:", courseId, studentId, yearSpecification);
+
+  if (!courseId || !studentId || !yearSpecification) {
+    return res.status(400).json({ message: 'Course ID is required' });
+  }
+
+  const yearSpec = yearSpecification === '1' 
+                    ? 'first_year'
+                 : yearSpecification === '2'
+                    ? 'second_year'
+                 : yearSpecification === '3'
+                    ? 'third_year'
+                 : 'fourth_year';
+  
+  try {
+
+    let getExistingCurriculum = await prisma.studentcurriculum.findUnique({
+      where: { student_id: studentId }, 
+    });
+
+    const updatedCurriculum = getExistingCurriculum.students_curriculum[yearSpec].filter(course => course !== courseId);
+    getExistingCurriculum.students_curriculum[yearSpec] = updatedCurriculum;
+
+    const updatePersonalCurriculum = await prisma.studentcurriculum.update({
+      where: { student_id: studentId }, 
+      data: {
+        students_curriculum: getExistingCurriculum.students_curriculum
+      }
+    });
+    if (updatePersonalCurriculum) {
+      console.log(`Хичээлийг амжилттай хаслаа.`);
+      res.status(200).json({ message: 'Хичээлийг амжилттай хаслаа.' });
+      } else {
+        res.status(401).json({ error: 'Хичээл олдсонгүй!' });
+      }
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Server failed' });
+  }
 });

@@ -30,7 +30,6 @@ body.dark .dashboard-nav {
 }
 
 .nav-title {
-  margin-right: 135px;
   font-size: 1.25rem;
   font-weight: 500;
 }
@@ -45,22 +44,20 @@ body.dark .dashboard-nav {
 
 /* Sidebar Styles */
 .uni-dashboard-sidebar {
-  min-height: 96.5vh;
-  top: 0px;
-  width: 100px; /* Fixed width for sidebar */
+  width: 100px; 
+  background-color: #f8f9fa;
   border-right: 1px solid #dee2e6;
   padding: 1rem;
-  overflow-y: visible;
+  overflow-y: scroll;
   position: absolute;
   left: 0px;
-  flex:auto;
-  padding-right: 20px;
+  height: 90.25vh;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 .uni-dashboard-sidebar .dropdown-menu {
   padding-left: 0;
-  position: relative;
-  margin-left: 20px;
   width: 120px;    
 }
 
@@ -70,7 +67,7 @@ body.dark .dashboard-nav {
 }
 
 .dashboard-submenu-button {
-  width: 120px;
+  width: 100px;
 }
 
 .dashboard-submenu-button:hover{
@@ -154,15 +151,15 @@ body.dark .sidebar-header-right {
 }
 
 .uni-dashboard-sidebar-right {
-  top: 0px;
-  height: 100vh;
-  width: 200px; /* Fixed width for sidebar */
+  width: 200px;
   background-color: #f8f9fa;
   border-right: 1px solid #dee2e6;
   padding: 1rem;
   overflow-y: auto;
   position: absolute;
   right: 0px;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 body.dark .uni-dashboard-sidebar-right {
@@ -440,7 +437,9 @@ button.sidebar-link.dark {
 }
 
 .dashboard-body {
-  height: 100%;
+  border: none;
+  height: 70vh;
+  overflow-y: scroll;
   grid-template-columns: auto;
 }
 

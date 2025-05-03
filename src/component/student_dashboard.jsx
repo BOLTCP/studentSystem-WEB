@@ -92,12 +92,12 @@ const StudentDashboard = () => {
       return (
         <div className="dashboard-content">
           <div className="dashboard-courses-card-grid">
-              {buildDashboardCourses('Овог Нэр', `${userDetails.user?.lname} ${userDetails.user?.fname}`)}
-              {buildDashboardCourses('ID', userDetails.student?.studentCode)}
-              {buildDashboardCourses('Мэргэжил', userDetails.major?.majorName)}
-              {buildDashboardCourses('Овог Нэр', `${userDetails.user?.lname} ${userDetails.user?.fname}`)}
-              {buildDashboardCourses('ID', userDetails.student?.studentCode)}
-              {buildDashboardCourses('Тэнхим', userDetails.department?.departmentName)}
+              {buildDashboardCourses('Овог Нэр', `Хичээл 1`)}
+              {buildDashboardCourses('ID', `Хичээл 2`)}
+              {buildDashboardCourses('Мэргэжил', `Хичээл 3`)}
+              {buildDashboardCourses('Овог Нэр', `Хичээл 4`)}
+              {buildDashboardCourses('ID', `Хичээл 5`)}
+              {buildDashboardCourses('Тэнхим', `Хичээл 6`)}
             </div>
          
         </div>

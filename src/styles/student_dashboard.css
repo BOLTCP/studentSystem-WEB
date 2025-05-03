@@ -168,7 +168,7 @@ body.dark .dashboard-courses-card {
   aspect-ratio: 1 / 1;
   background-color: #666666;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
-  border-radius: 9px;
+  border-radius: 30px;
   padding: 1rem;
   border: 3px solid white;
   transition: background-color 0.3s ease-in-out;
@@ -188,7 +188,7 @@ body.light .dashboard-courses-card {
   height: auto;
   aspect-ratio: 1 / 1;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
-  border-radius: 29px;
+  border-radius: 30px;
   padding: 1rem;
   transition: background-color 0.3s ease-in-out;
   background-color: white;

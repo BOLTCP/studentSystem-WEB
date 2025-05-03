@@ -438,7 +438,6 @@ button.sidebar-link.dark {
 
 .dashboard-body {
   border: none;
-  height: 70vh;
   overflow-y: scroll;
   grid-template-columns: auto;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/university/personal_curriculum.css';
-import DeletePrompt from '../../utils/deletePrompt';
+import DeletePrompt from '../../utils/profileEdit';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
 import UserDetails from '../../models/user_details';
@@ -140,33 +140,10 @@ const PersonalCurriculum = ({ user }) => {
                                           //https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251
                                           title="Minimize icons created by kendis lasman - Flaticon"
             >
-              {isCurriculumClosed === false 
-                                      ?
-                                      /*
-                                       
-                                      <img
-                                          onClick={() => navigate('/login_screen', { state: { user: userDetails.user } })}
-                                          onMouseEnter={() => showAttribution(
-                                          "Plus icons created by srip - Flaticon",
-                                          " https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946"
-                                          )} 
-                                          onMouseLeave={() => hideAttribution()}
-                                          src="/src/assets/add.png"
-                                          //Icon source from 
-                                          //https://www.flaticon.com/free-icon/add_1237946?term=add&page=1&position=2&origin=search&related_id=1237946
-                                          title="Plus icons created by srip - Flaticon"
-                                          alt="UserIcon"
-                                          className="add-icon"
-                                      />
-                                      <a href="https://www.flaticon.com/free-icons/minimize" title="minimize icons">Minimize icons created by kendis lasman - Flaticon</a>
-                                    
-                                      */
+              {isCurriculumClosed === false ?
                                       <img className="minus-icon"
                                           src="/src/assets/minus.png"
-                                      />
-                                      :
-                                      null
-                                      }
+                                      /> : null }
           </td>
         </tr>
       ))}

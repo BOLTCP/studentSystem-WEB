@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/university/personal_curriculum.css';
-import DeletePrompt from '../../utils/profileEdit';
+import DeletePrompt from '../../utils/deletePrompt';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
 import UserDetails from '../../models/user_details';
@@ -26,6 +26,10 @@ const PersonalCurriculum = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const reloadPage = () => {
+   navigate(0);
+  };
 
   useEffect(() => {
 
@@ -223,7 +227,8 @@ const PersonalCurriculum = ({ user }) => {
           && <DeletePrompt visibility = {showDeletePrompt} 
                            course = {deleteCourse} 
                            studentId = {userDetails.student.studentId}
-                           yearSpecification = {yearSpecification} />}
+                           yearSpecification = {yearSpecification}
+                           onRefresh = {reloadPage} />}
 
 				<div className="curriculum-container">
 

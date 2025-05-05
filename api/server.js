@@ -459,3 +459,10 @@ app.delete('/Delete/Students/Course/From/Personal/Curriculum', async (req, res) 
     res.status(500).json({ error: 'Server failed' });
   }
 });
+
+app.post('/Save/Edited/User/Profile', async (req, res) => {
+
+  console.log('here');
+
+
+});

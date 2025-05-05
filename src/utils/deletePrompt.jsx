@@ -4,7 +4,7 @@ import getApiUrl from '../../api/get_Api_Url';
 import axios from 'axios';
 import './styles/delete_prompt.css';
 
-const DeletePrompt = ({ visibility, course, studentId, yearSpecification }) => {
+const DeletePrompt = ({ visibility, course, studentId, yearSpecification, onRefresh }) => {
   const [isVisible, setIsVisible] = useState(visibility);
   const [deleteCourse, setDeleteCourse] = useState(Courses.fromJsonCourse(course));
   const [isSuccess, setIsSuccess] = useState(false);
@@ -45,6 +45,7 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification }) => {
               setTimeout(() => {
                 setIsVisible(false);
               }, 5000);
+              onRefresh();
             } else {
               setResponseCode(401);
               console.log('Error fetching students_curriculum:', response.status, response.data);

@@ -31,10 +31,10 @@ const University = () => {
   console.log(condRender);
 
   return (
-    <div className="dashboard-container-layout">
-      <nav className="dashboard-nav">
-        <div className="nav-container">
-          <h1 className="nav-title">Их сургууль</h1>
+    <div className="university-dashboard-container-layout">
+      <nav className="university-dashboard-nav">
+        <div className="university-nav-container">
+          <h1 className="university-nav-title">asdь</h1>
         </div>
       </nav>
 

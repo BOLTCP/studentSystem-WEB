@@ -66,7 +66,6 @@ app.post('/User/Login/Student', async (req, res) => {
     const student = await prisma.student.findUnique({
       where: { user_id: userId }, 
     });
-
     const userpreferences = await prisma.userpreferences.findUnique({
       where: { user_id: userId }, 
     });
@@ -227,6 +226,7 @@ app.post('/Get/Majors/Recommended/Curriculum', async (req, res) => {
       const secondYearCoursesArray = Array.from(secondYearCoursesOfMajor);
       const thirdYearCoursesArray = Array.from(thirdYearCoursesOfMajor);
       const fourthYearCoursesArray = Array.from(fourthYearCoursesOfMajor);
+
 
       return res.status(200).json({ message: 'Санал болгох хөтөлбөрийг амжилттай татлаа!',
                                     recommended_curriculum: {
@@ -460,9 +460,43 @@ app.delete('/Delete/Students/Course/From/Personal/Curriculum', async (req, res) 
   }
 });
 
+//src/utils/profileEdit.jsx
 app.post('/Save/Edited/User/Profile', async (req, res) => {
+  const { user, student, department } = req.body;
+  console.log('/Save/Edited/User/Profile Received ', user.fname, student, department);
 
-  console.log('here');
+  if ( user.user_id === undefined 
+        || student.student_id == undefined
+        || department.department_id === undefined) {
+    return res.status(400).json({ message: 'Алдаа гарлаа. Мэдээллийн индекс / индексүүд олдсонгүй!' });
+  } else {
 
+    try {
 
+      const updateTransaction = await prisma.$transaction( async ( prisma ) => {
+
+        const { user_id: userId, ...newUser } = user;
+        const { student_id, user_id: studentUserId, ... newStudent } = student;
+
+        const updateUser = await prisma.auth_user.update({
+          where: { user_id: user.user_id },
+          data: newUser,
+        });
+
+        const updateStudent = await prisma.student.update({
+          where: { student_id: student.student_id },
+          data: newStudent,
+        });
+
+        if (updateUser && updateStudent) {
+          console.log('Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ');
+          return res.status(200).json({ message: 'Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ' });
+        }
+      });
+
+    } catch (e) {
+      console.log('Error: ', e);
+      return res.status(500).json({ message: 'Server Error has Occured!' });
+    }
+  }
 });

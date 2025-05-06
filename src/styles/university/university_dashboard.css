@@ -5,8 +5,9 @@ html, body {
 }
 
 .university-dashboard-container-layout {
+  width: 100vw;
   min-height: 100vh;
-  display: block;  /* or flex/grid depending on layout */
+  display: block;
 }
 
 .university-dashboard-nav {

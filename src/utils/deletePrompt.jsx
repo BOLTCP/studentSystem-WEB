@@ -44,8 +44,9 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification, onRefr
               setIsSuccess(true);
               setTimeout(() => {
                 setIsVisible(false);
-              }, 5000);
-              onRefresh();
+                onRefresh();
+              }, 750);
+              
             } else {
               setResponseCode(401);
               console.log('Error fetching students_curriculum:', response.status, response.data);

@@ -264,8 +264,8 @@ body.dark .profile-card-value-edit {
 }
 
 .edit-modal {
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   padding: 2rem;
   border: 1px solid white;
   border-radius: 8px;
@@ -277,4 +277,17 @@ body.dark .profile-card-value-edit {
   margin-top: 1rem;
   display: flex;
   justify-content: space-around;
+}
+
+.profile-edit-error-message {
+  padding: 20px;
+  text-align: center;
+  background-color: #facc15;
+  color: black;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+}
+
+.profile-edit-error-message p {
+  font-weight: bold;
 }

@@ -20,8 +20,8 @@
 }
 
 .delete-modal {
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   padding: 2rem;
   border: 1px solid white;
   border-radius: 8px;
@@ -61,7 +61,6 @@
 }
 
 .success-message p {
-  margin-bottom: 0;
   font-weight: bold;
 }
 

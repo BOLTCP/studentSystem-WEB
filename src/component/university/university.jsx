@@ -34,7 +34,7 @@ const University = () => {
     <div className="university-dashboard-container-layout">
       <nav className="university-dashboard-nav">
         <div className="university-nav-container">
-          <h1 className="university-nav-title">asdь</h1>
+          <h1 className="university-nav-title">Их Сургууль</h1>
         </div>
       </nav>
 

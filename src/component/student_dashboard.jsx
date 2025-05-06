@@ -36,20 +36,11 @@ const StudentDashboard = () => {
 
           if (response.status === 200) {
             console.log('User data fetched!', response.data);
-            let student = StudentUser.fromJsonStudent(response.data.student);
+            const student = StudentUser.fromJsonStudent(response.data.student);
             const userpreferences = UserPreferences.fromJsonUserPreferences(response.data.userpreferences);
             const major = MajorClass.fromJsonMajor(response.data.major);
             const department = Department.fromJsonDepartment(response.data.department);
             const departmentOfEducation = DepartmentsOfEducation.fromJsonDepartmentsOfEducation(response.data.departmentsofeducation);
-            const year_classification_fix = student.yearClassification === 'freshman' 
-            ? '1-р курс' 
-            : student.yearClassification === 'junior'
-            ? '2-р курс'
-            : student.yearClassification === 'sophomore'
-            ? '3-р курс'
-            : '4-р курс';
-
-            student.yearClassification = year_classification_fix;
 
             setUserDetails(new UserDetails({ user, userpreferences, student, major, department, departmentOfEducation }));
           } else {

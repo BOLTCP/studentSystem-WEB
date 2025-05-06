@@ -39,18 +39,24 @@ class Department {
     }
   }
 
-  toJson() {
-    return {
-      department_id: this.departmentId,
-      department_name: this.departmentName,
-      department_code: this.departmentCode,
-      department_email: this.departmentEmail,
-      number_of_staff: this.numberOfStaff,
-      logo: this.logo,
-      created_at: this.createdAt ? this.createdAt.toISOString() : new Date().toISOString(),
-      department_of_edu_id: this.departmentOfEduId,
-    };
+  static toJson(instance) {
+    try {
+      return {
+        department_id: instance.departmentId,
+        department_name: instance.departmentName,
+        department_code: instance.departmentCode,
+        department_email: instance.departmentEmail,
+        number_of_staff: instance.numberOfStaff,
+        logo: instance.logo,
+        created_at: instance.createdAt ? instance.createdAt.toISOString() : new Date().toISOString(),
+        department_of_edu_id: instance.departmentOfEduId,
+      };
+    } catch (error) {
+      console.error("Error toJson Department.jsx: ", error);
+      return null;
+    }
   }
+  
 
   static fromJsonButInApp(json) {
     try {

@@ -29,6 +29,7 @@ const PersonalCurriculum = ({ user }) => {
 
   const reloadPage = () => {
    navigate(0);
+   setShowDeletePrompt(false);
   };
 
   useEffect(() => {

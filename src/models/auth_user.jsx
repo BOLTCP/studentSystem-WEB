@@ -106,7 +106,7 @@ class AuthUser {
         fname: json.fname ?? '',
         lname: json.lname ?? '',
         birthday: json.birthday,
-        gender: json.gender ?? '',
+        gender: json.gender === 'male' ? 'эрэгтэй' : json.gender === 'female' ? 'эмэгтэй' : 'бусад',
         citizenship: json.citizenship ?? '',
         stateCity: json.state_city ?? '',
         townDistrict: json.town_district ?? '',
@@ -159,7 +159,7 @@ class AuthUser {
       fname: authUser.fname,
       lname: authUser.lname,
       birthday: authUser.birthday ? authUser.birthday.toISOString() : null, // Convert Date to ISO string
-      gender: authUser.gender,
+      gender: authUser.gender === 'эрэгтэй' ? 'male' : authUser.gender === 'эмэгтэй' ? 'female' : 'other',
       citizenship: authUser.citizenship,
       state_city: authUser.stateCity,
       town_district: authUser.townDistrict,

@@ -44,14 +44,23 @@ class StudentUser {
       studentId: json.student_id,
       userId: json.user_id,
       studentClubId: json.student_club_id,
-      additionalRoles: json.additional_roles ?? 'none',
+      additionalRoles: json.additional_roles === 'none' ? 'байхгүй' : 
+        json.additional_roles === 'laborant' ? 'Лаборант' : 
+        json.additional_roles === 'club_primary_leader' ? 'Клубын тэргүүн' :
+        'Клубын дэд тэргүүн',
       studentCode: json.student_code,
       studentEmail: json.student_email,
       studentFile: json.student_file ? { ...json.student_file } : {},
       enrollmentNumber: json.enrollment_number,
       enrollmentYear: json.enrollment_year,
-      yearClassification: json.year_classification,
-      isActive: json.is_active,
+      yearClassification: json.year_classification === 'freshman' ? '1-р курс' :
+        json.year_classification === 'junior' ? '2-р курс' :
+        json.year_classification === 'sophomore' ? '3-р курс' :
+        '4-р курс',
+      isActive: json.is_active === 'studying' ? 'Суралцаж байгаа' :
+        json.is_active === 'graduated' ? 'Төгссөн' :
+        json.is_active === 'expelled' ? 'Хөөгдсөн' :
+        'Шилжсэн',
       currentAcademicDegree: json.current_academic_degree,
       academicDegreeFile: json.academic_degree_file,
       majorId: json.major_id,
@@ -61,25 +70,34 @@ class StudentUser {
     });
   }
 
-  toJson() {
+  static toJson (StudentUser) {
     return {
-      student_id: this.studentId,
-      user_id: this.userId,
-      student_club_id: this.studentClubId,
-      additional_roles: this.additionalRoles,
-      student_code: this.studentCode,
-      student_email: this.studentEmail,
-      student_file: this.studentFile,
-      enrollment_number: this.enrollmentNumber,
-      enrollment_year: this.enrollmentYear,
-      year_classification: this.yearClassification,
-      is_active: this.isActive,
-      current_academic_degree: this.currentAcademicDegree,
-      academic_degree_file: this.academicDegreeFile,
-      major_id: this.majorId,
-      created_at: this.createdAt ? this.createdAt.toISOString() : new Date().toISOString(),
-      department_id: this.departmentId,
-      is_curriculum_closed: this.isCurriculumClosed,
+      student_id: StudentUser.studentId,
+      user_id: StudentUser.userId,
+      student_club_id: StudentUser.studentClubId,
+      additional_roles: StudentUser.additionalRoles === 'байхгүй' ? 'none' : 
+       StudentUser.additionalRoles === 'Лаборант' ? 'laborant' : 
+       StudentUser.additionalRoles === 'Клубын тэргүүн' ? 'club_primary_leader' :
+        'club_assistant_leader',
+      student_code: StudentUser.studentCode,
+      student_email: StudentUser.studentEmail,
+      student_file: StudentUser.studentFile,
+      enrollment_number: StudentUser.enrollmentNumber,
+      enrollment_year: StudentUser.enrollmentYear,
+      year_classification: StudentUser.yearClassification === '1-р курс' ? 'freshman' :
+       StudentUser.yearClassification === '2-р курс' ? 'junior' :
+       StudentUser.yearClassification === '3-р курс' ? 'sophomore' :
+        'senior',
+      is_active: StudentUser.isActive === 'Суралцаж байгаа' ? 'studying' :
+       StudentUser.isActive === 'Төгссөн' ? 'graduated' :
+       StudentUser.isActive === 'Хөөгдсөн' ? 'expelled' :
+        'transfered',
+      current_academic_degree: StudentUser.currentAcademicDegree,
+      academic_degree_file: StudentUser.academicDegreeFile,
+      major_id: StudentUser.majorId,
+      created_at: StudentUser.createdAt ? StudentUser.createdAt.toISOString() : new Date().toISOString(),
+      department_id: StudentUser.departmentId,
+      is_curriculum_closed: StudentUser.isCurriculumClosed,
     };
   }
 

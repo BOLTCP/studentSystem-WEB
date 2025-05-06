@@ -144,7 +144,7 @@ const LoginScreen = () => {
             Намайг санах
           </label>
         </div>
-        <div className="button-group">
+        <div className="login-button-group">
           <button
             className="login-button"
             type="button"

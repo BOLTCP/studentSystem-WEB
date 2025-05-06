@@ -135,7 +135,7 @@ body {
     font-weight: bold; /* font-bold */
   }
   
-  .button-group {
+  .login-button-group {
     display: flex; /* flex */
     align-items: center; /* items-center */
     justify-content: space-between; /* justify-between */

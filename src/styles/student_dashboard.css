@@ -1,13 +1,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  width: 100%;
   min-height: 100vh;
 }
 
-.dashboard-container-layout {
+.student-dashboard-container-layout {
   min-height: 100vh;
-  width: 100vw;
   display: block; /* or flex/grid depending on layout */
 }
 
@@ -44,7 +42,6 @@ html, body {
   overflow-y: scroll;
   position: absolute;
   left: 0px;
-  bottom: -2px;
   height: 90.25vh;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
@@ -518,5 +515,3 @@ button.sidebar-link.dark {
 .visible {
   opacity: 1;
 }
-
-

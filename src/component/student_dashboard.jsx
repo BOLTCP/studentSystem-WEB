@@ -108,7 +108,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container-layout">
+    <div className="student-dashboard-container-layout">
       <nav className="dashboard-nav">
         <div className="nav-container">
           <h1 className="nav-title">Сурагчийн Хянах Самбар</h1>
@@ -124,7 +124,6 @@ const StudentDashboard = () => {
           {renderBody()}
         </div>
 
-        {userDetails && <RenderSidebarRight user = {userDetails} />}
 
       </div>
 

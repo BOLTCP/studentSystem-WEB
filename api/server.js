@@ -473,24 +473,34 @@ app.post('/Save/Edited/User/Profile', async (req, res) => {
 
     try {
 
-      const updateTransaction = await prisma.$transaction( async ( prisma ) => {
-
+      const updateTransaction = await prisma.$transaction(async (prisma) => {
         const { user_id: userId, ...newUser } = user;
-        const { student_id, user_id: studentUserId, ... newStudent } = student;
-
-        const updateUser = await prisma.auth_user.update({
-          where: { user_id: user.user_id },
-          data: newUser,
-        });
-
-        const updateStudent = await prisma.student.update({
-          where: { student_id: student.student_id },
-          data: newStudent,
-        });
-
-        if (updateUser && updateStudent) {
-          console.log('Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ');
-          return res.status(200).json({ message: 'Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ' });
+        const { student_id, user_id: studentUserId, ...newStudent } = student;
+      
+        try {
+          const updateUser = await prisma.auth_user.update({
+            where: { user_id: user.user_id },
+            data: newUser,
+          });
+      
+          const updateStudent = await prisma.student.update({
+            where: { student_id: student.student_id },
+            data: newStudent,
+          });
+      
+          if (updateUser && updateStudent) {
+            console.log('Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ');
+            return res.status(200).json({ message: 'Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ' });
+          }
+        } catch (e) {
+          if (e.code === 'P2002') {
+            const violatedFields = e.meta?.target;
+            console.log('Unique constraint violation on fields:', violatedFields);
+            return res.status(401).json({
+              message: 'Энэхүү И-мэйл аль хэдийн бүртгэгдсэн байна!',
+              violatedFields,
+            });
+          }
         }
       });
 

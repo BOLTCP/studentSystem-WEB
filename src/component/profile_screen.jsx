@@ -42,6 +42,7 @@ const ProfileScreen = ( ) => {
 
   const handleEditClose = () => {
     localStorage.setItem('showProfileEditPrompt', 'false');
+    setUserDetails(UserDetailsUtil());
     setShowProfileEditPrompt(null);
   };
 
@@ -59,7 +60,7 @@ const ProfileScreen = ( ) => {
 
 const { user, student, major, department } = userDetails;
 
-if (user.userRole === 'teacher') {
+if (user.userRole === 'Багш') {
     return (
       <div className="profile-container-layout">
         <div className="profile-nav">
@@ -85,7 +86,7 @@ if (user.userRole === 'teacher') {
         </div>
       </div>
     );
-  } else if (user.userRole === 'student') {
+  } else if (user.userRole === 'Сурагч') {
     return (
       <>
         
@@ -118,16 +119,14 @@ if (user.userRole === 'teacher') {
                 </div>
                 <div className="profile-card-grid">
                 <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
-                <ProfileCard label="Хэрэглэгч нь:" value={user.userRole === 'student' ? 'Сурагч' : ''} />
+                <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
                 <ProfileCard label="Хэрэглэгчийн код:" value={student?.studentCode} />
                 <ProfileCard label="И-мэйл:" value={user.email} />
                 <ProfileCard label="Суралцах Эрдмийн зэрэг:" value={student?.currentAcademicDegree} />
                 <ProfileCard label="Түвшин:" value={student?.yearClassification?.toString()} />
                 <ProfileCard label="Салбар сургууль:" value={department?.departmentName} />
-                <ProfileCard label="Төлөв:" value={student?.isActive === 'studying' ? 'Суралцаж байгаа' : ''} />
-                <ProfileCard label="Хүйс:" value={user.gender === 'male' ? 'эрэгтэй' : 
-                                                    user.gender === 'female' ? 'эмэгтэй' : 
-                                                    'бусад'} />
+                <ProfileCard label="Төлөв:" value={student?.isActive} />
+                <ProfileCard label="Хүйс:" value={user.gender} />
                 <ProfileCard label="Регистрийн дугаар:" value={user.registryNumber} />
                 <ProfileCard label="Төрсөн өдөр:" value={moment(user.birthday).format('YYYY-MM-DD')} />
                 <ProfileCard label="Утасны дугаар:" value={user.phoneNumber} />

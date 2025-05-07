@@ -2,14 +2,14 @@ import React, { useState, useRef, useMemo } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import getApiUrl from '../../api/get_Api_Url';
-import getUserDetailsFromLocalStorage from './userDetails_util';
+import UserDetailsUtil from './userDetails_util';
 import AuthUser from '../models/auth_user';
 import StudentUser from '../models/student_user';
 import Department from '../models/department';
 import '../../src/styles/profile_screen.css';
 
 const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClose }) => {
-  const userDetails = getUserDetailsFromLocalStorage();
+  const userDetails = UserDetailsUtil();
   const [isProfileEditVisible, setIsProfileEditVisible] = useState(visibility);
   const [showConfirmPrompt, setShowConfirmPrompt] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -27,34 +27,38 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
   };
 
   const handleCancel = () => {
-    setShowConfirmPrompt(false);
+    if ( isSuccess === true ) {
+      onClose();
+    } else {
+      setShowConfirmPrompt(false);
+    }
   };
 
   const HandleSaveConfirm = ({ showConfirmPrompt, isSuccess, user, student, department, handleCancel, userDetails }) => {
+    const [noChangeDetected, setNoChangeDetected] = useState(null);
     const compareUser = JSON.stringify(AuthUser.fromJsonButInApp(userDetails.user));
     const compareStudent = JSON.stringify(StudentUser.fromJsonButInApp(userDetails.student));
     const compareDepartment = JSON.stringify(Department.fromJsonButInApp(userDetails.department));
-    let noChangeDetected = false;
 
-    console.log(student);
-    if ( JSON.stringify(user) === compareUser 
-          && JSON.stringify(student) === compareStudent
-          && JSON.stringify(department) === compareDepartment ) {
-        noChangeDetected = true;
-				setLoading(false)
+    const changeDetection = () => {
+      setNoChangeDetected(true);
     }
 
-    const saveNewProfile = async () => {
-      
+    const changeDetectionToFalse = () => {
+      setNoChangeDetected(401);
+    }
+
+    const saveNewProfile = async (changeDetection, changeDetectionToFalse) => {
+
       if(hasFetched.current) return;
       hasFetched.current = false;
 
       if ( JSON.stringify(user) === compareUser 
           && JSON.stringify(student) === compareStudent
           && JSON.stringify(department) === compareDepartment ) {
-        setError('Өөрчлөлт хийгдээгүй байна!');
+        changeDetection();
 				setLoading(false);
-			} else {
+      } else {
 				try {
 					const response = await axios.post(getApiUrl('/Save/Edited/User/Profile'), 
 						{ 
@@ -68,24 +72,24 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
 						});
 
             if (response.status === 200) {
+              userDetails.student = student;
+              userDetails.user = user;
+              userDetails.department = department;
+              console.log(userDetails);
+              localStorage.setItem('userDetails', JSON.stringify(userDetails));
+              console.log(localStorage.getItem('userDetails'));
               setIsSuccess(true);
-              setResponseCode(200);
-              
-            } else {
-              setIsSuccess(false);
-              setResponseCode(404);
-							console.log('Error fetching curriculum:', response.status, response.data);
-							setError('Failed to fetch curriculum.');
-						}
+            }
 				} catch (err) {
-					console.error('Error fetching curriculum:', err);
-					setError('Network error occurred.');
+          if (err.response.status === 401) {
+            changeDetectionToFalse();
+          }
 				} finally {
 					setLoading(false);
 				}
 			}
 		};
-    console.log(noChangeDetected);
+
     return (
       <>
       
@@ -94,11 +98,11 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
         >
 
           <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-            {isSuccess === false && noChangeDetected === false ? (
+            {isSuccess === false && noChangeDetected === null ? (
               <>
                 <p>Хувийн мэдээллийг засах?</p>
                 <div className="profile-edit-group">
-                  <button onClick={() => saveNewProfile()}>Тийм</button>
+                  <button onClick={() => saveNewProfile(changeDetection, changeDetectionToFalse)}>Тийм</button>
                   <button onClick={() => {handleCancel()}}>Үгүй</button>
 
                 </div>
@@ -116,6 +120,15 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
               <div className="success-message">
                 <p>
                   <strong>{user.fname}</strong> хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ!
+                </p>
+                <div className="profile-edit-group">
+                  <button onClick={() => {handleCancel(), setIsSuccess(false)}}>Буцах</button>
+                </div>
+              </div>
+            ) : noChangeDetected === 401 ? (
+              <div className="success-message">
+                <p>
+                  <strong className="error-text">И-мэйл нь аль хэдийн бүртгэгдсэн байна!</strong> 
                 </p>
                 <div className="profile-edit-group">
                   <button onClick={() => {handleCancel(), setIsSuccess(false)}}>Буцах</button>
@@ -151,7 +164,7 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
     { model: 'user', field: 'fname', label: 'Нэр (Өгсөн)', editable: true },
     { model: 'user', field: 'lname', label: 'Нэр (Овог)', editable: true },
     { model: 'student', field: 'studentCode', label: 'Хэрэглэгчийн код', editable: false },
-    { model: 'student', field: 'additionalRoles', label: 'Нэмэлт', editable: true },
+    { model: 'student', field: 'additionalRoles', label: 'Нэмэлт', editable: false },
     { model: 'user', field: 'email', label: 'И-мэйл', editable: true },
     { model: 'student', field: 'currentAcademicDegree', label: 'Эрдмийн зэрэг', editable: false },
     { model: 'student', field: 'yearClassification', label: 'Түвшин', editable: false },

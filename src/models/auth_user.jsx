@@ -137,7 +137,7 @@ class AuthUser {
         driversCertificate: json.drivers_certificate ?? '',
         driversCertificateNumber: json.drivers_certificate_number ?? '',
         disabled: json.disabled ?? '',
-        userRole: json.user_role ?? '',
+        userRole: json.user_role === 'student' ? 'Сурагч' : json.user_role === 'teacher' ? 'Багш' : '',
         isActive: json.is_active,
         email: json.email ?? '',
         createdAt: json.created_at,
@@ -190,7 +190,7 @@ class AuthUser {
       drivers_certificate: authUser.driversCertificate,
       drivers_certificate_number: authUser.driversCertificateNumber,
       disabled: authUser.disabled,
-      user_role: authUser.userRole,
+      user_role: authUser.userRole === 'Сурагч' ? 'student' : authUser.userRole === 'Багш' ? 'teacher' : '',
       is_active: authUser.isActive,
       email: authUser.email,
       created_at: authUser.createdAt ? authUser.createdAt.toISOString() : null, // Convert Date to ISO string

@@ -53,9 +53,9 @@ const LoginScreen = () => {
         
         const user = AuthUser.fromJson(userType);
 
-        if (user.userRole === 'student') {
+        if (user.userRole === 'Сурагч') {
           navigate('/student_dashboard', { state: { user: user }});
-        } else if (userType.userRole === 'teacher') {
+        } else if (userType.userRole === 'Багш') {
           navigate('/teacher/dashboard/', { state: { user: user }});
         }
          

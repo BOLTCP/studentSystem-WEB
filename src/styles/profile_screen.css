@@ -291,3 +291,9 @@ body.dark .profile-card-value-edit {
 .profile-edit-error-message p {
   font-weight: bold;
 }
+
+.error-text {
+  color: rgb(245, 67, 67);
+  margin-top: 10px;
+  text-align: center;
+}

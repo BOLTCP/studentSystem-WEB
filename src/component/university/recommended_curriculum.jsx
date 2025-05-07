@@ -4,9 +4,10 @@ import '../../styles/university/recommended_curriculum.css';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
 import UserDetails from '../../models/user_details';
+import AuthUser from '../../models/auth_user';
+import StudentUser from '../../models/student_user';
 import Courses from '../../models/courses';
 import moment from 'moment';
-
 
 const RecommendedCurriculum = ({ user }) => {
   const location = useLocation();
@@ -18,6 +19,7 @@ const RecommendedCurriculum = ({ user }) => {
   const [secondYear, setSecondYear] = useState(null);
   const [thirdYear, setThirdYear] = useState(null);
   const [fourthYear, setFourthYear] = useState(null);
+  localStorage.removeItem('addingCourseToCurriculum');
   const [responseCode, setResponseCode] = useState(null);
   const [maxRows, setMaxRows] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -48,8 +50,8 @@ const RecommendedCurriculum = ({ user }) => {
               setThirdYear(response.data.recommended_curriculum.third);
               setFourthYear(response.data.recommended_curriculum.fourth);
               setResponseCode(200);
-
             } else {
+              localStorage.removeItem('addingCourseToCurriculum');
               setResponseCode(404);
 							console.log('Error fetching curriculum:', response.status, response.data);
 							setError('Failed to fetch curriculum.');
@@ -67,30 +69,34 @@ const RecommendedCurriculum = ({ user }) => {
 	}, []);
 
   const getTotalCreditsFirstHalf = (courseOfCurriculum) => {
-    
-    const totalCreditOfYear = courseOfCurriculum
-    .slice(0, Math.floor(courseOfCurriculum.length / 2))
+    const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
+    const firstSemesterCourses = courseOfCurriculum.slice(0, springIndex);
+
+    const totalCreditOfYear = firstSemesterCourses
     .reduce((sum, course) => sum + parseInt(course.total_credits), 0);
     
     return totalCreditOfYear;
   }
 
   const getTotalCreditsLastHalf = (courseOfCurriculum) => {
+    const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
+    const secondSemesterCourses = courseOfCurriculum.slice(springIndex + 1, courseOfCurriculum.lenght);
 
-    const totalCreditOfYear = courseOfCurriculum
-    .slice(Math.floor(courseOfCurriculum.length / 2), courseOfCurriculum.length)
+    const totalCreditOfYear = secondSemesterCourses
     .reduce((sum, course) => sum + parseInt(course.total_credits), 0);
     
     return totalCreditOfYear;
   }
 
   const printCoursesOfFirstHalf = (courseOfCurriculum, yearSpecification) => { 
+    const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
+    const firstSemesterCourses = courseOfCurriculum.slice(0, springIndex);
+    const secondSemesterCourses = courseOfCurriculum.slice(springIndex + 1);
 
     return(
       <>
-        {courseOfCurriculum
-      .slice(0, Math.floor(courseOfCurriculum.length / 2))
-      .map((course, index) => (
+       {firstSemesterCourses
+        .map((course, index) => (
         <tr key={index} className="table-row">
           <td>{index + 1}</td>
           <td>{course.course_name}</td>
@@ -119,8 +125,7 @@ const RecommendedCurriculum = ({ user }) => {
       </th>
     </tr>
 
-    {courseOfCurriculum
-    .slice(Math.floor(courseOfCurriculum.length / 2), courseOfCurriculum.length)
+    {secondSemesterCourses
     .map((course, index) => (
         <tr key={index} className="table-row">
           <td>{index + 1}</td>

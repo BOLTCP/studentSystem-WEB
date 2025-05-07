@@ -4,7 +4,7 @@ import getApiUrl from '../../api/get_Api_Url';
 import axios from 'axios';
 import './styles/delete_prompt.css';
 
-const DeletePrompt = ({ visibility, course, studentId, yearSpecification, onRefresh }) => {
+const DeletePrompt = ({ visibility, course, studentId, yearSpecification, semesterSpecification, onRefresh }) => {
   const [isVisible, setIsVisible] = useState(visibility);
   const [deleteCourse, setDeleteCourse] = useState(Courses.fromJsonCourse(course));
   const [isSuccess, setIsSuccess] = useState(false);
@@ -37,6 +37,7 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification, onRefr
                 courseId: deleteCourse.courseId,
                 studentId: studentId,
                 yearSpecification: yearSpecification,
+                semesterSpecification: semesterSpecification
               },
             });
   
@@ -45,7 +46,7 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification, onRefr
               setTimeout(() => {
                 setIsVisible(false);
                 onRefresh();
-              }, 750);
+              }, 100);
               
             } else {
               setResponseCode(401);

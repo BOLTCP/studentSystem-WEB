@@ -11,9 +11,8 @@ import moment from 'moment';
 const ProfileScreen = ( ) => {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
-  const hasFetched = useRef(false);
   const [loading, setLoading] = useState(true);
-  const [showProfileEditPrompt, setShowProfileEditPrompt] = useState(null); // Initialize to null or false
+  const [showProfileEditPrompt, setShowProfileEditPrompt] = useState(null); 
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -25,14 +24,6 @@ const ProfileScreen = ( ) => {
     } else {
       setShowProfileEditPrompt(null);
     }
-
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-      let isMounted = true;
-  
-      return () => {
-        isMounted = false; 
-      };
   }, []);
 
   const handleEditButtonClick = () => {
@@ -42,8 +33,9 @@ const ProfileScreen = ( ) => {
 
   const handleEditClose = () => {
     localStorage.setItem('showProfileEditPrompt', 'false');
-    setUserDetails(UserDetailsUtil());
-    setShowProfileEditPrompt(null);
+    window.location.reload(); 
+    setUserDetails(UserDetailsUtil()); 
+    setShowProfileEditPrompt(null);  
   };
 
   if (!userDetails) {
@@ -97,7 +89,7 @@ if (user.userRole === 'Багш') {
             </div>
           </div>
 
-          <RenderSidebar user = {userDetails} />
+          <RenderSidebar user={userDetails} />
           <RenderSidebarRight user = {userDetails} />
           <div className="profile-content">
             

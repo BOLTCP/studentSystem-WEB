@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/university/personal_curriculum.css';
+import University from './university';
+import RecommendedCurriculum from './recommended_curriculum'; 
 import DeletePrompt from '../../utils/deletePrompt';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
@@ -15,6 +17,8 @@ const PersonalCurriculum = ({ user }) => {
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [deleteCourse, setDeleteCourse] = useState(null);
   const [yearSpecification, setYearSpecification] = useState(null);
+  const [semesterSpecification, setSemesterSpecification] = useState(null);
+  localStorage.removeItem('addingCourseToCurriculum');
   const [studentsCurriculum, setStudentsCurriculum] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   const [firstYear, setFirstYear] = useState();
@@ -31,6 +35,13 @@ const PersonalCurriculum = ({ user }) => {
    navigate(0);
    setShowDeletePrompt(false);
   };
+
+  const navigateToReccomendedCourses = (yearClassification, semesterSpecification) => {
+    localStorage.setItem('addingCourseToCurriculum', JSON.stringify(true));
+    localStorage.setItem('addYear', JSON.stringify(yearClassification));
+    localStorage.setItem('addSemester', JSON.stringify(semesterSpecification));
+    navigate('/university', { state: { condRender: 0 } });
+  }
 
   useEffect(() => {
 
@@ -57,7 +68,6 @@ const PersonalCurriculum = ({ user }) => {
 						});
 
             if (response.status === 200) {
-              setHas
               setFirstYear(response.data.first);
               setSecondYear(response.data.second);
               setThirdYear(response.data.third);
@@ -107,35 +117,44 @@ const PersonalCurriculum = ({ user }) => {
   }
 
   const getTotalCreditsFirstHalf = (courseOfCurriculum) => {
-    const totalCreditOfYear = courseOfCurriculum
-    .slice(0, Math.floor(courseOfCurriculum.length / 2))
+    const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
+    const firstSemesterCourses = courseOfCurriculum.slice(0, springIndex);
+
+    const totalCreditOfYear = firstSemesterCourses
     .reduce((sum, course) => sum + parseInt(course.total_credits), 0);
     
     return totalCreditOfYear;
   }
 
   const getTotalCreditsLastHalf = (courseOfCurriculum) => {
+    const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
+    const secondSemesterCourses = courseOfCurriculum.slice(springIndex + 1, courseOfCurriculum.lenght);
 
-    const totalCreditOfYear = courseOfCurriculum
-    .slice(Math.floor(courseOfCurriculum.length / 2), courseOfCurriculum.length)
+    const totalCreditOfYear = secondSemesterCourses
     .reduce((sum, course) => sum + parseInt(course.total_credits), 0);
     
     return totalCreditOfYear;
   }
 
   const printCoursesOfFirstHalf = (courseOfCurriculum, yearSpecification) => { 
+    const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
+    const firstSemesterCourses = courseOfCurriculum.slice(0, springIndex);
+    const secondSemesterCourses = courseOfCurriculum.slice(springIndex + 1);
 
     return(
       <>
-        {courseOfCurriculum
-      .slice(0, Math.floor(courseOfCurriculum.length / 2))
-      .map((course, index) => (
+      {firstSemesterCourses
+        .map((course, index) => (
         <tr key={index} className="table-row">
           <td>{index + 1}</td>
           <td>{course.course_name}</td>
           <td>{course.course_code}</td>
           <td>{course.total_credits}</td>
-          <td onClick={() => {setShowDeletePrompt(true), setDeleteCourse(course), setYearSpecification(yearSpecification)}}
+          <td onClick={() => {setShowDeletePrompt(true), 
+                                setDeleteCourse(course),
+                                setYearSpecification(yearSpecification), 
+                                setSemesterSpecification('first_semester')
+                              }}
                                           onMouseEnter={() => showAttribution(
                                           "Minimize icons created by kendis lasman - Flaticon",
                                           " https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251"
@@ -173,20 +192,33 @@ const PersonalCurriculum = ({ user }) => {
         }
         </th>
         <th>
-        {getTotalCreditsLastHalf(firstYear)}
+          {getTotalCreditsLastHalf(secondSemesterCourses)}
         </th>
-        <th></th>
+        <th>
+           {isCurriculumClosed === false 
+                                      ?
+                                      <img onClick={() => {navigateToReccomendedCourses(yearSpecification, 'second_semester')}}
+                                           className="add-icon"
+                                           src="/src/assets/add.png"
+                                      />
+                                      :
+                                      null
+                                      }
+        </th>
       </tr>
-
-    {courseOfCurriculum
-    .slice(Math.floor(courseOfCurriculum.length / 2), courseOfCurriculum.length)
+      
+    {secondSemesterCourses
     .map((course, index) => (
         <tr key={index} className="table-row">
           <td>{index + 1}</td>
           <td>{course.course_name}</td>
           <td>{course.course_code}</td>
           <td>{course.total_credits}</td>
-          <td onClick={() => {setShowDeletePrompt(true), setDeleteCourse(course), setYearSpecification(yearSpecification)}}
+          <td onClick={() => {setShowDeletePrompt(true), 
+                                setDeleteCourse(course), 
+                                setYearSpecification(yearSpecification)
+                                setSemesterSpecification('second_semester')
+                              }}
                                           onMouseEnter={() => showAttribution(
                                           "Minimize icons created by kendis lasman - Flaticon",
                                           " https://www.flaticon.com/free-icon/minus_4096251?term=subtract&page=1&position=8&origin=search&related_id=4096251"
@@ -229,6 +261,7 @@ const PersonalCurriculum = ({ user }) => {
                            course = {deleteCourse} 
                            studentId = {userDetails.student.studentId}
                            yearSpecification = {yearSpecification}
+                           semesterSpecification = {semesterSpecification}
                            onRefresh = {reloadPage} />}
 
 				<div className="curriculum-container">
@@ -279,9 +312,18 @@ const PersonalCurriculum = ({ user }) => {
                         1-р курс, Намар
                       </th>
                       <th>
-                      {getTotalCreditsFirstHalf(firstYear)}
+                        {getTotalCreditsFirstHalf(firstYear)}
                       </th>
-                      <th></th>
+                      <th onClick={() => {navigateToReccomendedCourses('first_year', 'first_semester')}}>
+                      {isCurriculumClosed === false 
+                                      ?
+                                      <img className="add-icon"
+                                           src="/src/assets/add.png"
+                                      />
+                                      :
+                                      null
+                                      }
+                      </th>
                     </tr>
                 </thead>
                         
@@ -311,9 +353,18 @@ const PersonalCurriculum = ({ user }) => {
                           2-р курс, Намар
                         </th>
                         <th>
-                        {getTotalCreditsFirstHalf(secondYear)}
+                          {getTotalCreditsFirstHalf(secondYear)}
                         </th>
-                        <th></th>
+                        <th onClick={() => {navigateToReccomendedCourses('second_year', 'first_semester')}}>
+                        {isCurriculumClosed === false 
+                                      ?
+                                      <img className="add-icon"
+                                           src="/src/assets/add.png"
+                                      />
+                                      :
+                                      null
+                                      }
+                        </th>
                       </tr>
                   </thead>
                           
@@ -349,9 +400,18 @@ const PersonalCurriculum = ({ user }) => {
                         3-р курс, Намар
                       </th>
                       <th>
-                      {getTotalCreditsFirstHalf(thirdYear)}
+                        {getTotalCreditsFirstHalf(thirdYear)}
                       </th>
-                      <th></th>
+                      <th onClick={() => {navigateToReccomendedCourses('third_year', 'first_semester')}}>
+                      {isCurriculumClosed === false 
+                                      ?
+                                      <img className="add-icon"
+                                           src="/src/assets/add.png"
+                                      />
+                                      :
+                                      null
+                                      }
+                      </th>
                     </tr>
                 </thead>
                         
@@ -386,9 +446,18 @@ const PersonalCurriculum = ({ user }) => {
                         4-р курс, Намар
                       </th>
                       <th>
-                      {getTotalCreditsFirstHalf(fourthYear)}
+                        {getTotalCreditsFirstHalf(fourthYear)}
                       </th>
-                      <th></th>
+                      <th onClick={() => {navigateToReccomendedCourses('fourth_year', 'first_semester')}}>
+                      {isCurriculumClosed === false 
+                                      ?
+                                      <img className="add-icon"
+                                           src="/src/assets/add.png"
+                                      />
+                                      :
+                                      null
+                                      }
+                      </th>
                     </tr>
                 </thead>
                         

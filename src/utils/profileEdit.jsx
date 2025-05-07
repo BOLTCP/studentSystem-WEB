@@ -77,7 +77,6 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
               userDetails.department = department;
               console.log(userDetails);
               localStorage.setItem('userDetails', JSON.stringify(userDetails));
-              console.log(localStorage.getItem('userDetails'));
               setIsSuccess(true);
             }
 				} catch (err) {

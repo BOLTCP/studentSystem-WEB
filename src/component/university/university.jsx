@@ -12,10 +12,9 @@ import '../profile_screen';
 const University = () => {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
-  console.log(userDetails);
   const [loading, setLoading] = useState(true);
   const condRender = location.state?.condRender;
-  
+
   const [error, setError] = useState(null);
 
   useEffect(() => {

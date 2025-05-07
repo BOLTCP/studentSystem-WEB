@@ -42,5 +42,37 @@ class Courses {
     console.error('Error parsing AuthUser from JSON:', error);
     return null;
   }
+
+  static toJson(Courses) {
+    return {
+      course_id: Courses.course_id,
+      course_name: Courses.course_name,
+      course_code: Courses.course_code,
+      course_type: Courses.course_type,
+      course_year: Courses.course_year,
+      total_credits: Courses.total_credits,
+      major_id: Courses.major_id,
+      description: Courses.description,
+      course_season: Courses.course_season,
+      times_per_week: Courses.times_per_week,
+    };
+  }
+
+  static toJsonButInApp(Courses) {
+    return {
+      course_id: Courses.courseId,
+      course_name: Courses.courseName,
+      course_code: Courses.courseCode,
+      course_type: Courses.courseType,
+      course_year: Courses.courseYear,
+      total_credits: Courses.totalCredits,
+      major_id: Courses.majorId,
+      description: Courses.description,
+      course_season: Courses.courseSeason,
+      times_per_week: Courses.timesPerWeek,
+    };
+  }
+
+
 }
 export default Courses;

@@ -18,6 +18,9 @@ const StudentDashboard = () => {
   const hasFetched = useRef(false);
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
+  localStorage.removeItem('addingCourseToCurriculum');
+  localStorage.removeItem('yearClassification');
+  localStorage.removeItem('semesterSpecification');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,6 +46,7 @@ const StudentDashboard = () => {
             const departmentOfEducation = DepartmentsOfEducation.fromJsonDepartmentsOfEducation(response.data.departmentsofeducation);
 
             setUserDetails(new UserDetails({ user, userpreferences, student, major, department, departmentOfEducation }));
+            
           } else {
             console.error('Error fetching user details:', response.status, response.data);
             setError('Failed to fetch user details.');
@@ -61,6 +65,9 @@ const StudentDashboard = () => {
 
     fetchDetails();
   }, []);
+
+  const serializedUserDetails = JSON.stringify(userDetails);
+  localStorage.setItem('userDetails', serializedUserDetails);
 
   const buildDashboardCourses = (label, value) => (
     <div className="dashboard-courses-card">

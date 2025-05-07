@@ -10,6 +10,7 @@ import '../../styles/university/university_dashboard.css';
 import '../profile_screen';
 
 export const RenderSidebar = () => {
+  
   const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
   const [theme, setTheme] = useState(
     `${userDetails.userpreferences?.appTheme === 'Light_Mode'

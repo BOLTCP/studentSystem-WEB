@@ -4,6 +4,8 @@ import '../../styles/university/curriculum.css';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
 import UserDetails from '../../models/user_details';
+import AuthUser from '../../models/auth_user';
+import StudentUser from '../../models/student_user';
 import Courses from '../../models/courses';
 import moment from 'moment';
 
@@ -13,8 +15,13 @@ const Curriculum = ({ user }) => {
   const userDetails = new UserDetails(user);
   const hasFetched = useRef(false);
 	const [curriculum, setCurriculum] = useState(null);
+  const [responseCode, setResponseCode] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   let courseYear = null;
+  const enablePlusButton = localStorage.getItem('addingCourseToCurriculum');
+  const yearClassification = localStorage.getItem('addYear');
+  const semesterSpecification = localStorage.getItem('addSemester');
+  console.log(yearClassification, semesterSpecification, enablePlusButton);
   const [maxRows, setMaxRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -58,6 +65,40 @@ const Curriculum = ({ user }) => {
 
 		fetchCurriculum();
 	}, []);
+
+  const addCourseToCurriculum = async (course, yearClassification, semesterSpecification) => {
+    try {
+      console.log(course);
+      const response = await axios.post(getApiUrl('/Add/Majors/Curriculum/Course/To/Student'), 
+        { 
+          user: AuthUser.toJson(userDetails.user),
+          student: StudentUser.toJson(userDetails.student),
+          course: Courses.toJsonButInApp(course),
+          yearClassification: yearClassification,
+          semesterSpecification: semesterSpecification
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000,
+        });
+
+        if (response.status === 200) {
+          console.log(response.data.courseAdded);
+          setResponseCode(200);
+        } else if (response.status === 401) {
+          console.log('lalar');
+          setResponseCode(404);
+          console.log('Error fetching curriculum:', response.status, response.data);
+          setError('Failed to fetch curriculum.');
+        }
+    } catch (err) {
+      console.error('Error fetching curriculum:', err);
+      setError('Network error occurred.');
+    } finally {
+      setLoading(false);
+    }
+    console.log(yearClassification, semesterSpecification);
+  } 
 
   const getTotalCredits = (i) => {
 
@@ -114,6 +155,7 @@ const Curriculum = ({ user }) => {
                             <th>Дүн</th>
                             <th>Үсгэн үнэлгээ</th>
                             <th>Улирал</th>
+                            <th></th>
                           </tr>
                           
                           <tr className="sub-header-row">
@@ -142,6 +184,7 @@ const Curriculum = ({ user }) => {
                             </th>
                             <th></th>
                             <th colSpan="2"></th>
+                            <th></th>
                           </tr>
                       </thead>
                               
@@ -159,6 +202,16 @@ const Curriculum = ({ user }) => {
                               <td></td>
                               <td></td>
                               <td></td>
+                              <td onClick={() => {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
+                                {enablePlusButton === 'true'
+                                                ?
+                                                <img className="add-icon"
+                                                    src="../../../src/assets/add.png"
+                                                />
+                                                :
+                                                null
+                                                }
+                              </td>
                             </tr>
                           ))}
 
@@ -187,6 +240,7 @@ const Curriculum = ({ user }) => {
                             {getTotalCreditsSelective(i)}
                           </th>
                           <th></th>
+                          <th></th>
                           <th colSpan="2"></th>
                         </tr>
 
@@ -202,6 +256,16 @@ const Curriculum = ({ user }) => {
                               <td></td>
                               <td></td>
                               <td></td>
+                              <td onClick={() =>{addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
+                                {enablePlusButton === 'true'
+                                                  ?
+                                                  <img className="add-icon"
+                                                      src="../../../src/assets/add.png"
+                                                  />
+                                                  :
+                                                  null
+                                                  }
+                              </td>
                             </tr>
                           ))}
                           

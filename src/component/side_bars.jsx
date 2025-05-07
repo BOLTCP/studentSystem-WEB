@@ -5,16 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router'
 import PropTypes from 'prop-types';
 import UserDetails from '../models/user_details';
+import UserDetailsUtil from '../../src/utils/userDetails_util';
 import StudentDashboard from './student_dashboard';
 import '../styles/student_dashboard.css';
 import './profile_screen';
 
-export const RenderSidebar = ({ user }) => {
-
-  const [userDetails, setUserDetails] = useState(new UserDetails(user));
-  const serializedUserDetails = JSON.stringify(userDetails);
-  localStorage.setItem('userDetails', serializedUserDetails);
-  console.log("userDetails: ", userDetails.userpreferences?.appTheme);
+export const RenderSidebar = () => {
+  const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
+  console.log(userDetails.user);
   const [theme, setTheme] = useState(
     `${userDetails.userpreferences?.appTheme === 'Light_Mode'
       ? 'light'

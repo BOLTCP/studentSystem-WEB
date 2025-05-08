@@ -21,10 +21,10 @@ const PersonalCurriculum = ({ user }) => {
   localStorage.removeItem('addingCourseToCurriculum');
   const [studentsCurriculum, setStudentsCurriculum] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
-  const [firstYear, setFirstYear] = useState();
-  const [secondYear, setSecondYear] = useState(null);
-  const [thirdYear, setThirdYear] = useState(null);
-  const [fourthYear, setFourthYear] = useState(null);
+  const [firstYear, setFirstYear] = useState(StudentCurriculum.fromJsonButInApp(JSON.parse(localStorage.getItem('studentCurriculumModel'))).studentsCurriculum);
+  const [secondYear, setSecondYear] = useState(StudentCurriculum.fromJsonButInApp(JSON.parse(localStorage.getItem('studentCurriculumModel'))));
+  const [thirdYear, setThirdYear] = useState(StudentCurriculum.fromJsonButInApp(JSON.parse(localStorage.getItem('studentCurriculumModel'))));
+  const [fourthYear, setFourthYear] = useState(StudentCurriculum.fromJsonButInApp(JSON.parse(localStorage.getItem('studentCurriculumModel'))));
   const [responseCode, setResponseCode] = useState(null);
   const [maxRows, setMaxRows] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ const PersonalCurriculum = ({ user }) => {
    setShowDeletePrompt(false);
   };
 
-  const navigateToReccomendedCourses = (yearClassification, semesterSpecification) => {
+  const navigateToCurriculumCourses = (yearClassification, semesterSpecification) => {
     localStorage.setItem('addingCourseToCurriculum', JSON.stringify(true));
     localStorage.setItem('addYear', JSON.stringify(yearClassification));
     localStorage.setItem('addSemester', JSON.stringify(semesterSpecification));
@@ -44,7 +44,8 @@ const PersonalCurriculum = ({ user }) => {
   }
 
   useEffect(() => {
-
+    /*
+    
     const fetchPersonalCurriculum = async () => {
       
       if(hasFetched.current) return;
@@ -96,6 +97,7 @@ const PersonalCurriculum = ({ user }) => {
 		};
 
     fetchPersonalCurriculum();
+    */
 	}, []);
 
 
@@ -140,6 +142,10 @@ const PersonalCurriculum = ({ user }) => {
     const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
     const firstSemesterCourses = courseOfCurriculum.slice(0, springIndex);
     const secondSemesterCourses = courseOfCurriculum.slice(springIndex + 1);
+    const yearSpecForSpringCourses = yearSpecification === '1' ? 'first_year' :
+      yearSpecification === '2' ? 'second_year' :
+      yearSpecification === '3' ? 'third_year' :
+      'fourth_year';
 
     return(
       <>
@@ -194,11 +200,10 @@ const PersonalCurriculum = ({ user }) => {
         <th>
           {getTotalCreditsLastHalf(secondSemesterCourses)}
         </th>
-        <th>
+        <th onClick={() => {navigateToCurriculumCourses(yearSpecForSpringCourses, 'second_semester')}}>
            {isCurriculumClosed === false 
                                       ?
-                                      <img onClick={() => {navigateToReccomendedCourses(yearSpecification, 'second_semester')}}
-                                           className="add-icon"
+                                      <img className="add-icon"
                                            src="/src/assets/add.png"
                                       />
                                       :
@@ -314,7 +319,7 @@ const PersonalCurriculum = ({ user }) => {
                       <th>
                         {getTotalCreditsFirstHalf(firstYear)}
                       </th>
-                      <th onClick={() => {navigateToReccomendedCourses('first_year', 'first_semester')}}>
+                      <th onClick={() => {navigateToCurriculumCourses('first_year', 'first_semester')}}>
                       {isCurriculumClosed === false 
                                       ?
                                       <img className="add-icon"
@@ -355,7 +360,7 @@ const PersonalCurriculum = ({ user }) => {
                         <th>
                           {getTotalCreditsFirstHalf(secondYear)}
                         </th>
-                        <th onClick={() => {navigateToReccomendedCourses('second_year', 'first_semester')}}>
+                        <th onClick={() => {navigateToCurriculumCourses('second_year', 'first_semester')}}>
                         {isCurriculumClosed === false 
                                       ?
                                       <img className="add-icon"
@@ -402,7 +407,7 @@ const PersonalCurriculum = ({ user }) => {
                       <th>
                         {getTotalCreditsFirstHalf(thirdYear)}
                       </th>
-                      <th onClick={() => {navigateToReccomendedCourses('third_year', 'first_semester')}}>
+                      <th onClick={() => {navigateToCurriculumCourses('third_year', 'first_semester')}}>
                       {isCurriculumClosed === false 
                                       ?
                                       <img className="add-icon"
@@ -448,7 +453,7 @@ const PersonalCurriculum = ({ user }) => {
                       <th>
                         {getTotalCreditsFirstHalf(fourthYear)}
                       </th>
-                      <th onClick={() => {navigateToReccomendedCourses('fourth_year', 'first_semester')}}>
+                      <th onClick={() => {navigateToCurriculumCourses('fourth_year', 'first_semester')}}>
                       {isCurriculumClosed === false 
                                       ?
                                       <img className="add-icon"

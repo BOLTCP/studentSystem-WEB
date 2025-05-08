@@ -84,7 +84,8 @@ app.post('/User/Login/Student', async (req, res) => {
 
     if (student) {
         console.log(`Мэдээллийг амжилттай авлаа.`);
-        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, departmentsofeducation: departmentsofeducation, major: major });
+        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, 
+          departmentsofeducation: departmentsofeducation, major: major });
       } else {
         res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
       }
@@ -301,7 +302,7 @@ app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
   console.log('/Get/Students/Personal/Curriculum: ', studentId);
 
   if ( !studentId || !majorId || !recommendedCurriculum ) {
-    return res.status(200).json({ message: 'Bad request!' });
+    return res.status(400).json({ message: 'Bad request!' });
   }
   try {
 
@@ -422,18 +423,14 @@ app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
       const fourthYearCoursesArray = Array.from(fourthYearCoursesOfMajor);
 
       return res.status(200).json({ message: 'Оюутанд ганцаарчилсан төлөвлөгөөг автоматаар оноов.',
-                                    recommended_curriculum: {
-                                      first: firstYearCoursesArray,
-                                      second: secondYearCoursesArray,
-                                      third: thirdYearCoursesArray !== undefined
-                                      ? thirdYearCoursesArray
-                                      : null,
-                                      fourth: fourthYearCoursesArray !== undefined
-                                      ? fourthYearCoursesArray
-                                      : null,
-                                    }
+                                    student_curriculum: insert_recommended_curriculum_to_student,
                                   });
     } else {
+
+      const recommended_curriculum_of_student = await 
+      prisma.studentcurriculum.findUnique({
+        where: { student_id: studentId }
+      });
 
       const studentsCurriculum = check_for_students_curriculum.students_curriculum;
       const firstYearCourses = studentsCurriculum['first_year'].first_semester;
@@ -534,16 +531,9 @@ app.post('/Get/Students/Personal/Curriculum', async (req, res) => {
       const thirdYearCoursesArray = Array.from(thirdYearCoursesOfMajor);
       const fourthYearCoursesArray = Array.from(fourthYearCoursesOfMajor);
 
-      return res.status(201).json({ message: 'Оюутны ганцаарчилсан төлөвлөгөөг татсан.', 
-                                    first: firstYearCoursesArray,
-                                    second: secondYearCoursesArray,
-                                    third: thirdYearCoursesArray !== undefined
-                                    ? thirdYearCoursesArray
-                                    : null,
-                                    fourth: fourthYearCoursesArray !== undefined
-                                    ? fourthYearCoursesArray
-                                    : null,
-                                  });
+      return res.status(200).json({ message: 'Оюутанд ганцаарчилсан төлөвлөгөөг автоматаар оноов.',
+        student_curriculum: recommended_curriculum_of_student,
+      });
     }
 
   } catch (error) {
@@ -616,7 +606,8 @@ app.post('/Add/Majors/Curriculum/Course/To/Student', async (req, res) => {
     let getStudentsCurriculum = await prisma.studentcurriculum.findUnique({
       where: { student_id: student.student_id },
     });
-
+    console.log(year, semester);
+    console.log(getStudentsCurriculum.students_curriculum[year]);
     let curriculum = (getStudentsCurriculum.students_curriculum[year][semester]);
     curriculum = [...curriculum, course.course_id];
     const updatedCurriculum = new Set(curriculum);

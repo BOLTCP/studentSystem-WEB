@@ -14,7 +14,7 @@ const PersonalCurriculum = ({ user }) => {
   const location = useLocation();
   const userDetails = new UserDetails(user);
   const [isCurriculumClosed, setIsCurriculumClosed] = useState(userDetails.student.isCurriculumClosed);
-  const [isCourseAddSuccess, setIsCourseAddSuccess] = useState(null);
+  const [isCourseAddSuccess, setIsCourseAddSuccess] = useState(JSON.parse(localStorage.getItem('isCourseAddSuccess')));
   const hasFetched = useRef(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [deleteCourse, setDeleteCourse] = useState(null);
@@ -50,7 +50,7 @@ const PersonalCurriculum = ({ user }) => {
     const fetchPersonalCurriculum = async () => {
       
       if(hasFetched.current) return;
-      hasFetched.current = false;
+      hasFetched.current = true;
 
       if( !userDetails.major ) {
         setError('Мэдээлэл олдсонгүй!');
@@ -96,10 +96,16 @@ const PersonalCurriculum = ({ user }) => {
 				}
 			}
 		};
-    localStorage.removeItem('isCourseAddSuccess');
-    setIsCurriculumClosed(JSON.parse(localStorage.getItem('isCourseAddSuccess')))
     fetchPersonalCurriculum();
 	}, []);
+
+
+  const closeMessage = () => {
+
+    localStorage.removeItem('isCourseAddSuccess');
+    setIsCourseAddSuccess(false);
+
+  }
 
 
   const showAttribution = (attributionComment, attrLink) => {
@@ -258,15 +264,15 @@ const PersonalCurriculum = ({ user }) => {
 		return (
 			<>
 
-        { isCourseAddSuccess === null ?
+        { isCourseAddSuccess === true ?
         
           (
-          <div
-          className={`course-add-overlay ${isCourseAddSuccess === 'true' ? 'visible' : ''}`}
+          <div onClick={() => {closeMessage()}}
+               className={`course-add-overlay ${isCourseAddSuccess === true ? 'visible' : ''}`}
           >
             <div className="add-modal">
               <div className="success-message">
-                <p><strong></strong> хичээлийг амжилттай хаслаа!</p>
+                <p><strong></strong> хичээлийг амжилттай нэмлээ!</p>
               </div>
             </div>
           </div>

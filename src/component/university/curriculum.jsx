@@ -89,7 +89,6 @@ const Curriculum = ({ user }) => {
           localStorage.setItem('addedCourse', JSON.stringify(course));
           navigate('/university', { state: { condRender: 2 } });
         } else if (response.status === 401) {
-          console.log('lalar');
           setResponseCode(404);
           console.log('Error fetching curriculum:', response.status, response.data);
           setError('Failed to fetch curriculum.');
@@ -206,7 +205,7 @@ const Curriculum = ({ user }) => {
                               <td></td>
                               <td></td>
                               <td onClick={() => {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
-                                {enablePlusButton === 'true'
+                                {enablePlusButton === 'true' && yearClassification !== courseYear
                                                 ?
                                                 <img className="add-icon"
                                                     src="../../../src/assets/add.png"

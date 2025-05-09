@@ -15,6 +15,12 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification, semest
     setIsVisible(true);
   };
 
+  const closeMessage = () => {
+    setIsVisible(false);
+    setIsSuccess(false);
+    onRefresh();
+  }
+
   const handleCancel = (e) => {
     e.stopPropagation();
     setIsVisible(false);
@@ -43,11 +49,6 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification, semest
   
             if (response.status === 200) {
               setIsSuccess(true);
-              setTimeout(() => {
-                setIsVisible(false);
-                onRefresh();
-              }, 100);
-              
             } else {
               setResponseCode(401);
               console.log('Error fetching students_curriculum:', response.status, response.data);
@@ -78,7 +79,8 @@ const DeletePrompt = ({ visibility, course, studentId, yearSpecification, semest
             </div>
           </>
         :
-          <div className="success-message">
+          <div  onClick={() => {closeMessage()}}
+                className="success-message">
             <p><strong>{deleteCourse.courseName}</strong> хичээлийг амжилттай хаслаа!</p>
           </div>
         }

@@ -85,6 +85,9 @@ const Curriculum = ({ user }) => {
         if (response.status === 200) {
           console.log(response.data.courseAdded);
           setResponseCode(200);
+          localStorage.setItem('isCourseAddSuccess', JSON.stringify(true));
+          localStorage.setItem('addedCourse', JSON.stringify(course));
+          navigate('/university', { state: { condRender: 2 } });
         } else if (response.status === 401) {
           console.log('lalar');
           setResponseCode(404);

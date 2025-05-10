@@ -16,6 +16,7 @@ const PersonalCurriculum = ({ user }) => {
   const [isCurriculumClosed, setIsCurriculumClosed] = useState(userDetails.student.isCurriculumClosed);
   const [isCourseAddSuccess, setIsCourseAddSuccess] = useState(JSON.parse(localStorage.getItem('isCourseAddSuccess')));
   const hasFetched = useRef(false);
+  const addedCourse = Courses.fromJsonCourse(JSON.parse(localStorage.getItem('addedCourse')));
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [deleteCourse, setDeleteCourse] = useState(null);
   const [yearSpecification, setYearSpecification] = useState(null);
@@ -272,7 +273,7 @@ const PersonalCurriculum = ({ user }) => {
           >
             <div className="add-modal">
               <div className="success-message">
-                <p><strong></strong> хичээлийг амжилттай нэмлээ!</p>
+                <p><strong>{addedCourse.courseName}</strong> хичээлийг амжилттай нэмлээ!</p>
               </div>
             </div>
           </div>

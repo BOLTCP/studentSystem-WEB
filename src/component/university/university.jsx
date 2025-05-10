@@ -50,7 +50,7 @@ const University = () => {
 
           if (response.status === 200) {
             localStorage.setItem('studentCurriculumModel', JSON.stringify(StudentCurriculum.fromJsonStudentCurriculum(response.data.student_curriculum)));
-            console.log(StudentCurriculum.fromJsonButInApp(JSON.parse(localStorage.getItem('studentCurriculumModel'))));
+            console.log(StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel'))));
             setResponseCode(200);
             
           } else if (response.status === 201) {

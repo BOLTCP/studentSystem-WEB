@@ -6,22 +6,29 @@ import getApiUrl from '../../../api/get_Api_Url';
 import UserDetails from '../../models/user_details';
 import AuthUser from '../../models/auth_user';
 import StudentUser from '../../models/student_user';
+import StudentCurriculum from '../../models/student_curriculum';
 import Courses from '../../models/courses';
 import moment from 'moment';
+import { object } from 'prop-types';
 
 
 const Curriculum = ({ user }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const userDetails = new UserDetails(user);
   const hasFetched = useRef(false);
 	const [curriculum, setCurriculum] = useState(null);
   const [responseCode, setResponseCode] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   let courseYear = null;
+
+  const personalCurriculum = Object.values(Object.values(StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel'))).studentsCurriculum))
+                              .map((curriculum) => Object.values(curriculum)).map((curriculum) => curriculum[0] + ',' + curriculum[1])
+                              .flatMap(curriculum => curriculum.split(','));
+
   const enablePlusButton = localStorage.getItem('addingCourseToCurriculum');
   const yearClassification = localStorage.getItem('addYear');
   const semesterSpecification = localStorage.getItem('addSemester');
-  console.log(yearClassification, semesterSpecification, enablePlusButton);
   const [maxRows, setMaxRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -49,7 +56,6 @@ const Curriculum = ({ user }) => {
 								Courses.fromJsonCourse(course));
               setMaxRows(courses.length);
 							setCurriculum(courses);
-              console.log(courses);
 						} else {
 							console.log('Error fetching curriculum:', response.status, response.data);
 							setError('Failed to fetch curriculum.');
@@ -68,7 +74,6 @@ const Curriculum = ({ user }) => {
 
   const addCourseToCurriculum = async (course, yearClassification, semesterSpecification) => {
     try {
-      console.log(course);
       const response = await axios.post(getApiUrl('/Add/Majors/Curriculum/Course/To/Student'), 
         { 
           user: AuthUser.toJson(userDetails.user),
@@ -86,7 +91,7 @@ const Curriculum = ({ user }) => {
           console.log(response.data.courseAdded);
           setResponseCode(200);
           localStorage.setItem('isCourseAddSuccess', JSON.stringify(true));
-          localStorage.setItem('addedCourse', JSON.stringify(course));
+          localStorage.setItem('addedCourse', JSON.stringify(Courses.toJsonButInApp(course)));
           navigate('/university', { state: { condRender: 2 } });
         } else if (response.status === 401) {
           setResponseCode(404);
@@ -204,16 +209,24 @@ const Curriculum = ({ user }) => {
                               <td></td>
                               <td></td>
                               <td></td>
-                              <td onClick={() => {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
-                                {enablePlusButton === 'true' && yearClassification !== courseYear
-                                                ?
-                                                <img className="add-icon"
-                                                    src="../../../src/assets/add.png"
-                                                />
-                                                :
-                                                null
-                                                }
-                              </td>
+                              {enablePlusButton === 'true' && !personalCurriculum.includes(`${course.courseId}`) ?
+                                (
+                                  <td onClick={() => {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
+                                    {enablePlusButton === 'true' && !personalCurriculum.includes(`${course.courseId}`)
+                                                    ?
+                                                    <img className="add-icon"
+                                                        src="../../../src/assets/add.png"
+                                                    />
+                                                    :
+                                                    null
+                                                    }
+                                  </td>
+                                ) :
+                                (
+                                  <td>
+                                  </td>
+                                )
+                              }
                             </tr>
                           ))}
 
@@ -258,16 +271,24 @@ const Curriculum = ({ user }) => {
                               <td></td>
                               <td></td>
                               <td></td>
-                              <td onClick={() =>{addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
-                                {enablePlusButton === 'true'
-                                                  ?
-                                                  <img className="add-icon"
-                                                      src="../../../src/assets/add.png"
-                                                  />
-                                                  :
-                                                  null
-                                                  }
-                              </td>
+                              {enablePlusButton === 'true' && !personalCurriculum.includes(`${course.courseId}`) ?
+                                (
+                                  <td onClick={() => {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
+                                    {enablePlusButton === 'true' && !personalCurriculum.includes(`${course.courseId}`)
+                                                    ?
+                                                    <img className="add-icon"
+                                                        src="../../../src/assets/add.png"
+                                                    />
+                                                    :
+                                                    null
+                                                    }
+                                  </td>
+                                ) :
+                                (
+                                  <td>
+                                  </td>
+                                )
+                              }
                             </tr>
                           ))}
                           

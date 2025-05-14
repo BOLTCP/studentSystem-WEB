@@ -147,6 +147,7 @@ const PersonalCurriculum = ({ user }) => {
   }
 
   const printCoursesOfFirstHalf = (courseOfCurriculum, yearSpecification) => { 
+    console.log(yearSpecification);
     const springIndex = (courseOfCurriculum.findIndex((course => course === 'Хавар')));
     const firstSemesterCourses = courseOfCurriculum.slice(0, springIndex);
     const secondSemesterCourses = courseOfCurriculum.slice(springIndex + 1);
@@ -204,10 +205,13 @@ const PersonalCurriculum = ({ user }) => {
         <th>
           {getTotalCreditsLastHalf(secondSemesterCourses)}
         </th>
-        <th>
+        <th onClick={() => {navigateToReccomendedCourses(yearSpecification === '1' ? 'first_year'
+                                                                                      : yearSpecification === '2' ? 'second_year'
+                                                                                      : yearSpecification === '3' ? 'third_year'
+                                                                                      : 'fourth_year', 'second_semester')}} >
            {isCurriculumClosed === false 
                                       ?
-                                      <img onClick={() => {navigateToReccomendedCourses(yearSpecification, 'second_semester')}}
+                                      <img 
                                            className="add-icon"
                                            src="/src/assets/add.png"
                                       />

@@ -17,7 +17,8 @@ const Curriculum = ({ user }) => {
   const navigate = useNavigate();
   const userDetails = new UserDetails(user);
   const hasFetched = useRef(false);
-	const [curriculum, setCurriculum] = useState(null);
+  let studentsCurriculum = StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel')));
+  const [curriculum, setCurriculum] = useState(null);
   const [responseCode, setResponseCode] = useState(null);
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   let courseYear = null;
@@ -92,6 +93,10 @@ const Curriculum = ({ user }) => {
           setResponseCode(200);
           localStorage.setItem('isCourseAddSuccess', JSON.stringify(true));
           localStorage.setItem('addedCourse', JSON.stringify(Courses.toJsonButInApp(course)));
+          const findYear = yearClassification.slice(1, -1);
+          const findSemester = semesterSpecification.slice(1, -1);
+          studentsCurriculum.studentsCurriculum[findYear][findSemester].push(course.courseId);
+          localStorage.setItem('studentCurriculumModel', JSON.stringify(StudentCurriculum.fromJsonButInAppInstance(studentsCurriculum)));
           navigate('/university', { state: { condRender: 2 } });
         } else if (response.status === 401) {
           setResponseCode(404);

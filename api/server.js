@@ -954,3 +954,39 @@ app.post('/Save/Edited/User/Profile', async (req, res) => {
     }
   }
 });
+
+app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
+  const { studentsCurriculum, student } = req.body;
+
+  const search_year = student.yearClassification === '1-р курс' ? 'first_year'
+                    : student.yearClassification === '2-р курс' ? 'second_year'
+                    : student.yearClassification === '3-р курс' ? 'third_year'
+                    : 'fourth_year'; 
+
+  const search_courses = (studentsCurriculum.studentsCurriculum[search_year].first_semester);
+
+  try {
+    let students_scheduled_courses = [];
+    for (let i = 0;  i < search_courses.length; i++) {
+      const courseOfSchedule = await prisma.courses.findFirst({ 
+        where: { course_id: search_courses[i] },
+      });
+      students_scheduled_courses.push(courseOfSchedule);
+    }
+
+    if (students_scheduled_courses.length > 0) {
+      return res.status(200).json({  
+        message: 'Оюутны хуваарийн хичээлүүдийг татаж авлаа.',
+        studentsCourses: students_scheduled_courses,
+      });
+    } else {
+      console.log('Алдаа гарлаа');
+      return res.status(400).json({ message: 'Алдаа гарлаа' });
+    }
+
+  } catch (err) {
+    console.error('Server Error: ', err);
+    return res.status(500).json({ messsage: err });
+  }
+
+});

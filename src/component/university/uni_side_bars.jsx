@@ -192,6 +192,15 @@ export const RenderSidebar = () => {
                   Ганцаарчилсан төлөвлөгөө
                 </button>
               </li>
+              <li className="dropdown-item">
+                <button className={`dashboard-submenu-button ${selectedSubmenu === 0 ? 'active' : ''}`} 
+                        onClick={() => {
+                          setSelectedSubmenu(1);
+                          navigate('/university', { state: { condRender: 3 } })
+                          }}>
+                  Хичээл сонголт
+                </button>
+              </li>
             </ul>
           )}
         </li>

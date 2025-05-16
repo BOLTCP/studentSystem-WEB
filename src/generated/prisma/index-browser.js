@@ -555,15 +555,21 @@ exports.Prisma.StudentcurriculumScalarFieldEnum = {
   student_code: 'student_code'
 };
 
-exports.Prisma.StudentscheduleScalarFieldEnum = {
-  student_curriculum_id: 'student_curriculum_id',
+exports.Prisma.StudentsscheduleScalarFieldEnum = {
+  students_schedule_id: 'students_schedule_id',
   student_id: 'student_id',
   course_id: 'course_id',
-  student_schedule_year: 'student_schedule_year',
-  classroom_number: 'classroom_number',
+  classroom: 'classroom',
   class_group: 'class_group',
-  semester_year: 'semester_year',
-  modified_at: 'modified_at'
+  modified_at: 'modified_at',
+  schedules_timetable_position: 'schedules_timetable_position',
+  course_name: 'course_name',
+  time: 'time',
+  teachers_email: 'teachers_email',
+  teachers_name: 'teachers_name',
+  schedule_type: 'schedule_type',
+  days: 'days',
+  student_code: 'student_code'
 };
 
 exports.Prisma.StudentstoadviseScalarFieldEnum = {
@@ -919,26 +925,6 @@ exports.club_type_enum = exports.$Enums.club_type_enum = {
   amatuer_club: 'amatuer_club'
 };
 
-exports.grade_status_enum = exports.$Enums.grade_status_enum = {
-  incomplete: 'incomplete',
-  complete: 'complete',
-  missing: 'missing',
-  submitted: 'submitted',
-  other: 'other'
-};
-
-exports.is_active_enum = exports.$Enums.is_active_enum = {
-  is_working: 'is_working',
-  vacation: 'vacation',
-  left: 'left'
-};
-
-exports.schedule_type_enum = exports.$Enums.schedule_type_enum = {
-  Lecture: 'Lecture',
-  Seminar: 'Seminar',
-  Laboratory: 'Laboratory'
-};
-
 exports.schedule_time_type_enum = exports.$Enums.schedule_time_type_enum = {
   firstPeriod: 'firstPeriod',
   secondPeriod: 'secondPeriod',
@@ -959,6 +945,26 @@ exports.days_type_enum = exports.$Enums.days_type_enum = {
   Friday: 'Friday',
   Saturday: 'Saturday',
   Sunday: 'Sunday'
+};
+
+exports.grade_status_enum = exports.$Enums.grade_status_enum = {
+  incomplete: 'incomplete',
+  complete: 'complete',
+  missing: 'missing',
+  submitted: 'submitted',
+  other: 'other'
+};
+
+exports.is_active_enum = exports.$Enums.is_active_enum = {
+  is_working: 'is_working',
+  vacation: 'vacation',
+  left: 'left'
+};
+
+exports.schedule_type_enum = exports.$Enums.schedule_type_enum = {
+  Lecture: 'Lecture',
+  Seminar: 'Seminar',
+  Laboratory: 'Laboratory'
 };
 
 exports.recieved_enum = exports.$Enums.recieved_enum = {
@@ -999,7 +1005,7 @@ exports.Prisma.ModelName = {
   studentclubevent: 'studentclubevent',
   studentclubs: 'studentclubs',
   studentcurriculum: 'studentcurriculum',
-  studentschedule: 'studentschedule',
+  studentsschedule: 'studentsschedule',
   studentstoadvise: 'studentstoadvise',
   submission: 'submission',
   surveys: 'surveys',

@@ -1,0 +1,91 @@
+.student-schedule-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+}
+
+body.light .student-schedule-timetable-container {
+  max-width: 1000px;
+  min-width: 750px;
+  height: auto;
+  background-color: white;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 9px;
+  padding: 1rem;
+  border: 3px solid #e0e0e0;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 20px;
+  color: black;
+}
+
+body.dark .student-schedule-timetable-container {
+  max-width: 1000px;
+  min-width: 750px;
+  height: auto;
+  background-color: rgb(217, 240, 246);
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 9px;
+  padding: 1rem;
+  border: 3px solid white;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 20px;
+  background-color: black;
+  color: black;
+}
+
+.student-schedule-timetable{
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 250px;
+}
+
+.draggable-container {
+  padding-left: 2rem;
+  width: 300px;
+  height: max-content;
+}
+
+.timetable-draggable-element {
+  height: 50px;
+  margin: 0rem 0rem 0.75rem 0rem;
+  opacity: 1;
+  padding: 4px 8px;
+  background-color: #4a90e2;
+  color: #fff;
+  border-radius: 4;
+  cursor: move;
+  font-size: 12;
+  border-radius: 9px;
+  text-align: center;
+}
+
+.timetable-draggable-element.isDragging {
+  width: 50;
+  opacity: 0.5;
+  padding: 4px 8px;
+  background-color: #4a90e2;
+  color: #fff;
+  border-radius: 4;
+  cursor: move;
+  font-size: 12;
+  text-align: center;
+}
+
+.placed-course {
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.placed-course.isOver {
+  width: 120px;
+  height: 60px;
+  border: 1px solid #ccc;
+  background-color: #f0f8ff ;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+}

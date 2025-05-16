@@ -214,7 +214,7 @@ model courses {
   grades                 grades[]
   invitations            invitations[]
   notificationstudents   notificationstudents[]
-  studentschedule        studentschedule[]
+  studentschedule        studentsschedule[]
   studentstoadvise       studentstoadvise[]
   teacherscourseplanning teacherscourseplanning[]
 }
@@ -496,7 +496,7 @@ model student {
   studentattendance       studentattendance[]
   studentbalance          studentbalance[]
   studentcurriculum       studentcurriculum[]
-  studentschedule         studentschedule[]
+  studentschedule         studentsschedule[]
   studentstoadvise        studentstoadvise[]
   submission              submission[]
   surveys                 surveys[]
@@ -590,17 +590,25 @@ model studentcurriculum {
   student                 student                   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-model studentschedule {
-  student_curriculum_id Int       @id @default(autoincrement())
-  student_id            Int
-  course_id             Int
-  student_schedule_year DateTime  @db.Date
-  classroom_number      String    @db.Char(10)
-  class_group           Int
-  semester_year         String    @db.Char(25)
-  modified_at           DateTime? @default(now()) @db.Timestamp(6)
-  courses               courses   @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction)
-  student               student   @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+model studentsschedule {
+  students_schedule_id         Int                      @id @default(autoincrement())
+  student_id                   Int
+  course_id                    Int
+  classroom                    String?                  @db.VarChar(50)
+  class_group                  Int?
+  modified_at                  DateTime                 @default(now())
+  schedules_timetable_position Int?
+  course_name                  String?                  @db.VarChar(50)
+  time                         schedule_time_type_enum?
+  teachers_email               String?                  @db.VarChar(50)
+  teachers_name                String?                  @db.VarChar(25)
+  schedule_type                schedule_time_type_enum?
+  days                         days_type_enum?
+  student_code                 String?                  @db.VarChar(8)
+  course                       courses                  @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
+  student                      student                  @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+
+  @@map("studentsschedule")
 }
 
 model studentstoadvise {

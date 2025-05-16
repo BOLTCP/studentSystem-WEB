@@ -23,9 +23,11 @@ const Curriculum = ({ user }) => {
   const [majorYears, setMajorYears] = useState(parseInt(userDetails.major.totalYears));
   let courseYear = null;
 
-  const personalCurriculum = Object.values(Object.values(StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel'))).studentsCurriculum))
-                              .map((curriculum) => Object.values(curriculum)).map((curriculum) => curriculum[0] + ',' + curriculum[1])
-                              .flatMap(curriculum => curriculum.split(','));
+  const personalCurriculum = Object.values(Object.values(StudentCurriculum
+        .fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel')))
+        .studentsCurriculum))
+        .map((curriculum) => Object.values(curriculum)).map((curriculum) => curriculum[0] + ',' + curriculum[1])
+        .flatMap(curriculum => curriculum.split(','));
 
   const enablePlusButton = localStorage.getItem('addingCourseToCurriculum');
   const yearClassification = localStorage.getItem('addYear');
@@ -216,22 +218,15 @@ const Curriculum = ({ user }) => {
                               <td></td>
                               {enablePlusButton === 'true' && !personalCurriculum.includes(`${course.courseId}`) ?
                                 (
-                                  <td onClick={() => {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
+                                  <td onClick={() => 
+                                    {addCourseToCurriculum(course, yearClassification, semesterSpecification)}} >
                                     {enablePlusButton === 'true' && !personalCurriculum.includes(`${course.courseId}`)
                                                     ?
-                                                    <img className="add-icon"
-                                                        src="../../../src/assets/add.png"
-                                                    />
+                                                    <img className="add-icon" src="../../../src/assets/add.png" />
                                                     :
-                                                    null
-                                                    }
+                                                    null }
                                   </td>
-                                ) :
-                                (
-                                  <td>
-                                  </td>
-                                )
-                              }
+                                ) : ( <td> </td> )}
                             </tr>
                           ))}
 

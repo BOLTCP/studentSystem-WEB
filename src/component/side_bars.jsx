@@ -85,7 +85,6 @@ export const RenderSidebar = () => {
       el.classList.add("visible");
     }
   }
-  
   const hideAttribution = () => {
     const el = document.getElementById("hover-attribution");
     if (el) {

@@ -848,7 +848,8 @@ enum calendar_purpose_enum {
 }
 
 enum classroom_type_enum {
-  computer_laboratory @map("computer-laboratory")
+  computerLaboratory 
+  seminar
   students_dev        @map("students-dev")
   lecture
   tv_classroom        @map("tv-classroom")
@@ -1040,6 +1041,8 @@ enum schedule_type_enum {
   Lecture
   Seminar
   Laboratory
+  computerLaboratory
+  seminar
 }
 
 enum sign_ups_enum {

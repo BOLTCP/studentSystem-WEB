@@ -89,3 +89,15 @@ body.dark .student-schedule-timetable-container {
   text-align: center;
   vertical-align: middle;
 }
+
+.hours-and-headers {
+  padding: 8;
+  text-align: center;
+  background-color: yellow;
+}
+
+body.dark .hours-and-headers {
+  padding: 8;
+  text-align: center;
+  background-color: black;
+}

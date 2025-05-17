@@ -51,13 +51,9 @@ const University = () => {
 
           if (response.status === 200) {
             localStorage.setItem('studentCurriculumModel', JSON.stringify(StudentCurriculum.fromJsonStudentCurriculum(response.data.student_curriculum)));
-            console.log(StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel'))));
             setResponseCode(200);
-            
           } else if (response.status === 201) {
-            localStorage.setItem('studentCurriculumModel', JSON.stringify(StudentCurriculum.fromJsonStudentCurriculum(response.data.student_curriculum)));
             setResponseCode(201);
-
           } else {
             setResponseCode(404);
             console.log('Error fetching curriculum:', response.status, response.data);
@@ -77,12 +73,6 @@ const University = () => {
 
     fetchDetails();
   }, []);
-
-  useEffect(() => {
-    console.log("University: Render. condRender:", condRender);
-  }, []);
-  
-  console.log(condRender);
 
   return (
     <div className="university-dashboard-container-layout">

@@ -796,7 +796,8 @@ exports.calendar_purpose_enum = exports.$Enums.calendar_purpose_enum = {
 };
 
 exports.classroom_type_enum = exports.$Enums.classroom_type_enum = {
-  computer_laboratory: 'computer_laboratory',
+  computerLaboratory: 'computerLaboratory',
+  seminar: 'seminar',
   students_dev: 'students_dev',
   lecture: 'lecture',
   tv_classroom: 'tv_classroom'
@@ -964,7 +965,9 @@ exports.is_active_enum = exports.$Enums.is_active_enum = {
 exports.schedule_type_enum = exports.$Enums.schedule_type_enum = {
   Lecture: 'Lecture',
   Seminar: 'Seminar',
-  Laboratory: 'Laboratory'
+  Laboratory: 'Laboratory',
+  computerLaboratory: 'computerLaboratory',
+  seminar: 'seminar'
 };
 
 exports.recieved_enum = exports.$Enums.recieved_enum = {

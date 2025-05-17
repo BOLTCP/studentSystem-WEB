@@ -955,6 +955,7 @@ app.post('/Save/Edited/User/Profile', async (req, res) => {
   }
 });
 
+//src/component/university/student_scheduler.jsx
 app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
   const { studentsCurriculum, student } = req.body;
 
@@ -966,18 +967,28 @@ app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
   const search_courses = (studentsCurriculum.studentsCurriculum[search_year].first_semester);
 
   try {
+
     let students_scheduled_courses = [];
+    let teachers_available_courses = [];
     for (let i = 0;  i < search_courses.length; i++) {
       const courseOfSchedule = await prisma.courses.findFirst({ 
         where: { course_id: search_courses[i] },
       });
       students_scheduled_courses.push(courseOfSchedule);
-    }
 
+      const courseOfTeachersSchedule = await prisma.teachersschedule.findMany({
+        where: {
+          course_id: search_courses[i],
+        },
+      });
+      teachers_available_courses.push(...courseOfTeachersSchedule);
+    }
+    console.log(teachers_available_courses);
     if (students_scheduled_courses.length > 0) {
       return res.status(200).json({  
         message: 'Оюутны хуваарийн хичээлүүдийг татаж авлаа.',
         studentsCourses: students_scheduled_courses,
+        teachersAvailableCourses: teachers_available_courses,
       });
     } else {
       console.log('Алдаа гарлаа');

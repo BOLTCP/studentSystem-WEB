@@ -481,23 +481,23 @@ export const RenderSidebarRight = ({ user, theme }) => {
             </div>
             <div className="today-schedule-container">
               <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршил</div>
             </div>
             <div className="today-schedule-container">
               <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршил</div>
             </div>
             <div className="today-schedule-container">
               <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршил</div>
             </div>
             <div className="today-schedule-container">
               <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршил</div>
             </div>
             <div className="today-schedule-container">
               <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
+              <div className="today-schedule-item">Хичээл орох ангийн байршил</div>
             </div>
           </div>
         </li>

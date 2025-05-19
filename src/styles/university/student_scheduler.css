@@ -3,6 +3,7 @@
   grid-template-columns: 3fr 1fr;
 }
 
+
 body.light .student-schedule-timetable-container {
   max-width: 1000px;
   min-width: 750px;
@@ -45,10 +46,10 @@ body.dark .student-schedule-timetable-container {
 }
 
 .timetable-draggable-element {
-  height: 50px;
+  min-height: 50px;
   margin: 0rem 0rem 0.75rem 0rem;
   opacity: 1;
-  padding: 4px 8px;
+  padding: 8px 8px;
   background-color: #4a90e2;
   color: #fff;
   border-radius: 4;
@@ -56,6 +57,7 @@ body.dark .student-schedule-timetable-container {
   font-size: 12;
   border-radius: 9px;
   text-align: center;
+  transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
 }
 
 .timetable-draggable-element.isDragging {
@@ -72,28 +74,36 @@ body.dark .student-schedule-timetable-container {
 
 .placed-course {
   width: 120px;
-  height: 60px;
+  height: 50px;
   border: 1px solid #ccc;
   background-color: #fff;
   position: relative;
   text-align: center;
   vertical-align: middle;
+  overflow-wrap: break-word;
+  transition: width 0.5s ease-in, height 0.25s ease-in, transform 0.5s ease-in, box-shadow 0.5s ease-out;
 }
 
 .placed-course.isOver {
   width: 120px;
-  height: 60px;
+  height: 100px;
   border: 1px solid #ccc;
-  background-color: #f0f8ff ;
+  background-color: #979798 ;
   position: relative;
   text-align: center;
   vertical-align: middle;
+  transition: width 0.5s ease-in, height 0.25s ease-in, transform 0.5s ease-in, box-shadow 0.5s ease-out;
 }
 
-.hours-and-headers {
+.hours {
+  text-align: center;
+  background-color: #FFD54F;
+}
+
+.headers {
   padding: 8;
   text-align: center;
-  background-color: yellow;
+  background-color: #FFD54F;
 }
 
 body.dark .hours-and-headers {
@@ -101,3 +111,4 @@ body.dark .hours-and-headers {
   text-align: center;
   background-color: black;
 }
+

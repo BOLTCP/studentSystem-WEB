@@ -10,16 +10,16 @@ import getUserDetailsFromLocalStorage from '../../utils/userDetails_util';
 import axios from 'axios';
 import getApiUrl from '../../../api/get_Api_Url';
 import '../../styles/university/student_scheduler.css';
-import { list } from 'postcss';
 
-const days = ['Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба', 'Ням'];
+const days = ['Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан'];
 const hours = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const ItemTypes = {
   ELEMENT: 'element',
 };
 
-const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged }) => {
+const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, shouldPopulate }) => {
+  console.log(id);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.ELEMENT,
     item: { id, element },
@@ -34,58 +34,142 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
     }
   }, [isDragging, element, id]); 
 
+  const [isDoubleClickActive, setIsDoubleClickActive] = useState(false);
+  const logInterval = useRef(null);
+
+  const handleDoubleClick = () => {
+    setIsDoubleClickActive(true);
+    interactiveSelection(element, true, courseBeingDragged);
+  };
+
+  const handleMouseUp = () => {
+    setIsDoubleClickActive(false);
+    interactiveSelection(element, false, courseBeingDragged);
+  };
+
+  useEffect(() => {
+    if (isDoubleClickActive) {
+      logInterval.current = setInterval(() => {
+      }, 100);
+
+      document.addEventListener('mouseup', handleMouseUp);
+
+      return () => {
+        clearInterval(logInterval.current);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    } else {
+      clearInterval(logInterval.current);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
+  }, [isDoubleClickActive, element.courseName]); 
+
+
   return (
+    isDoubleClickActive === true 
+    ?
     <div
+      onDoubleClick={handleDoubleClick}
+      onMouseUp={handleMouseUp} 
+      ref={drag}
+      className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
+      style={makeACoursePopUp(id)}
+    >
+      {element.courseName} {element.courseYear} {element.courseCode}
+    </div>
+    :
+    <div
+      onDoubleClick={handleDoubleClick}
+      onMouseUp={handleMouseUp} 
       ref={drag}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName}
+      {element.courseName} {element.courseCode} 
     </div>
   );
 };
 
-const getCellStyle = (cellKey, teachersScheduleCells, courseBeingDragged) => {
-  if (courseBeingDragged?.courseId && teachersScheduleCells.has(courseBeingDragged.courseId)) {
-    const validDropPositions = teachersScheduleCells.get(courseBeingDragged.courseId);
-    if (Array.isArray(validDropPositions) && validDropPositions.includes(cellKey)) {
-      return {
-        backgroundColor: 'green',
-      };
-    }
-  }
+
+const makeACoursePopUp = (id) => {
+  return {
+    backgroundColor: 'green',
+    border: '2px solid grey', 
+    borderRadius: '12px',         
+    boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.15)', 
+    transition: 'transform 0.5s ease-out, box-shadow 0.5s ease-out',
+    transform: 'scale(1.1)',      
+    boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.25)'
+  };
   return {};
 };
 
-const Cell = ({ row, col, onDrop, element, teachersScheduleCells, isDragging, interactiveSelection, courseBeingDragged }) => {
+const getCellStyle = (cellKey, teachersScheduleCells, courseBeingDragged) => {
+  let popUpStyle = {}; 
+  if (courseBeingDragged?.courseId && teachersScheduleCells.has(courseBeingDragged.courseId)) {
+    const validDropPositions = teachersScheduleCells.get(courseBeingDragged.courseId);
+    if (Array.isArray(validDropPositions) && validDropPositions.includes(cellKey)) {
+      popUpStyle = {
+        backgroundColor: 'green',
+        color: 'white',
+        fontSize: '14px',
+        overflow: 'auto',     
+      };
+    }
+  }
+  return popUpStyle; 
+};
+
+const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, shouldPopulateWholeData }) => {
+  const availableSchedules = (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Laboratory' ? schedule : '');
+  
   const position = row * 7 + col;
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.ELEMENT,
     drop: (item) => {
-      onDrop(position, item.element);
+      onDrop(position, item.element, isDragging);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
     }),
   }), [position]);
 
-  return (
-    isDragging === true ?
-    <td
-      ref={drop}
-      className={`placed-course ${isOver} ? 'isOver' : ''`}
-      style={getCellStyle(position, teachersScheduleCells, courseBeingDragged)}
-    >
-      {element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} />}
-    </td>
-    : 
-    <td
-      ref={drop}
-      className={`placed-course ${isOver} ? 'isOver' : ''`}
-    >
-      {element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} />}
-    </td>
-  );
+  const cellStyle = isDragging === true ? getCellStyle(position, teachersScheduleCells, courseBeingDragged) : {};
+
+  if (availableSchedules.length > 1) {
+    return (
+      <td
+        ref={drop}
+        className={`placed-course ${isOver ? 'isOver' : ''}`}
+        style={cellStyle}
+      >
+        {isDragging === true && Object.keys(cellStyle).length > 0 ? (
+          `
+          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, ${shouldPopulate[0].courseName} ${shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail}`: ''}
+          `
+        ) : (
+          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} />
+        )}
+      </td>
+    );
+  } else {
+    return (
+      <td
+        ref={drop}
+        className={`placed-course ${isOver ? 'isOver' : ''}`}
+        style={cellStyle}
+      >
+        {isDragging === true && Object.keys(cellStyle).length > 0 ? (
+          `
+          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, ${shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail}`: ''}
+          `
+        ) : (
+          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} />
+        )}
+      </td>
+    );
+  }
 };
+
 
 const Timetable = ({ user }) => {
   
@@ -97,7 +181,6 @@ const Timetable = ({ user }) => {
   const [elementsMap, setElementsMap] = useState(new Map());
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
-  //const teachersScheduleCells = [2,5,6,8,9,10];
   
   const fetchPersonalCurriculum = async () => {
     const userDetails = getUserDetailsFromLocalStorage();
@@ -136,7 +219,7 @@ const Timetable = ({ user }) => {
       setLoading(false);
     }
   };
-  console.log(teachersScheduleCells);
+
   useEffect(() => {
     fetchPersonalCurriculum();
   }, []);
@@ -144,22 +227,24 @@ const Timetable = ({ user }) => {
   useEffect(() => {
   const timeTablePositions = new Map();
   for (let i = 0; i < teachersSchedule.length; i++) {
-    const courseId = teachersSchedule[i].courseId;
-    const position = teachersSchedule[i].schedulesTimetablePosition;
+    const courseId = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].courseId : '';
+    const position = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].schedulesTimetablePosition : '';
 
     if (timeTablePositions.has(courseId)) {
-      // If the courseId already exists in the map, add the new position to its array
       timeTablePositions.get(courseId).push(position);
     } else {
-      // If the courseId is new, create a new array with the position
       timeTablePositions.set(courseId, [position]);
     }
+
   }
   setTeachersScheduleCells(timeTablePositions);
 }, [teachersSchedule]);
 
-  const handleDrop = (position, element) => {
-    
+  const [isDragging, setIsDragging] = useState(null);
+  const [courseBeingDragged, setCourseBeingDragged] = useState(null);
+
+  const handleDrop = (position, element, isDragging) => {
+
     setElementsMap(prevMap => {
       const newMap = new Map(prevMap);
       const isCourseAlreadyPlaced = Array.from(newMap.values()).some(
@@ -184,10 +269,9 @@ const Timetable = ({ user }) => {
       }
       return newMap;
     });
+    setIsDragging(false);
+    
   };
-  
-  const [isDragging, setIsDragging] = useState(null);
-  const [courseBeingDragged, setCourseBeingDragged] = useState(null);
 
   const interactiveSelection = (element, isDragging) => {
     if (isDragging){
@@ -203,54 +287,59 @@ const Timetable = ({ user }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='student-schedule-container'>
-        <div className='student-schedule-timetable-container'>
-          <table className='student-schedule-timetable'>
-            <thead>
-              <tr>
-                <th style={{ width: 60, border: 'none', visibility: 'hidden' }}></th>
-                {days.map((day, index) => (
-                  <th key={index} className='hours-and-headers'>
-                    {day}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {hours.map((hour, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td className='hours-and-headers'>{hour}</td>
-                  {days.map((_, colIndex) => {
-                    const position = rowIndex * 7 + colIndex;
-                    return (
-                      <Cell
-                        key={colIndex}
-                        row={rowIndex}
-                        col={colIndex}
-                        onDrop={handleDrop}
-                        element={elementsMap.get(position)}
-                        teachersScheduleCells={teachersScheduleCells}
-                        isDragging={isDragging}
-                        elementsMap={elementsMap}
-                        interactiveSelection={interactiveSelection}
-                        courseBeingDragged={courseBeingDragged}
-                      />
-                    );
-                  })}
+        <div className='student-schedule-container-window'>
+            <div className='student-schedule-timetable-container'>
+            <table className='student-schedule-timetable'>
+              <thead>
+                <tr>
+                  <th style={{ width: 60, border: 'none', visibility: 'hidden' }}></th>
+                  {days.map((day, index) => (
+                    <th key={index} className='headers'>
+                      {day}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {hours.map((hour, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td className='hours'>{hour}</td>
+                    {days.map((_, colIndex) => {
+                      const position = rowIndex * 7 + colIndex;
+                      return (
+                        <Cell
+                          key={colIndex}
+                          row={rowIndex}
+                          col={colIndex}
+                          onDrop={handleDrop}
+                          element={elementsMap.get(position)}
+                          teachersScheduleCells={teachersScheduleCells}
+                          teachersSchedule={teachersSchedule}
+                          isDragging={isDragging}
+                          elementsMap={elementsMap}
+                          interactiveSelection={interactiveSelection}
+                          courseBeingDragged={courseBeingDragged}
+                          shouldPopulate={teachersSchedule.filter((schedule) => schedule.schedulesTimetablePosition === position)}
+                          shouldPopulateWholeData={teachersSchedule}
+                        />
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
         <div className='draggable-container'>
-            <h4>{userDetails.student?.studentCode} сонгосон хичээлүүд:</h4>
-             {Array.isArray(studentsCourses) ? (
-              studentsCourses.map((item, index) => (
-                <DraggableElements key={item.courseId || item.id} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} />
-              ))
-            ) : (
-              <div></div>
-            )}
-          </div>
+              <h4>{userDetails.student?.studentCode} сонгосон хичээлүүд:</h4>
+              {Array.isArray(studentsCourses) ? (
+                studentsCourses.map((item, index) => (
+                  <DraggableElements key={item.courseId || item.id} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}/>
+                ))
+              ) : (
+                <div></div>
+              )}
+            </div>
       </div>
     </DndProvider> 
   );

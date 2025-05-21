@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, act } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import StudentCurriculum from '../../models/student_curriculum';
@@ -18,8 +18,9 @@ const ItemTypes = {
   ELEMENT: 'element',
 };
 
-const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, shouldPopulate }) => {
-  console.log(id);
+const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, shouldPopulate, position }) => {
+  const showSchedulesData = (shouldPopulate.filter((schedule) => schedule.schedulesTimetablePosition === position)[0]);
+  const isLecture = element.scheduleType;
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.ELEMENT,
     item: { id, element },
@@ -66,7 +67,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
 
 
   return (
-    isDoubleClickActive === true 
+    isDoubleClickActive === true && isLecture === 'Laboratory'
     ?
     <div
       onDoubleClick={handleDoubleClick}
@@ -78,13 +79,39 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       {element.courseName} {element.courseYear} {element.courseCode}
     </div>
     :
+    isDoubleClickActive === true && isLecture === 'Lecture'
+    ?
+    <div
+      onDoubleClick={handleDoubleClick}
+      onMouseUp={handleMouseUp} 
+      ref={drag}
+      className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
+      style={makeACoursePopUpLecture(id)}
+    >
+      {element.courseName} Лекц {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
+    </div>
+    :
+    isLecture === 'Lecture'
+    ?
+    <div
+      onDoubleClick={handleDoubleClick}
+      onMouseUp={handleMouseUp} 
+      ref={drag}
+      className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
+    >
+      {element.courseName} Лекц {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
+    </div>
+    :
     <div
       onDoubleClick={handleDoubleClick}
       onMouseUp={handleMouseUp} 
       ref={drag}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} {element.courseCode} 
+      {element.courseName} {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
   );
 };
@@ -93,7 +120,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
 const makeACoursePopUp = (id) => {
   return {
     backgroundColor: 'green',
-    border: '2px solid grey', 
+    border: '2px solid black', 
     borderRadius: '12px',         
     boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.15)', 
     transition: 'transform 0.5s ease-out, box-shadow 0.5s ease-out',
@@ -103,10 +130,23 @@ const makeACoursePopUp = (id) => {
   return {};
 };
 
-const getCellStyle = (cellKey, teachersScheduleCells, courseBeingDragged) => {
+const makeACoursePopUpLecture = (id) => {
+  return {
+    backgroundColor: '#FFD54F',
+    border: '2px solid black', 
+    borderRadius: '12px',         
+    boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.15)', 
+    transition: 'transform 0.5s ease-out, box-shadow 0.5s ease-out',
+    transform: 'scale(1.1)',      
+    boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.25)'
+  };
+  return {};
+};
+
+const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragged) => {
   let popUpStyle = {}; 
-  if (courseBeingDragged?.courseId && teachersScheduleCells.has(courseBeingDragged.courseId)) {
-    const validDropPositions = teachersScheduleCells.get(courseBeingDragged.courseId);
+  if (courseBeingDragged?.courseId && teachersScheduleCellsORLecture.has(courseBeingDragged.courseId)) {
+    const validDropPositions = teachersScheduleCellsORLecture.get(courseBeingDragged.courseId);
     if (Array.isArray(validDropPositions) && validDropPositions.includes(cellKey)) {
       popUpStyle = {
         backgroundColor: 'green',
@@ -119,9 +159,13 @@ const getCellStyle = (cellKey, teachersScheduleCells, courseBeingDragged) => {
   return popUpStyle; 
 };
 
-const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, shouldPopulateWholeData }) => {
-  const availableSchedules = (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Laboratory' ? schedule : '');
-  
+const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersScheduleCellsLecture, teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, shouldPopulateWholeData }) => {
+  const availableSchedules = courseBeingDragged?.scheduleType === 'Laboratory' ? 
+    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Laboratory' ? schedule : '')
+    :
+    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Lecture' ? schedule : '');
+  const scheduleType = courseBeingDragged?.scheduleType === 'Laboratory' ? 'Laboratory' : 'Lecture';
+
   const position = row * 7 + col;
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.ELEMENT,
@@ -133,7 +177,9 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
     }),
   }), [position]);
 
-  const cellStyle = isDragging === true ? getCellStyle(position, teachersScheduleCells, courseBeingDragged) : {};
+  const cellStyle = isDragging === true && scheduleType === 'Laboratory' 
+    ? getCellStyle(position, teachersScheduleCells, courseBeingDragged, scheduleType)
+    : getCellStyle(position, teachersScheduleCellsLecture, courseBeingDragged, scheduleType);
 
   if (availableSchedules.length > 1) {
     return (
@@ -144,10 +190,12 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
       >
         {isDragging === true && Object.keys(cellStyle).length > 0 ? (
           `
-          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, ${shouldPopulate[0].courseName} ${shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail}`: ''}
+          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, 
+          ${shouldPopulate[0].courseName} ${shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail},
+          ${shouldPopulate[0].students}/${shouldPopulate[0].classroomCapacity}`: ''}
           `
         ) : (
-          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} />
+          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
         )}
       </td>
     );
@@ -160,10 +208,12 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
       >
         {isDragging === true && Object.keys(cellStyle).length > 0 ? (
           `
-          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, ${shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail}`: ''}
+          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, 
+          ${shouldPopulate[0].courseName} ${shouldPopulate[0].classroomNumber === null ? '' : shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail},
+          ${shouldPopulate[0].students}/${shouldPopulate[0].classroomCapacity}`: ''}
           `
         ) : (
-          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} />
+          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
         )}
       </td>
     );
@@ -178,6 +228,7 @@ const Timetable = ({ user }) => {
   const [studentsCourses, setStudentsCourses] = useState([]); 
   const [teachersSchedule, setTeachersSchedule] = useState([]);
   const [teachersScheduleCells, setTeachersScheduleCells] = useState(new Map());
+  const [teachersScheduleCellsLecture, setTeachersScheduleCellsLecture] = useState(new Map());
   const [elementsMap, setElementsMap] = useState(new Map());
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
@@ -220,15 +271,20 @@ const Timetable = ({ user }) => {
     }
   };
 
+
   useEffect(() => {
     fetchPersonalCurriculum();
   }, []);
 
   useEffect(() => {
   const timeTablePositions = new Map();
+  const timeTablePositionsLecture = new Map();
   for (let i = 0; i < teachersSchedule.length; i++) {
     const courseId = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].courseId : '';
     const position = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].schedulesTimetablePosition : '';
+
+    const courseIdLecture = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Lecture' ? teachersSchedule[i].courseId : '';
+    const positionLecture = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Lecture' ? teachersSchedule[i].schedulesTimetablePosition : '';
 
     if (timeTablePositions.has(courseId)) {
       timeTablePositions.get(courseId).push(position);
@@ -236,14 +292,23 @@ const Timetable = ({ user }) => {
       timeTablePositions.set(courseId, [position]);
     }
 
+    if (timeTablePositionsLecture.has(courseIdLecture)) {
+      timeTablePositionsLecture.get(courseIdLecture).push(positionLecture);
+    } else {
+      timeTablePositionsLecture.set(courseIdLecture, [positionLecture]);
+    }
   }
+
+  timeTablePositionsLecture.delete("");
+
   setTeachersScheduleCells(timeTablePositions);
+  setTeachersScheduleCellsLecture(timeTablePositionsLecture);
 }, [teachersSchedule]);
 
   const [isDragging, setIsDragging] = useState(null);
   const [courseBeingDragged, setCourseBeingDragged] = useState(null);
 
-  const handleDrop = (position, element, isDragging) => {
+  const handleDrop = (position, element, isDragging, teachersSchedule) => {
 
     setElementsMap(prevMap => {
       const newMap = new Map(prevMap);
@@ -286,6 +351,7 @@ const Timetable = ({ user }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
+      <div className='student-schedule-container-viewport'>
       <div className='student-schedule-container'>
         <div className='student-schedule-container-window'>
             <div className='student-schedule-timetable-container'>
@@ -314,6 +380,7 @@ const Timetable = ({ user }) => {
                           onDrop={handleDrop}
                           element={elementsMap.get(position)}
                           teachersScheduleCells={teachersScheduleCells}
+                          teachersScheduleCellsLecture={teachersScheduleCellsLecture}
                           teachersSchedule={teachersSchedule}
                           isDragging={isDragging}
                           elementsMap={elementsMap}
@@ -332,14 +399,15 @@ const Timetable = ({ user }) => {
         </div>
         <div className='draggable-container'>
               <h4>{userDetails.student?.studentCode} сонгосон хичээлүүд:</h4>
-              {Array.isArray(studentsCourses) ? (
-                studentsCourses.map((item, index) => (
-                  <DraggableElements key={item.courseId || item.id} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}/>
+              {Array.isArray(teachersSchedule) ? (
+                teachersSchedule.map((item, index) => (
+                  <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}/>
                 ))
               ) : (
                 <div></div>
               )}
             </div>
+      </div>
       </div>
     </DndProvider> 
   );

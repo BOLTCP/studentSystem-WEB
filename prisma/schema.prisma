@@ -594,7 +594,7 @@ model studentsschedule {
   students_schedule_id     Int       @id @default(autoincrement())
   student_id               Int
   course_id                Int
-  classroom                String?   @db.VarChar(50)
+  classroom_number         String?   @db.VarChar(5)
   class_group              Int?
   modified_at              DateTime  @default(now())
   schedules_timetable_position Int?
@@ -602,9 +602,10 @@ model studentsschedule {
   time                     schedule_time_type_enum?
   teachers_email           String?   @db.VarChar(50)
   teachers_name            String?   @db.VarChar(25)
-  schedule_type            schedule_time_type_enum?
+  schedule_type            schedule_type_enum?
   days                     days_type_enum?
   student_code             String?   @db.VarChar(8)
+  teacher_code             String?   @db.VarChar(8)
   course                  courses   @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
   student                 student   @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
 

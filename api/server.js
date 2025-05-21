@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import pkg from 'prop-types';
 const { array } = pkg;
 
+
 const prisma = new PrismaClient();
 const app = express();
 const port = 5001;
@@ -989,6 +990,54 @@ app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
         message: 'Оюутны хуваарийн хичээлүүдийг татаж авлаа.',
         studentsCourses: students_scheduled_courses,
         teachersAvailableCourses: teachers_available_courses,
+      });
+    } else {
+      console.log('Алдаа гарлаа');
+      return res.status(400).json({ message: 'Алдаа гарлаа' });
+    }
+
+  } catch (err) {
+    console.error('Server Error: ', err);
+    return res.status(500).json({ messsage: err });
+  }
+
+});
+
+//src/component/university/student_scheduler.jsx
+app.post('/Create/Students/Schedule/For/Courses/', async (req, res) => {
+  const { studentsPickedSchedule, student } = req.body;
+
+  console.log('/Create/Students/Schedule/For/Courses: ', studentsPickedSchedule.length, 'хуваарь үүсгэх', student.studentCode);
+
+  try {
+    let successful = false;
+    for (let i = 0;  i < studentsPickedSchedule.length; i++) {
+      const createSchedule = await prisma.studentsschedule.create({ 
+        data: { 
+          student_id: student.studentId,
+          course_id: studentsPickedSchedule[i][1].courseId,
+          classroom_number: studentsPickedSchedule[i][1].classroomNumber,
+          schedules_timetable_position: studentsPickedSchedule[i][1].schedulesTimetablePosition,
+          course_name: studentsPickedSchedule[i][1].courseName,
+          time: studentsPickedSchedule[i][1].time,
+          teachers_email: studentsPickedSchedule[i][1].teachersEmail,
+          teachers_name: studentsPickedSchedule[i][1].teacherName,
+          schedule_type: studentsPickedSchedule[i][1].scheduleType,
+          days: studentsPickedSchedule[i][1].days,
+          student_code: student.studentCode,
+          teacher_code: studentsPickedSchedule[i][1].teachersEmail.split('.')[0],
+        },
+      });
+      if (createSchedule) {
+        successful = true;
+      } else {
+        successful = false;
+      }
+    }
+
+    if (successful === true) {
+      return res.status(200).json({  
+        message: 'Оюутны хичээлүүдийн хуваарийг амжилттай хадгаллаа.',
       });
     } else {
       console.log('Алдаа гарлаа');

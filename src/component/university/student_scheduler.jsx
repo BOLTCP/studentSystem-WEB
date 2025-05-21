@@ -100,7 +100,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       ref={drag}
       className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} Лекц {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {element.courseName} Лекц{element.courseCode}{showSchedulesData && ``} 
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
     :
@@ -110,7 +110,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       ref={drag}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {element.courseName}{element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
   );
@@ -170,12 +170,12 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.ELEMENT,
     drop: (item) => {
-      onDrop(position, item.element, isDragging);
+      onDrop(position, item.element, isDragging, teachersSchedule);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
     }),
-  }), [position]);
+  }), [position, teachersSchedule]);
 
   const cellStyle = isDragging === true && scheduleType === 'Laboratory' 
     ? getCellStyle(position, teachersScheduleCells, courseBeingDragged, scheduleType)
@@ -209,8 +209,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
         {isDragging === true && Object.keys(cellStyle).length > 0 ? (
           `
           ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, 
-          ${shouldPopulate[0].courseName} ${shouldPopulate[0].classroomNumber === null ? '' : shouldPopulate[0].classroomNumber}, ${shouldPopulate[0].teachersEmail},
-          ${shouldPopulate[0].students}/${shouldPopulate[0].classroomCapacity}`: ''}
+          ${shouldPopulate[0].courseName} Лекц ${shouldPopulate[0].teachersEmail}`: ''}
           `
         ) : (
           element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
@@ -230,6 +229,8 @@ const Timetable = ({ user }) => {
   const [teachersScheduleCells, setTeachersScheduleCells] = useState(new Map());
   const [teachersScheduleCellsLecture, setTeachersScheduleCellsLecture] = useState(new Map());
   const [elementsMap, setElementsMap] = useState(new Map());
+  const [handleReject, setHandleReject] = useState(false);
+  const [hasSelectedAll, setHasSelectedAll] = useState(false);
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
   
@@ -271,6 +272,32 @@ const Timetable = ({ user }) => {
     }
   };
 
+  const handleScheduleSave = async () => {
+
+    try {
+      const response = await axios.post(getApiUrl('/Create/Students/Schedule/For/Courses/'), 
+        { 
+          studentsPickedSchedule: Array.from(elementsMap),
+          student: StudentUser.fromJsonButInApp(userDetails.student),
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000,
+        }); 
+
+        if (response.status === 200) {
+          console.log(response.data.message);
+        } else {
+          console.log('Error fetching curriculum:', response.message);
+          setError('Failed to fetch curriculum.');
+        }
+    } catch (err) {
+      console.error('Error fetching curriculum:', err);
+      setError('Network error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchPersonalCurriculum();
@@ -308,36 +335,44 @@ const Timetable = ({ user }) => {
   const [isDragging, setIsDragging] = useState(null);
   const [courseBeingDragged, setCourseBeingDragged] = useState(null);
 
-  const handleDrop = (position, element, isDragging, teachersSchedule) => {
-
-    setElementsMap(prevMap => {
-      const newMap = new Map(prevMap);
-      const isCourseAlreadyPlaced = Array.from(newMap.values()).some(
-        placedElement => (placedElement.courseId || placedElement.id) === (element.courseId || element.id)
-      );
-
-      if (!isCourseAlreadyPlaced) {
-        newMap.set(position, element);
-      } else  {
-        let keyToRemove = null;
-        for (const [key, value] of newMap.entries()) {
-          if (value === element) {
-            keyToRemove = key;
-            break; 
-          }
-        }
-
-        if (keyToRemove !== null) {
-          newMap.delete(keyToRemove);
-          newMap.set(position, element);
-        } 
-      }
-      return newMap;
-    });
-    setIsDragging(false);
-    
+  const handleRejectAction = () => {
+    setHandleReject(true); 
+    setTimeout(() => {
+      setHandleReject(false);
+    }, [1000]);
   };
 
+  const handleDrop = (position, element, isDragging, teachersSchedule, handleReject) => {
+
+    const isPositionValid = Array.from(teachersSchedule)
+      .filter((schedule) => schedule.schedulesTimetablePosition === position)[0]
+      ?.teachersScheduleId === element.teachersScheduleId ? true : false;
+    
+    if (isPositionValid) {
+      setElementsMap(prevMap => {
+        const newMap = new Map(prevMap); 
+        let existingPositionForKey = null;
+        for (const [key, value] of newMap.entries()) {
+          if (value.teachersScheduleId === element.teachersScheduleId) {
+            existingPositionForKey = key;
+            break;
+          }
+        }
+        if (existingPositionForKey !== null && existingPositionForKey !== position) {
+          newMap.delete(existingPositionForKey);
+        }
+        newMap.set(position, element);
+        return newMap;
+      });
+
+    } else {
+      handleRejectAction();
+    }
+
+    setIsDragging(false);
+  };
+
+  
   const interactiveSelection = (element, isDragging) => {
     if (isDragging){
       setIsDragging(true);
@@ -352,65 +387,83 @@ const Timetable = ({ user }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='student-schedule-container-viewport'>
-      <div className='student-schedule-container'>
-        <div className='student-schedule-container-window'>
-            <div className='student-schedule-timetable-container'>
-            <table className='student-schedule-timetable'>
-              <thead>
-                <tr>
-                  <th style={{ width: 60, border: 'none', visibility: 'hidden' }}></th>
-                  {days.map((day, index) => (
-                    <th key={index} className='headers'>
-                      {day}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {hours.map((hour, rowIndex) => (
-                  <tr key={rowIndex}>
-                    <td className='hours'>{hour}</td>
-                    {days.map((_, colIndex) => {
-                      const position = rowIndex * 7 + colIndex;
-                      return (
-                        <Cell
-                          key={colIndex}
-                          row={rowIndex}
-                          col={colIndex}
-                          onDrop={handleDrop}
-                          element={elementsMap.get(position)}
-                          teachersScheduleCells={teachersScheduleCells}
-                          teachersScheduleCellsLecture={teachersScheduleCellsLecture}
-                          teachersSchedule={teachersSchedule}
-                          isDragging={isDragging}
-                          elementsMap={elementsMap}
-                          interactiveSelection={interactiveSelection}
-                          courseBeingDragged={courseBeingDragged}
-                          shouldPopulate={teachersSchedule.filter((schedule) => schedule.schedulesTimetablePosition === position)}
-                          shouldPopulateWholeData={teachersSchedule}
-                        />
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className='student-schedule-container'>
+          <div className='column-5fr'>
+              <div className='student-schedule-container-window'>
+                <div className={`student-schedule-timetable-container ${handleReject === true ? 'handleReject' : ''} `}>
+                <table className='student-schedule-timetable'>
+                  <thead>
+                    <tr>
+                      <th style={{ width: 60, border: 'none', visibility: 'hidden' }}></th>
+                      {days.map((day, index) => (
+                        <th key={index} className='headers'>
+                          {day}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {hours.map((hour, rowIndex) => (
+                      <tr key={rowIndex}>
+                        <td className='hours'>{hour}</td>
+                        {days.map((_, colIndex) => {
+                          const position = rowIndex * 7 + colIndex;
+                          return (
+                            <Cell
+                              key={colIndex}
+                              row={rowIndex}
+                              col={colIndex}
+                              onDrop={handleDrop}
+                              element={elementsMap.get(position)}
+                              teachersScheduleCells={teachersScheduleCells}
+                              teachersScheduleCellsLecture={teachersScheduleCellsLecture}
+                              teachersSchedule={teachersSchedule}
+                              isDragging={isDragging}
+                              elementsMap={elementsMap}
+                              interactiveSelection={interactiveSelection}
+                              courseBeingDragged={courseBeingDragged}
+                              shouldPopulate={teachersSchedule.filter((schedule) => schedule.schedulesTimetablePosition === position)}
+                              shouldPopulateWholeData={teachersSchedule}
+                            />
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className='column-1fr'>
+            <div className='draggable-container-super'>
+              <div className='draggable-container'>
+                    {elementsMap.size === teachersSchedule.length 
+                      ? 
+                      <div className='has-selected-all-container'
+                           onClick={() => {handleScheduleSave(elementsMap)}}>
+                        {elementsMap.size === teachersSchedule.length ? 'Хичээлийн хуваарийг хадгалах' : 'Хичээлүүдийн хуваарийг сонгоно уу!'}
+                      </div>
+                      :
+                      (<h4 className='student-header-of-schedules'>{userDetails.student?.studentCode} сонгосон хичээлүүд:</h4>)
+                    }
+                    {Array.isArray(teachersSchedule) ? (
+                      teachersSchedule.map((item, index) => (
+                        <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}/>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+              </div>
+            </div>
           </div>
         </div>
-        <div className='draggable-container'>
-              <h4>{userDetails.student?.studentCode} сонгосон хичээлүүд:</h4>
-              {Array.isArray(teachersSchedule) ? (
-                teachersSchedule.map((item, index) => (
-                  <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}/>
-                ))
-              ) : (
-                <div></div>
-              )}
-            </div>
-      </div>
       </div>
     </DndProvider> 
   );
 };
 
 export default Timetable;
+/*
+<div className='has-selected-all-container'>
+                      {elementsMap.size === teachersSchedule.length ? 'Хичээлийн хуваарийг хадгалах' : 'Хичээлүүдийн хуваарийг сонгоно уу!'}
+                    </div>*/

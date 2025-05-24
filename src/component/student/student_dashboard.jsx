@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import getApiUrl from '../../api/get_Api_Url';
-import UserDetails from '../models/user_details';
-import StudentUser from '../models/student_user';
-import StudentsSchedule from '../models/student_schedule';
-import Courses from '../models/courses';
-import MajorClass from '../models/major';
-import Department from '../models/department';
-import DepartmentsOfEducation from '../models/departmentsofeducation';
-import UserPreferences from '../models/auth_user_preferences';
+import getApiUrl from '../../../api/get_Api_Url';
+import UserDetails from '../../models/user_details';
+import StudentUser from '../../models/student_user';
+import StudentsSchedule from '../../models/student_schedule';
+import Courses from '../../models/courses';
+import MajorClass from '../../models/major';
+import Department from '../../models/department';
+import DepartmentsOfEducation from '../../models/departmentsofeducation';
+import UserPreferences from '../../models/auth_user_preferences';
 import { RenderSidebar, RenderSidebarRight } from './side_bars';
-import '../styles/student_dashboard.css';
-import './profile_screen';
+import './student_dashboard.css';
+import '../profile_screen';
 
 const StudentDashboard = () => {
   const location = useLocation();

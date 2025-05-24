@@ -101,6 +101,14 @@ body.dark .student-schedule-timetable-container {
   border: 3px solid #e0e0e0;
   border-radius: 9px;
   background-color: white;
+  transition: background-color 0.3s ease-in-out;
+}
+
+body.dark .draggable-container-super {
+  border: 3px solid #e0e0e0;
+  border-radius: 9px;
+  background-color: black;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .draggable-container {
@@ -119,6 +127,7 @@ body.dark .student-schedule-timetable-container {
   min-height: 50px;
   margin: 0rem 0rem 0.75rem 0rem;
   opacity: 1;
+  border: 1px solid black;
   padding: 8px 8px;
   background-color: #4a90e2;
   color: #fff;
@@ -128,6 +137,12 @@ body.dark .student-schedule-timetable-container {
   border-radius: 9px;
   text-align: center;
   transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
+}
+
+body.dark .timetable-draggable-element {
+  background-color: #132E4A;
+  border: 1px solid white;
+  transition: background-color 0.5s ease-in, 0.5s ease-out, box-shadow 0.5s ease-out, border 0.5s ease-in;
 }
 
 .timetable-draggable-element.isDragging {
@@ -149,6 +164,7 @@ body.dark .student-schedule-timetable-container {
   opacity: 1;
   padding: 8px 8px;
   background-color: #FDE047;
+  border: 1px solid;
   color: black;
   border-radius: 4;
   cursor: move;
@@ -156,6 +172,11 @@ body.dark .student-schedule-timetable-container {
   border-radius: 9px;
   text-align: center;
   transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
+}
+
+body.dark .timetable-draggable-element-yellow {
+  background-color: white;
+  transition: background-color 0.5s ease-in, 0.5s ease-out, box-shadow 0.5s ease-out, border 0.5s ease-in;
 }
 
 .timetable-draggable-element-yellow.isDragging {
@@ -224,6 +245,12 @@ body.dark .hours-and-headers {
   background-color: hsl(0, 0%, 75%);
   padding: 0 16px;
   text-align: center;
+}
+
+body.dark .student-header-of-schedules {
+  color: black;
+  border: 1px solid black;
+  background-color: hsl(0, 0%, 75%);
 }
 
 .has-selected-all-container {

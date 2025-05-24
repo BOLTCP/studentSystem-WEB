@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import getApiUrl from '../../api/get_Api_Url';
+import getApiUrl from '../../../api/get_Api_Url';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router'
 import PropTypes from 'prop-types';
-import StudentUser from '../models/student_user';
-import StudentsSchedule from '../models/student_schedule';
-import UserDetails from '../models/user_details';
-import getUserDetailsFromLocalStorage from '../../src/utils/userDetails_util';
-import StudentDashboard from './student_dashboard';
-import { StudentsScheduleUtil } from '../utils/studentsSchedule';
-import '../styles/student_dashboard.css';
-import './profile_screen';
+import UserDetails from '../../models/user_details';
+import getUserDetailsFromLocalStorage from '../../utils/userDetails_util';
+import { StudentsScheduleUtil } from '../../utils/studentsSchedule';
+import './student_dashboard.css';
+import '../profile_screen';
 
-export const RenderSidebar = () => {
-  const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
-  console.log(userDetails.user);
+export const RenderSidebar = ({ user }) => {
+  const [userDetails, setUserDetails] = useState(new UserDetails(user));
   const [theme, setTheme] = useState(
     `${userDetails.userpreferences?.appTheme === 'Light_Mode'
       ? 'light'
@@ -33,7 +28,12 @@ export const RenderSidebar = () => {
       setThemeIcon("/src/assets/lightMode.png");
     }
     document.body.className = theme;
+
   }, [theme]);
+
+  useEffect(() => {
+    setUserDetails(getUserDetailsFromLocalStorage());
+  }, [user]);
   
   const toggleTheme = async () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -307,8 +307,5 @@ export const RenderSidebarRight = ({ user, theme }) => {
   
 }
 
-RenderSidebar.PropTypes = {
-  user: PropTypes.instanceOf(UserDetails).isRequired
-}
 
 

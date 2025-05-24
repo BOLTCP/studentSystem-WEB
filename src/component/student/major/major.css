@@ -209,6 +209,7 @@ body.dark .to-do-item a{
 .users-brief-details {
   border-bottom: 1px solid #dee2e6;
   margin-bottom: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .sidebar-title {

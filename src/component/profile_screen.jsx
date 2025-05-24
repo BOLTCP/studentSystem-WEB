@@ -2,15 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import UserDetailsUtil from '../utils/userDetails_util';
 import '../styles/profile_screen.css';
-import { RenderSidebar, RenderSidebarRight } from './side_bars';
+import { RenderSidebar, RenderSidebarRight } from './student/side_bars';
 import ProfileEdit from '../utils/profileEdit';
-import UserDetails from '../models/user_details';
+import getUserDetailsFromLocalStorage from '../utils/userDetails_util';
 import moment from 'moment';
 
 
 const ProfileScreen = ( ) => {
   const location = useLocation();
-  const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
+  const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
+  const [refreshSideBar, setRefreshSidebar] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showProfileEditPrompt, setShowProfileEditPrompt] = useState(null); 
   const [error, setError] = useState(null);
@@ -33,11 +34,11 @@ const ProfileScreen = ( ) => {
 
   const handleEditClose = () => {
     localStorage.setItem('showProfileEditPrompt', 'false');
-    window.location.reload(); 
-    setUserDetails(UserDetailsUtil()); 
+    setUserDetails(getUserDetailsFromLocalStorage());
     setShowProfileEditPrompt(null);  
   };
 
+  console.log(userDetails)
   if (!userDetails) {
       return <div className="no-data">Хэрэглэгч олдсонгүй.</div>;
   }
@@ -79,7 +80,6 @@ if (user.userRole === 'Багш') {
       </div>
     );
   } else if (user.userRole === 'Сурагч') {
-    console.log(userDetails.student);
     return (
       <>
         
@@ -90,7 +90,7 @@ if (user.userRole === 'Багш') {
             </div>
           </div>
 
-          <RenderSidebar user={userDetails} />
+          <RenderSidebar user = {userDetails} />
           <RenderSidebarRight user = {userDetails} />
           <div className="profile-content">
             

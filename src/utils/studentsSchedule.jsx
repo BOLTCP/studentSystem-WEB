@@ -2,17 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import getApiUrl from '../../api/get_Api_Url';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router'
 import PropTypes from 'prop-types';
 import StudentUser from '../models/student_user';
 import UserDetails from '../models/user_details';
 import getUserDetailsFromLocalStorage from './userDetails_util';
-import StudentDashboard from '../component/student_dashboard';
-import '../../src/styles/student_dashboard.css';
+import '../component/student/student_dashboard.css';
 
 
 export const StudentsScheduleUtil = ({ user, theme }) => {
-
   
   const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
@@ -34,7 +31,6 @@ export const StudentsScheduleUtil = ({ user, theme }) => {
         });
 
         if (response.status === 200) {
-          console.log(response.data.studentsSchedule);
           const today = new Date().getDay() === 1 ? 'Monday'
             : new Date().getDay() === 2 ? 'Tuesday'
             : new Date().getDay() === 3 ? 'Wednesday'
@@ -78,7 +74,7 @@ export const StudentsScheduleUtil = ({ user, theme }) => {
 
   const todaysScheduleCourses = (schedule) => {
   return (
-    <div className="to-do-container" key={schedule.course_code}>
+    <div className="to-do-container" key={schedule.students_schedule_id}>
       <div className="to-do-list-bullets"></div>
       <div className="to-do-item">
         { schedule.classroom_number === null 

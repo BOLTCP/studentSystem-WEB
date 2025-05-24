@@ -75,7 +75,6 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
               userDetails.student = student;
               userDetails.user = user;
               userDetails.department = department;
-              console.log(userDetails);
               localStorage.setItem('userDetails', JSON.stringify(userDetails));
               setIsSuccess(true);
             }
@@ -221,8 +220,9 @@ const ProfileEdit = ({ visibility, editUser, editStudent, editDepartment, onClos
                 let displayValue = transform ? transform(rawValue) : rawValue;
                 
                 return (
-                  <div className='profile-card-edit'>
-                    <div key={`${model}-${field}`}>
+                  <div key={`${model}-${field}`}
+                       className='profile-card-edit'>
+                    <div >
                       <h3 className="profile-card-label">{label}</h3>
                       {editable ? (
                         <input

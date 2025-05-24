@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginScreen from '../src/component/login_screen';
 import StudentDashboard from '../src/component/student_dashboard';
 import ProfileScreen from '../src/component/profile_screen';
-import University from '/src/component/university/university';
-import Curriculum from '/src/component/university/curriculum';
+import Major from '/src/component/student/major/Major';
+import Curriculum from '/src/component/student/major/curriculum';
 //src\component\university\university.jsx
 
 createRoot(document.getElementById('root')).render(
@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<LoginScreen />} /> {/* Main login route */}
         <Route path="/student_dashboard" element={<StudentDashboard />} /> {/* Absolute path for dashboard */}
         <Route path="/profile_screen" element={<ProfileScreen />} /> {/* Absolute path for profile */}
-        <Route path="/university" element={<University />} />
+        <Route path="/major" element={<Major />} />
         <Route path="/curriculum" element={<Curriculum />} />
       </Routes>
     </BrowserRouter>

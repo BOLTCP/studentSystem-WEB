@@ -19,6 +19,7 @@ class StudentUser {
     createdAt,
     departmentId,
     isCurriculumClosed,
+    semesterSpecification,
   }) {
     this.studentId = studentId;
     this.userId = userId;
@@ -37,6 +38,7 @@ class StudentUser {
     this.createdAt = createdAt ? new Date(createdAt) : new Date();
     this.departmentId = departmentId;
     this.isCurriculumClosed = isCurriculumClosed;
+    this.semesterSpecification = semesterSpecification;
   }
 
   static fromJsonStudent(json) {
@@ -67,6 +69,10 @@ class StudentUser {
       createdAt: json.created_at,
       departmentId: json.department_id,
       isCurriculumClosed: json.is_curriculum_closed,
+      semesterSpecification: json.semester_specification === 'firstSemester' ? '1-р семестер' :
+        json.semester_specification === 'secondSemester' ? '2-р семестер' :
+        json.semester_specification === 'thirdSemester' ? '3-р семестер' :
+        '4-р семестер',
     });
   }
 
@@ -98,6 +104,10 @@ class StudentUser {
       created_at: StudentUser.createdAt ? StudentUser.createdAt.toISOString() : new Date().toISOString(),
       department_id: StudentUser.departmentId,
       is_curriculum_closed: StudentUser.isCurriculumClosed,
+      semester_specification: StudentUser.semesterSpecification === '1-р семестер' ? 'firstSemester' :
+        json.semester_specification === '2-р семестер' ? 'firstSemester' :
+        json.semester_specification === '3-р семестер' ? 'firstSemester' :
+        '4-р семестер',
     };
   }
 
@@ -121,6 +131,7 @@ class StudentUser {
         createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
         departmentId: json.departmentId,
         isCurriculumClosed: json.isCurriculumClosed,
+        semesterSpecification: json.semesterSpecification,
       });
     } catch (error) {
       console.error('Error parsing StudentUser from JSON string:', error);

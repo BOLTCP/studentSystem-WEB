@@ -482,7 +482,8 @@ exports.Prisma.StudentScalarFieldEnum = {
   created_at: 'created_at',
   contracts: 'contracts',
   department_id: 'department_id',
-  is_curriculum_closed: 'is_curriculum_closed'
+  is_curriculum_closed: 'is_curriculum_closed',
+  semester_specification: 'semester_specification'
 };
 
 exports.Prisma.StudentansweredsurveyScalarFieldEnum = {
@@ -906,6 +907,13 @@ exports.student_is_active_enum = exports.$Enums.student_is_active_enum = {
   transfered: 'transfered',
   expelled: 'expelled',
   studying: 'studying'
+};
+
+exports.semester_specification_enum = exports.$Enums.semester_specification_enum = {
+  firstSemester: 'firstSemester',
+  secondSemester: 'secondSemester',
+  thirdSemester: 'thirdSemester',
+  fourthSemester: 'fourthSemester'
 };
 
 exports.student_attendance_enum = exports.$Enums.student_attendance_enum = {

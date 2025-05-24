@@ -64,9 +64,12 @@ app.post('/User/Login/Student', async (req, res) => {
   }
 
   try {
+
     const student = await prisma.student.findUnique({
       where: { user_id: userId }, 
     });
+
+      console.log(student);
     const userpreferences = await prisma.userpreferences.findUnique({
       where: { user_id: userId }, 
     });
@@ -83,13 +86,55 @@ app.post('/User/Login/Student', async (req, res) => {
       where: { major_id: student.major_id },
     });
 
-    if (student) {
-        console.log(`Мэдээллийг амжилттай авлаа.`);
-        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, 
-          departmentsofeducation: departmentsofeducation, major: major });
-      } else {
-        res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
+    let schedulesOntoTimetable = new Map();
+    const studentsSchedule = await prisma.studentsschedule.findMany({
+      where: { student_id: student.student_id },
+      orderBy: {
+        schedule_type: 'desc',
+      },
+    });
+
+    let studentsCourses = [];
+    const studentCurriculum = await prisma.studentcurriculum.findFirst({
+      where: { 
+        student_id: student.student_id 
+      },
+      select: {
+        students_curriculum: true
+      },
+    });
+
+    if (studentCurriculum) {
+      const yearClassification = student.year_classification === 'freshman' ? 'first_year' 
+              : student.year_classification === 'junior' ? 'second_year' 
+              : student.year_classification === 'sophomore' ? 'third_year' 
+              : 'fourth_year';
+              
+      for (let i = 0; i < studentCurriculum.students_curriculum[yearClassification]['first_semester'].length; i++) {
+        const getStudentsCourses = await prisma.courses.findFirst({
+          where: { 
+            course_id: studentCurriculum.students_curriculum[yearClassification]['first_semester'][i] 
+          }
+        });
+        studentsCourses.push(getStudentsCourses);
       }
+    }
+    
+    if (studentsSchedule && student) {
+
+      for (let i = 0; i < studentsSchedule.length; i++) {
+        schedulesOntoTimetable.set(studentsSchedule[i].schedules_timetable_position, studentsSchedule[i]);
+      }
+
+      console.log(`Мэдээллийг амжилттай авлаа.`);
+        res.status(200).json({ student: student, userpreferences: userpreferences, department: department, 
+          departmentsofeducation: departmentsofeducation, major: major, studentsSchedule: Array.from(schedulesOntoTimetable),
+          studentsCourses: studentsCourses,
+        });
+    } else {
+      res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
+    }
+
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });
@@ -981,10 +1026,13 @@ app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
         where: {
           course_id: search_courses[i],
         },
+        orderBy: {
+          schedule_type: 'desc',
+        },
       });
       teachers_available_courses.push(...courseOfTeachersSchedule);
     }
-    console.log(teachers_available_courses);
+
     if (students_scheduled_courses.length > 0) {
       return res.status(200).json({  
         message: 'Оюутны хуваарийн хичээлүүдийг татаж авлаа.',
@@ -1047,6 +1095,40 @@ app.post('/Create/Students/Schedule/For/Courses/', async (req, res) => {
   } catch (err) {
     console.error('Server Error: ', err);
     return res.status(500).json({ messsage: err });
+  }
+
+});
+
+app.post('/Get/Students/Made/Schedule/', async (req, res) => {
+  const { student } = req.body;
+  console.log('/Get/Students/Made/Schedule/ :', student.studentCode);
+
+  try {
+    let schedulesOntoTimetable = new Map();
+    const studentsSchedule = await prisma.studentsschedule.findMany({
+      where: { student_id:  student.studentId },
+      orderBy: {
+        time: 'asc',
+      },
+    });
+
+    if (studentsSchedule) {
+      for (let i = 0; i < studentsSchedule.length; i++) {
+        schedulesOntoTimetable.set(studentsSchedule[i].schedules_timetable_position, studentsSchedule[i]);
+      }
+      return res.status(200).json({ 
+        message: 'Оюутны хичээлийн хуваарийг амжилттай татлаа.',
+        studentsSchedule: Array.from(schedulesOntoTimetable), 
+      });
+    } else {
+      return res.status(400).json({ 
+        message: 'Оюутанд хуваарьт оруулсан хичээл байхгүй байна.',
+      });
+    }
+
+  } catch (error) {
+    console.log("Error: ", error);
+    return res.status(400).json({ message: 'Оюутанд хичээлийн хуваарь одоогоор байхгүй байна.'});
   }
 
 });

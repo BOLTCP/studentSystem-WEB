@@ -5,6 +5,7 @@ html, body {
 }
 
 .student-dashboard-container-layout {
+  min-width: 100vw;
   min-height: 100vh;
   display: block; /* or flex/grid depending on layout */
 }
@@ -161,7 +162,9 @@ body.dark .to-do-item a{
 
 body.dark .dashboard-courses-card {
   flex: 1 1 calc(33.33% - 2rem);
-  max-width: 250px; 
+  max-width: 275px; 
+  min-height: 200px;
+  max-height: 300px;
   height: auto;
   aspect-ratio: 1 / 1;
   background-color: #666666;
@@ -182,8 +185,9 @@ body.dark .dashboard-courses-card:hover {
 
 body.light .dashboard-courses-card {
   flex: 1 1 calc(33.33% - 2rem);
-  max-width: 250px; 
-  height: auto;
+  max-width: 275px; 
+  min-height: 200px;
+  max-height: 300px;
   aspect-ratio: 1 / 1;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.05);
   border-radius: 30px;
@@ -466,14 +470,22 @@ button.sidebar-link.dark {
 }
 
 .dashboard-courses-card-label {
+  width: 270px;
   color: white;
   font-weight: 900;
   font-size: 1rem;
+  white-space: nowrap;     
+  overflow: hidden;        
+  text-overflow: ellipsis; 
 }
 
 .dashboard-courses-card-value {
-  color: white;
+  color: black;
   font-size: 1rem;
+}
+
+body.dark .dashboard-courses-card-value {
+  color: white;
 }
 
 /* Loading, Error, and No Data Containers */
@@ -515,4 +527,9 @@ button.sidebar-link.dark {
 
 .visible {
   opacity: 1;
+}
+
+.no-schedule-for-today-assignments {
+  text-align: center;
+  margin-top: 25px;
 }

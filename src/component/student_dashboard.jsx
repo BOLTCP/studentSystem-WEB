@@ -4,6 +4,8 @@ import axios from 'axios';
 import getApiUrl from '../../api/get_Api_Url';
 import UserDetails from '../models/user_details';
 import StudentUser from '../models/student_user';
+import StudentsSchedule from '../models/student_schedule';
+import Courses from '../models/courses';
 import MajorClass from '../models/major';
 import Department from '../models/department';
 import DepartmentsOfEducation from '../models/departmentsofeducation';
@@ -18,6 +20,7 @@ const StudentDashboard = () => {
   const hasFetched = useRef(false);
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
+  const [studentsCourses, setStudentsCourses] = useState(null);
   localStorage.removeItem('addingCourseToCurriculum');
   localStorage.removeItem('yearClassification');
   localStorage.removeItem('semesterSpecification');
@@ -45,7 +48,24 @@ const StudentDashboard = () => {
             const department = Department.fromJsonDepartment(response.data.department);
             const departmentOfEducation = DepartmentsOfEducation.fromJsonDepartmentsOfEducation(response.data.departmentsofeducation);
 
-            setUserDetails(new UserDetails({ user, userpreferences, student, major, department, departmentOfEducation }));
+            setStudentsCourses(Array.from(response.data.studentsCourses).map((course) => Courses.fromJsonCourse(course)));
+            let studentsSchedule = new Map();
+            const tempScheduleArray = Array.from(response.data.studentsSchedule).length > 0 
+            ?
+            Array.from(response.data.studentsSchedule)
+            : 
+            null;
+
+            if (tempScheduleArray !== null) {
+              for ( let i = 0; i < tempScheduleArray.length; i++) {
+                const schedulesTimetablePosition = tempScheduleArray[i][0];
+                const scheduleOfThePosition = StudentsSchedule.fromJsonStudentsSchedule(tempScheduleArray[i][1]);
+                
+                studentsSchedule.set(schedulesTimetablePosition, scheduleOfThePosition);
+              }
+            }
+
+            setUserDetails(new UserDetails({ user, userpreferences, student, studentsSchedule, major, department, departmentOfEducation }));
             
           } else {
             console.error('Error fetching user details:', response.status, response.data);
@@ -69,11 +89,11 @@ const StudentDashboard = () => {
   const serializedUserDetails = JSON.stringify(userDetails);
   localStorage.setItem('userDetails', serializedUserDetails);
 
-  const buildDashboardCourses = (label, value) => (
+  const buildDashboardCourses = (course) => (
     <div className="dashboard-courses-card">
       <img src="src/assets/curriculum.png" alt="courses-picture" className="dashboard-courses-picture" />
-      <h6 className="dashboard-courses-card-label">{label} {value}</h6>
-      {/* <p className="dashboard-courses-card-value">{value}</p> */}
+      <h6 className="dashboard-courses-card-label">{course.courseName} {course.courseCode}</h6>
+      <p className="dashboard-courses-card-value">{userDetails.student.yearClassification}, 1-р семестэр</p> 
     </div>
   );
 
@@ -90,14 +110,13 @@ const StudentDashboard = () => {
       return (
         <div className="dashboard-content">
           <div className="dashboard-courses-card-grid">
-              {buildDashboardCourses('Овог Нэр', `Хичээл 1`)}
-              {buildDashboardCourses('ID', `Хичээл 2`)}
-              {buildDashboardCourses('Мэргэжил', `Хичээл 3`)}
-              {buildDashboardCourses('Овог Нэр', `Хичээл 4`)}
-              {buildDashboardCourses('ID', `Хичээл 5`)}
-              {buildDashboardCourses('Тэнхим', `Хичээл 6`)}
+            {Array.from(studentsCourses).map((course) => 
+              <React.Fragment key={course.courseId || course.courseCode}>
+                {buildDashboardCourses(course)}
+              </React.Fragment>
+            )}
+              
             </div>
-         
         </div>
       );
     }

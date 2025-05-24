@@ -4,14 +4,17 @@ import getApiUrl from '../../api/get_Api_Url';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router'
 import PropTypes from 'prop-types';
+import StudentUser from '../models/student_user';
+import StudentsSchedule from '../models/student_schedule';
 import UserDetails from '../models/user_details';
-import UserDetailsUtil from '../../src/utils/userDetails_util';
+import getUserDetailsFromLocalStorage from '../../src/utils/userDetails_util';
 import StudentDashboard from './student_dashboard';
+import { StudentsScheduleUtil } from '../utils/studentsSchedule';
 import '../styles/student_dashboard.css';
 import './profile_screen';
 
 export const RenderSidebar = () => {
-  const [userDetails, setUserDetails] = useState(() => UserDetailsUtil());
+  const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
   console.log(userDetails.user);
   const [theme, setTheme] = useState(
     `${userDetails.userpreferences?.appTheme === 'Light_Mode'
@@ -162,7 +165,7 @@ export const RenderSidebar = () => {
                   " https://www.flaticon.com/free-icon/degrees_3424711?term=university+program&page=1&position=4&origin=search&related_id=3424711"
                   )}
                   onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/university')} 
+                  onClick={() => navigate('/major')} 
                   className={`sidebar-link ${theme}`}>
             <img src="/src/assets/degrees.png"
             //Icon source from 
@@ -171,7 +174,7 @@ export const RenderSidebar = () => {
             alt="IntoUniversity"
             className={`sidebar-list-icon ${theme}`}
             /> 
-            Их Сургууль
+            Хөтөлбөр
           </button>
         </li>
         <li className="sidebar-item">
@@ -298,202 +301,10 @@ export const RenderSidebar = () => {
 
 export const RenderSidebarRight = ({ user, theme }) => {
 
-  
-  const [userDetails, setUserDetails] = useState(new UserDetails(user));
-  const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
-  const navigate = useNavigate();
-  
-  const showAttribution = (attributionComment, attrLink) => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.textContent = attributionComment + attrLink;
-      el.classList.remove("hidden");
-      el.classList.add("visible");
-    }
-  }
-  
-  const hideAttribution = () => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.classList.remove("visible");
-      el.classList.add("hidden");
-    }
-  }
-
-  const handleLogout = () => {
-    console.log('Logout clicked');
-    navigate('/');
-  };
-
-  const classroomLocation = () => {
-
-    return (
-      <button onMouseEnter={() => showAttribution(
-        "Location icons created by Freepik - Flaticon",
-        " https://www.flaticon.com/free-icon/location_2838912?term=location&page=1&position=3&origin=search&related_id=2838912"
-        )}
-        onMouseLeave={() => hideAttribution()}
-        className={`sidebar-link ${theme}`}>
-
-        <img src="src/assets/classroomLocation.png"//src/assets/toDoList.png
-        //Icon source from 
-        //https://www.flaticon.com/free-icon/location_2838912?term=location&page=1&position=3&origin=search&related_id=2838912
-        //Location icons created by Freepik - Flaticon
-        alt="LightModeIcon"
-        className={`sidebar-right-classroom-icon ${theme}`}
-        /> 
-      </button>
-    );
-  }
-
   return (
-    <div className={`dashboard-sidebar-right ${theme}`}>
-      <div className="sidebar-header-right">
-        <img src="/src/assets/StudentSystemLoginScreenLogo.png"
-             alt="Logo"
-             className="sidebar-header-right-logo"
-        />
-        University Name Here
-      </div>
-      <ul className="sidebar-list">
-
-        <li className="sidebar-right-item">
-  
-          <div className="to-do-list-container">
-            <div className="to-do-container">
-              <img src="src/assets/toDoList.png"//src/assets/toDoList.png
-              //Icon source from 
-              //https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615
-              //Checklist icons created by Freepik - Flaticon
-              alt="LightModeIcon"
-              className={`sidebar-right-icon ${theme}`}
-              /> 
-              Хичээлүүд
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a> </div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-            <div className="to-do-container">
-              <div className="to-do-list-bullets"></div>
-              <div className="to-do-item"> <a href="">Даалгавар №</a></div>
-            </div>
-          </div>
-          
-          <br></br>
-          
-          <div className="today-schedule-list-container">
-            <div className="to-do-container">
-              <img src="src/assets/classroom.png"//src/assets/toDoList.png
-              //Icon source from 
-              //https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615
-              //Checklist icons created by Freepik - Flaticon
-              alt="LightModeIcon"
-              className={`sidebar-right-icon ${theme}`}
-              /> 
-              Өнөөдрийн &nbsp; хуваарь
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-          </div>
-        </li>
-      </ul>
-
-      <ul className="sidebar-list-settings-and-logout">
-        <li className="sidebar-item">
-            <button onMouseEnter={() => showAttribution(
-                    "Settings icons created by srip - Flaticon",
-                    "https://www.flaticon.com/free-icon/settings_900797?term=settings&page=1&position=11&origin=search&related_id=900797"
-                    )}    
-                    onMouseLeave={() => hideAttribution()}
-                    onClick={() => navigate('/messages', { state: { userDetails: userDetails } })} 
-                    className={`sidebar-link ${theme}`}>
-              <img src="/src/assets/settings.png"
-              //Icon source from 
-              //https://www.flaticon.com/free-icon/settings_900797?term=settings&page=1&position=11&origin=search&related_id=900797
-              //Settings icons created by srip - Flaticon
-              alt="Settings"
-              className={`sidebar-list-icon ${theme}`}
-              /> 
-              Тохиргоо
-            </button>
-        </li>
-        
-        <li className="sidebar-item">
-          <button onMouseEnter={() => showAttribution(
-                  "Logout icons created by Pixel perfect - Flaticon",
-                  " https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427"
-                  )}
-                  onMouseLeave={() => hideAttribution()}
-                  onClick={()=>{handleLogout()}} 
-                  className={`sidebar-link ${theme}`}>
-            <img src="/src/assets/logout.png"
-            //Icon source from 
-            //https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427
-            //Logout icons created by Pixel perfect - Flaticon
-            alt="IntoUniversity"
-            className={`sidebar-list-icon ${theme}`}
-            /> 
-            Гарах
-          </button>
-        </li>
-      </ul>
-    </div>
+    <StudentsScheduleUtil />
   );
+  
 }
 
 RenderSidebar.PropTypes = {

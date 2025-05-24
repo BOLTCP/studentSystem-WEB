@@ -479,6 +479,7 @@ model student {
   contracts               Json?
   department_id           Int?
   is_curriculum_closed    Boolean
+  semester_specification semester_specification_enum
   announcement            announcement[]
   clubmembers             clubmembers[]
   grades                  grades[]
@@ -1084,6 +1085,13 @@ enum student_is_active_enum {
   // хөөгдсөн @map("хөөгдсөн")
   // суралцаж байгаа @map("суралцаж байгаа")
   // чөлөө авсан @map("чөлөө авсан")
+}
+
+enum semester_specification_enum {
+  firstSemester
+  secondSemester
+  thirdSemester
+  fourthSemester
 }
 
 enum tv_enum {

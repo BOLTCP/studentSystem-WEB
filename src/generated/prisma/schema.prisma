@@ -461,24 +461,25 @@ model staff {
 }
 
 model student {
-  student_id              Int                       @id @default(autoincrement())
-  user_id                 Int                       @unique(map: "uq_student_user_id")
+  student_id              Int                         @id @default(autoincrement())
+  user_id                 Int                         @unique(map: "uq_student_user_id")
   student_club_id         Int?
-  additional_roles        additional_roles_enum     @default(dbgenerated("байхгүй"))
-  student_code            String                    @db.Char(8)
-  student_email           String                    @db.VarChar(50)
+  additional_roles        additional_roles_enum       @default(dbgenerated("байхгүй"))
+  student_code            String                      @db.Char(8)
+  student_email           String                      @db.VarChar(50)
   student_file            Json?
-  enrollment_number       Int                       @unique @default(autoincrement())
+  enrollment_number       Int                         @unique @default(autoincrement())
   enrollment_year         Int
   year_classification     year_classification_enum
-  is_active               student_is_active_enum?   @default(dbgenerated("суралцаж байгаа"))
-  current_academic_degree String                    @db.Char(25)
+  is_active               student_is_active_enum?     @default(dbgenerated("суралцаж байгаа"))
+  current_academic_degree String                      @db.Char(25)
   academic_degree_file    String?
   major_id                Int
-  created_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  created_at              DateTime?                   @default(now()) @db.Timestamp(6)
   contracts               Json?
   department_id           Int?
   is_curriculum_closed    Boolean
+  semester_specification  semester_specification_enum
   announcement            announcement[]
   clubmembers             clubmembers[]
   grades                  grades[]
@@ -488,10 +489,10 @@ model student {
   paymentinformation      paymentinformation[]
   paymentlessonsselection paymentlessonsselection[]
   signedcontracts         signedcontracts[]
-  major                   major                     @relation(fields: [major_id], references: [major_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_major")
-  studentclubs            studentclubs?             @relation(fields: [student_club_id], references: [student_club_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_club")
-  department              department?               @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_department")
-  auth_user               auth_user                 @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+  major                   major                       @relation(fields: [major_id], references: [major_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_major")
+  studentclubs            studentclubs?               @relation(fields: [student_club_id], references: [student_club_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_club")
+  department              department?                 @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_department")
+  auth_user               auth_user                   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
   studentansweredsurvey   studentansweredsurvey[]
   studentattendance       studentattendance[]
   studentbalance          studentbalance[]
@@ -1084,6 +1085,13 @@ enum student_is_active_enum {
   // хөөгдсөн @map("хөөгдсөн")
   // суралцаж байгаа @map("суралцаж байгаа")
   // чөлөө авсан @map("чөлөө авсан")
+}
+
+enum semester_specification_enum {
+  firstSemester
+  secondSemester
+  thirdSemester
+  fourthSemester
 }
 
 enum tv_enum {

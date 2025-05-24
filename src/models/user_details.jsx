@@ -4,6 +4,7 @@ class UserDetails {
       userpreferences = null,
       teacher = null,
       student = null,
+      studentsSchedule = null,
       major = null,
       department = null,
       departmentOfEducation = null,
@@ -14,6 +15,7 @@ class UserDetails {
       this.userpreferences = userpreferences;
       this.teacher = teacher;
       this.student = student;
+      this.studentsSchedule = studentsSchedule;
       this.major = major;
       this.department = department;
       this.departmentOfEducation = departmentOfEducation;

@@ -79,6 +79,7 @@ if (user.userRole === 'Багш') {
       </div>
     );
   } else if (user.userRole === 'Сурагч') {
+    console.log(userDetails.student);
     return (
       <>
         
@@ -116,6 +117,7 @@ if (user.userRole === 'Багш') {
                 <ProfileCard label="И-мэйл:" value={user.email} />
                 <ProfileCard label="Суралцах Эрдмийн зэрэг:" value={student?.currentAcademicDegree} />
                 <ProfileCard label="Түвшин:" value={student?.yearClassification?.toString()} />
+                <ProfileCard label="" value={student?.semesterSpecification} />
                 <ProfileCard label="Салбар сургууль:" value={department?.departmentName} />
                 <ProfileCard label="Төлөв:" value={student?.isActive} />
                 <ProfileCard label="Хүйс:" value={user.gender} />

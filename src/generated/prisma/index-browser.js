@@ -624,7 +624,8 @@ exports.Prisma.TeacherScalarFieldEnum = {
   is_active: 'is_active',
   job_description: 'job_description',
   departments_of_education_id: 'departments_of_education_id',
-  department_id: 'department_id'
+  department_id: 'department_id',
+  is_major_planning_closed: 'is_major_planning_closed'
 };
 
 exports.Prisma.TeacherscourseplanningScalarFieldEnum = {

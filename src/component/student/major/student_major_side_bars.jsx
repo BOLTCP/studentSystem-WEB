@@ -205,43 +205,6 @@ export const RenderSidebar = () => {
             </ul>
           )}
         </li>
-
-        <li className="sidebar-item">
-        <button onMouseEnter={() => showAttribution(
-                  "Account settings icons created by Iconjam - Flaticon",
-                  " https://www.flaticon.com/free-icon/account-settings_13097809?term=personal+settings&page=1&position=11&origin=search&related_id=13097809"
-                  )}
-                  onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/courses', { state: { userDetails: userDetails } })} 
-                  className={`sidebar-link ${theme}`}>
-          <img src="/src/assets/personal-planning.png"
-          //Icon source from 
-          //https://www.flaticon.com/free-icon/account-settings_13097809?term=personal+settings&page=1&position=11&origin=search&related_id=13097809
-          //Account settings icons created by Iconjam - Flaticon
-              alt="Calendar"
-              className={`sidebar-list-icon ${theme}`}
-          /> 
-            Ганцаарчилсан төлөвлөгөө
-          </button>
-        </li>
-        <li className="sidebar-item">
-          <button onMouseEnter={() => showAttribution(
-                  "Ebook icons created by Pongsakorn Sarunsatta - Flaticon",
-                  " https://www.flaticon.com/free-icon/ebook_3517104?term=add+lesson&page=1&position=1&origin=search&related_id=3517104"
-                  )}
-                  onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/clubs', { state: { userDetails: userDetails } })} 
-                  className={`sidebar-link ${theme}`}>
-            <img src="/src/assets/lesson-selection.png"
-            //Icon source from 
-            //https://www.flaticon.com/free-icon/ebook_3517104?term=add+lesson&page=1&position=1&origin=search&related_id=3517104
-            //Ebook icons created by Pongsakorn Sarunsatta - Flaticon
-            alt="StudentClubs"
-            className={`sidebar-list-icon ${theme}`}
-            /> 
-            Хичээл сонголт
-          </button>
-        </li>
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(
                   "Notification bell icons created by Mayor Icons - Flaticon",

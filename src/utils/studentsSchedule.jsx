@@ -204,7 +204,7 @@ export const StudentsScheduleUtil = ({ user, theme }) => {
                   todaysScheduleCourses((schedule[1]))
               )
             ) : (
-              <div className='no-schedule-for-today-assignments'>Өнөөдөр оюутанд хуваарь байхгүй байна.</div>
+              <div className='no-schedule-for-today-assignments'>Оюутанд өнөөдөр оюутанд хуваарь байхгүй байна.</div>
             )}
 
             {/*

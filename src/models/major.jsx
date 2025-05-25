@@ -61,7 +61,7 @@ class MajorClass {
         majorId: json.major_id,
         majorName: json.major_name,
         majorsYear: json.majors_year,
-        majorsType: json.majors_type,
+        majorsType: json.majors_type === 'afternoon' ? 'Өдөр' : 'Орой',
         creditUnitRate: parseCurrency(json.credit_unit_rate),
         majorTuition: parseCurrency(json.major_tuition),
         academicDegree: json.academic_degree,
@@ -92,7 +92,7 @@ class MajorClass {
       major_id: this.majorId,
       major_name: this.majorName,
       majors_year: this.majorsYear ? this.majorsYear.toISOString() : new Date().toISOString(),
-      majors_type: this.majorsType,
+      majors_type: this.majorsType === 'Өдөр' ? 'afternoon' : 'Орой',
       credit_unit_rate: this.creditUnitRate,
       major_tuition: this.majorTuition,
       academic_degree: this.academicDegree,
@@ -117,26 +117,26 @@ class MajorClass {
   static fromJsonButInApp(json) {
     try {
       return new MajorClass({
-        majorId: json.majorId ?? 0,
-        majorName: json.majorName ?? '',
+        majorId: json.majorId,
+        majorName: json.majorName,
         majorsYear: json.majorsYear ? new Date(json.majorsYear) : null, // Convert ISO string back to Date
-        majorsType: json.majorsType ?? '',
-        creditUnitRate: parseFloat(json.creditUnitRate) || 0.0,
-        majorTuition: parseFloat(json.majorTuition) || 0.0,
-        academicDegree: json.academicDegree ?? '',
-        totalYears: json.totalYears ?? 0,
-        totalCreditsPerYear: json.totalCreditsPerYear ?? 0,
-        departmentsOfEducationiD: json.departmentsOfEducationiD ?? 0,
+        majorsType: json.majorsType,
+        creditUnitRate: parseFloat(json.creditUnitRate),
+        majorTuition: parseFloat(json.majorTuition),
+        academicDegree: json.academicDegree,
+        totalYears: json.totalYears,
+        totalCreditsPerYear: json.totalCreditsPerYear,
+        departmentsOfEducationiD: json.departmentsOfEducationiD,
         createdAt: json.createdAt ? new Date(json.createdAt) : null, // Convert ISO string back to Date
-        exam1: parseFloat(json.exam1) || 0.0,
-        exam2: parseFloat(json.exam2) || 0.0,
-        majorsDescription: json.majorsDescription ?? '',
-        descriptionBrief: json.descriptionBrief ?? '',
+        exam1: parseFloat(json.exam1),
+        exam2: parseFloat(json.exam2),
+        majorsDescription: json.majorsDescription,
+        descriptionBrief: json.descriptionBrief,
         qualifications: json.qualifications ? { ...json.qualifications } : null,
-        qualifications1: json.qualifications1 ?? '',
-        qualifications2: json.qualifications2 ?? '',
+        qualifications1: json.qualifications1,
+        qualifications2: json.qualifications2,
         signUps: json.signUps ?? null,
-        departmentId: json.departmentId ?? 0,
+        departmentId: json.departmentId,
         recommendedCurriculum: json.recommendedCurriculum,
         recommendedCurriculum1: json.recommendedCurriculum1,
       });
@@ -175,8 +175,8 @@ class MajorBrief {
       try {
         return new MajorBrief({
           majorId: json.major_id,
-          majorName: json.major_name ?? '',
-          majorsDescription: json.majors_description ?? '',
+          majorName: json.major_name,
+          majorsDescription: json.majors_description,
         });
       } catch (error) {
         console.error('Error parsing MajorBrief from JSON:', error);

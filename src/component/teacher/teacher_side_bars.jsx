@@ -165,7 +165,7 @@ export const TeacherRenderSidebar = ({ user }) => {
                   " https://www.flaticon.com/free-icon/degrees_3424711?term=university+program&page=1&position=4&origin=search&related_id=3424711"
                   )}
                   onMouseLeave={() => hideAttribution()}
-                  onClick={() => navigate('/major')} 
+                  onClick={() => navigate('/department_of_university')} 
                   className={`sidebar-link ${theme}`}>
             <img src="/src/assets/degrees.png"
             //Icon source from 
@@ -174,7 +174,7 @@ export const TeacherRenderSidebar = ({ user }) => {
             alt="IntoUniversity"
             className={`sidebar-list-icon ${theme}`}
             /> 
-            Хөтөлбөр
+            Тэнхим
           </button>
         </li>
         <li className="sidebar-item">

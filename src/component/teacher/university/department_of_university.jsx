@@ -1,0 +1,62 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import getApiUrl from '../../../../api/get_Api_Url';
+import axios from 'axios';
+import Majors from './majors';
+import StudentCurriculum from '../../../models/student_curriculum';
+import RecommendedCurriculum from './recommended_curriculum';
+import PersonalCurriculum from './personal_curriculum';
+import Timetable from './student_scheduler';
+import { RenderSidebar, RenderSidebarRight } from '../../teacher/university/teacher_university_sidebar';
+import getUserDetailsFromLocalStorage from '../../../utils/userDetailsTeacher_util';
+import './department_of_university.css';
+import '../../profile_screen';
+
+const Department = () => {
+  const location = useLocation();
+  const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
+  const [loading, setLoading] = useState(true);
+  const [firstYear, setFirstYear] = useState();
+  const [secondYear, setSecondYear] = useState(null);
+  const [thirdYear, setThirdYear] = useState(null);
+  const [fourthYear, setFourthYear] = useState(null);
+  const [responseCode, setResponseCode] = useState(null);
+  const hasFetched = useRef(false);
+  const condRender = location.state?.condRender;
+  const [error, setError] = useState(null);
+  console.log(condRender);
+  useEffect(() => {
+    if (location.state?.condRender !== condRender) {
+      setCondRender(location.state?.condRender);
+    }
+  }, []);
+
+  return (
+    
+      <div className="university-dashboard-container-layout">
+        <nav className="university-dashboard-nav">
+          <div className="university-nav-container">
+            <h1 className="university-nav-title">Тэнхим</h1>
+          </div>
+        </nav>
+
+        <div className="dashboard-main-content">
+          {userDetails && <RenderSidebar user = {userDetails} />}
+          <div className="dashboard-body">
+            {condRender === 0 && <Majors user={userDetails} />}
+            {condRender === 1 && <RecommendedCurriculum user={userDetails} />}
+            {condRender === 2 && <PersonalCurriculum user={userDetails} />}
+            {condRender === 3 && <Timetable user={userDetails} />}
+          </div>
+          {userDetails && <RenderSidebarRight user = {userDetails} />}
+          
+        </div>
+
+        <div id="hover-attribution" className="hover-attribution hidden">
+        </div>
+        
+      </div>
+  );
+};
+
+export default Department;

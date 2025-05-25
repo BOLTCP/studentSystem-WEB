@@ -674,6 +674,7 @@ model teacher {
   job_description             String                   @default("Багшлах") @db.Char(100)
   departments_of_education_id Int
   department_id               Int?
+  is_major_planning_closed    Boolean?
   announcement                announcement[]
   calendar                    calendar[]
   coursematerial              coursematerial[]

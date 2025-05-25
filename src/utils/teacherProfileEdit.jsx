@@ -42,7 +42,7 @@ const TeacherProfileEdit = ({ visibility, editUser, editTeacher, editDepartment,
     const compareteacher = JSON.stringify(teacherUser.fromJsonButInApp(userDetails.teacher));
     const compareDepartment = JSON.stringify(Department.fromJsonButInApp(userDetails.department));
     const compareDepartmentOfEducation = JSON.stringify(DepartmentsOfEducation.fromJsonInApp(userDetails.departmentOfEducation));
-    console.log(DepartmentsOfEducation.toJson(departmentOfEducation));
+
     const changeDetection = () => {
       setNoChangeDetected(true);
     }
@@ -86,6 +86,7 @@ const TeacherProfileEdit = ({ visibility, editUser, editTeacher, editDepartment,
             }
 				} catch (err) {
           if (err.response.status === 401) {
+            console.log('lalar');
             changeDetectionToFalse();
           }
 				} finally {
@@ -96,7 +97,6 @@ const TeacherProfileEdit = ({ visibility, editUser, editTeacher, editDepartment,
 
     return (
       <>
-      
         <div className={`profile-edit-overlay ${showConfirmPrompt === true ? 'visible' : ''}`}
              onClick={handleOverlayClick}
         >

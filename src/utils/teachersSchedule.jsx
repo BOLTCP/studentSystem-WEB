@@ -39,7 +39,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
             : new Date().getDay() === 6 ? 'Saturday'
             : 'Sunday';
           console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
-          const teachersSchedule = Array.from(response.data.teachersSchedule).filter((schedule) => schedule[1].days === 'Monday')
+          const teachersSchedule = Array.from(response.data.teachersSchedule).filter((schedule) => schedule[1].days === today)
           setTodaysSchedule(teachersSchedule);
         } 
       } catch (err) {
@@ -204,7 +204,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
                   todaysScheduleCourses((schedule[1]))
               )
             ) : (
-              <div className='no-schedule-for-today-assignments'>Өнөөдөр оюутанд хуваарь байхгүй байна.</div>
+              <div className='no-schedule-for-today-assignments'>Багшид өнөөдөр хуваарь байхгүй байна.</div>
             )}
 
             {/*

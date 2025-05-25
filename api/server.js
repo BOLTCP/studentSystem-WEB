@@ -1179,9 +1179,54 @@ app.post('/User/Login/Teacher', async (req, res) => {
 //src/utils/teacherProfileEdit.jsx
 app.post('/Save/Edited/User/Profile/Teacher/', async (req, res) => {
   const { user, teacher, department, departmentOfEducation } = req.body;
-  console.log('/Save/Edited/User/Profile/Teacher/ :', user.user_id, teacher.teacher_code, department.department_name, departmentOfEducation.ed_department_name);
-  return res.status(200).json({message: 'ljf;aldjfs'});
+  console.log('/Save/Edited/User/Profile/Teacher/ :', user.email, teacher.teacher_email, department.department_name, departmentOfEducation.ed_department_name);
 
+  if ( user.user_id === undefined 
+        || teacher.teacher_id === undefined
+        || department.department_id === undefined
+        || departmentOfEducation.departments_of_education_id === undefined) {
+    return res.status(400).json({ message: 'Алдаа гарлаа. Мэдээллийн индекс / индексүүд олдсонгүй!' });
+  } else {
+
+    try {
+      
+      const updateTransaction = await prisma.$transaction(async (prisma) => {
+        const { user_id: userId, ...newUser } = user;
+        const { teacher_id, user_id: TeacherUserId, ...newTeacher } = teacher;
+
+        try {
+          const updateUser = await prisma.auth_user.update({
+            where: { user_id: user.user_id },
+            data: newUser,
+          });
+
+          const updateTeacher = await prisma.teacher.update({
+            where: { teacher_id: teacher.teacher_id },
+            data: newTeacher,
+          });
+
+          if (updateUser && updateTeacher) {
+            console.log('Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ');
+            return res.status(200).json({ message: 'Хэрэглэгчийн мэдээллийг амжилттай шинэчлэлээ' });
+          }
+        } catch (e) {
+          console.log(e);
+          if (e.code === 'P2002') {
+            const violatedFields = e.meta?.target;
+            console.log('Unique constraint violation on fields:', violatedFields);
+            return res.status(401).json({
+              message: 'Энэхүү И-мэйл аль хэдийн бүртгэгдсэн байна!',
+              violatedFields,
+            });
+          }
+        }
+      });
+
+    } catch (e) {
+      console.log('Error: ', e);
+      return res.status(500).json({ message: 'Server Error has Occured!' });
+    }
+  }
 });
 
 //src/utils/teachersSchedule.jsx || 
@@ -1219,3 +1264,133 @@ app.post('/Get/Teachers/Made/Schedule/', async (req, res) => {
 
 });
 
+//src/component/teacher/university/majors.jsx
+app.post('/Get/Teachers/Majors/', async (req, res) => {
+  const { teacher, department, departmentOfEducation } = req.body;
+  console.log('/Get/Teachers/Majors/: ', teacher.teacherCode, department.departmentName, departmentOfEducation.edDepartmentName);
+
+  if (!teacher.teacherId) {
+    return res.status(400).json({
+      message: 'Багшийн мэдээлэл олдсонгүй.',
+    })
+  } 
+
+  try {
+
+    const departmentsMajors = await prisma.major.findMany({
+      where: { 
+        AND: {
+          department_of_edu_id: departmentOfEducation.departmentsOfEducationId,
+          department_id: department.departmentId,
+        },
+      }
+    });
+
+    const teachersMajors = await prisma.teachersmajorplanning.findMany({
+      where: { teacher_id: teacher.teacherId },
+    });
+    if (departmentsMajors) {
+      return res.status(200).json({
+        message: 'Багшийн хөтөлбөр бодлогын мэдээлллийг амжилттай татлаа.',
+        departmentsMajors: departmentsMajors, teachersMajors: teachersMajors,
+      });
+    }
+
+  } catch (error) {
+    console.log('Error: ', error);
+    return res.status(500).json({
+      message: 'Server Error',
+    });
+  }
+
+});
+
+//src/component/teacher/university/majors.jsx
+app.post('/Add/Major/To/Teacher/', async (req, res) => {
+  const { user, teacher, major } = req.body;
+  console.log('/Add/Major/To/Teacher/', user.userId, teacher.teacherCode, major);
+
+  if (!user.userId || !teacher.teacherId || !major.majorId) {
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй.'
+    });
+  }
+
+  try {
+
+    const addMajorToTeacher = await prisma.teachersmajorplanning.create({
+      data: {
+        academic_degree_of_major: major.academicDegree,
+        major_name: major.majorName,
+        major_id: major.majorId, 
+        credit: major.totalCreditsPerYear,
+
+        teacher: {
+          connect: {
+            teacher_id: teacher.teacherId,
+          },
+        },
+        department: {
+          connect: {
+            department_id: teacher.departmentId, 
+          },
+        },
+        departmentsofeducation: {
+          connect: {
+            departments_of_education_id: major.departmentsOfEducationiD,
+          },
+        },
+      },
+    });
+
+    if (addMajorToTeacher) {
+      console.log('Хөтөлбөрийг амжилттай оноов.');
+      return res.status(200).json({
+        message: 'Багшид хуваарийг амжилттай оноолоо.',
+      });
+    }
+
+  } catch (error) {
+    console.log("Server error: ", error);
+    return res.status(500).json({
+      message: "Server Error",
+    })
+  }
+
+});
+
+
+//src/component/teacher/university/majors.jsx
+app.post('/Remove/Major/To/Teacher/', async (req, res) => {
+  const { user, teacher, major } = req.body;
+  console.log('/Remove/Major/To/Teacher/', user.userId, teacher.teacherCode, major);
+
+  if (!user.userId || !teacher.teacherId || !major.majorId) {
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй.'
+    });
+  }
+
+  try {
+
+    const addMajorToTeacher = await prisma.teachersmajorplanning.delete({
+      where: {
+        teacher_major_id: major.teacherMajorId,
+      },
+    });
+
+    if (addMajorToTeacher) {
+      console.log('Хөтөлбөрийг амжилттай хаслаа.');
+      return res.status(200).json({
+        message: 'Багшид хуваарийг амжилттай хаслаа.',
+      });
+    }
+
+  } catch (error) {
+    console.log("Server error: ", error);
+    return res.status(500).json({
+      message: "Server Error",
+    })
+  }
+
+});

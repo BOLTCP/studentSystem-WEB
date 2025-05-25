@@ -14,6 +14,7 @@ class TeacherUser {
     isActive,
     departmentsOfEducation,
     departmentId,
+    isMajorPlanningClosed,
   }) {
     this.teacherId = teacherId;
     this.userId = userId;
@@ -27,11 +28,12 @@ class TeacherUser {
     this.jobDescription = jobDescription;
     this.departmentsOfEducation = departmentsOfEducation;
     this.departmentId = departmentId;
+    this.isMajorPlanningClosed = isMajorPlanningClosed;
   }
 
   static fromJsonTeacher(json) {
     return new TeacherUser({
-      teacherId: json.teacher_d,
+      teacherId: json.teacher_id,
       userId: json.user_id,
       teacherCode: json.teacher_code,
       teacherEmail: json.teacher_email,
@@ -45,23 +47,27 @@ class TeacherUser {
       jobDescription: json.job_description,
       departmentsOfEducation: json.departments_of_education,
       departmentId: json.department_id,
+      isMajorPlanningClosed: json.is_major_planning_closed,
     });
   }
 
   static toJson (TeacherUser) {
     return {
-      teacher_d: TeacherUser.teacherId,
+      teacher_id: TeacherUser.teacherId,
       user_id: TeacherUser.userId,
       teacher_code: TeacherUser.teacherCode,
-      additional_roles: TeacherUser.teacherEmail,
-      student_code: TeacherUser.certificate,
-      student_email: TeacherUser.profession,
-      student_file: TeacherUser.academicDegree,
+      teacher_email: TeacherUser.teacherEmail,
+      certificate: TeacherUser.certificate,
+      profession: TeacherUser.profession,
+      academic_degree: TeacherUser.academicDegree,
       job_title: TeacherUser.jobTitle,
-      is_active: TeacherUser.isActive,
+      is_active: TeacherUser.isActive === 'Ажиллаж байгаа' ? 'is_working' :
+        TeacherUser.isActive === 'Амралт' ? 'is_working' :
+        'left',
       job_description: TeacherUser.jobDescription,
       departments_of_education: TeacherUser.departmentsOfEducation,
       department_id: TeacherUser.departmentId,
+      is_major_planning_closed: TeacherUser.isMajorPlanningClosed,
     };
   }
 
@@ -70,16 +76,17 @@ class TeacherUser {
       return new TeacherUser({
         teacherId: json.teacherId,
         userId: json.userId,
-        teacherCode: json.teacherCode ?? null,
-        teacherEmail: json.teacherEmail ?? 'none',
-        certificate: json.certificate ?? '',
-        profession: json.profession ?? '',
+        teacherCode: json.teacherCode,
+        teacherEmail: json.teacherEmail,
+        certificate: json.certificate,
+        profession: json.profession,
         academicDegree: json.academicDegree,
-        jobTitle: json.jobTitle ?? '',
-        isActive: json.isActive ?? '',
-        jobDescription: json.jobDescription ?? '',
-        departmentsOfEducation: json.departmentsOfEducation ?? '',
-        departmentId: json.departmentId ?? null,
+        jobTitle: json.jobTitle,
+        isActive: json.isActive,
+        jobDescription: json.jobDescription,
+        departmentsOfEducation: json.departmentsOfEducation,
+        departmentId: json.departmentId,
+        isMajorPlanningClosed: json.isMajorPlanningClosed,
       });
     } catch (error) {
       console.error('Error parsing TeacherUser from JSON string:', error);

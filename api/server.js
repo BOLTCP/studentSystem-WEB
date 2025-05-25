@@ -1099,6 +1099,7 @@ app.post('/Create/Students/Schedule/For/Courses/', async (req, res) => {
 
 });
 
+//src/component/student/major/student_scheduler.jsx
 app.post('/Get/Students/Made/Schedule/', async (req, res) => {
   const { student } = req.body;
   console.log('/Get/Students/Made/Schedule/ :', student.studentCode);
@@ -1132,3 +1133,89 @@ app.post('/Get/Students/Made/Schedule/', async (req, res) => {
   }
 
 });
+
+
+//rc/component/teacher/teacher_dashboard.jsx
+app.post('/User/Login/Teacher', async (req, res) => {
+  const { userId } = req.body;
+  console.log("/User/Login/Teacher Received user_id:", userId);
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required' });
+  }
+
+  try {
+
+    const teacher = await prisma.teacher.findUnique({
+      where: { user_id: userId }, 
+    });
+
+    const userpreferences = await prisma.userpreferences.findUnique({
+      where: { user_id: userId }, 
+    });
+
+    const department = await prisma.department.findUnique({
+      where: { department_id: teacher.department_id },
+    });
+
+    const departmentsofeducation = await prisma.departmentsofeducation.findUnique({
+      where: { departments_of_education_id: department.department_of_edu_id },
+    });
+
+
+    const teacherscourseplanning = await prisma.teacherscourseplanning.findMany({
+      where: { teacher_id: teacher.teacher_id }
+    });
+    
+    res.status(200).json({ teacher: teacher, userpreferences: userpreferences,
+      department: department, departmentsofeducation: departmentsofeducation, teacherscourseplanning: teacherscourseplanning });
+      
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+//src/utils/teacherProfileEdit.jsx
+app.post('/Save/Edited/User/Profile/Teacher/', async (req, res) => {
+  const { user, teacher, department, departmentOfEducation } = req.body;
+  console.log('/Save/Edited/User/Profile/Teacher/ :', user.user_id, teacher.teacher_code, department.department_name, departmentOfEducation.ed_department_name);
+  return res.status(200).json({message: 'ljf;aldjfs'});
+
+});
+
+//src/utils/teachersSchedule.jsx || 
+app.post('/Get/Teachers/Made/Schedule/', async (req, res) => {
+  const { teacher } = req.body;
+  console.log('/Get/Teachers/Made/Schedule/ :', teacher.teacherCode);
+
+  try {
+    let schedulesOntoTimetable = new Map();
+    const teachersSchedule = await prisma.teachersschedule.findMany({
+      where: { teacher_id:  teacher.teacherId },
+      orderBy: {
+        classroom_type: 'asc',
+      },
+    });
+
+    if (teachersSchedule) {
+      for (let i = 0; i < teachersSchedule.length; i++) {
+        schedulesOntoTimetable.set(teachersSchedule[i].schedules_timetable_position, teachersSchedule[i]);
+      }
+      return res.status(200).json({ 
+        message: 'Багшийн хичээлийн хуваарийг амжилттай татлаа.',
+        teachersSchedule: Array.from(schedulesOntoTimetable), 
+      });
+    } else {
+      return res.status(400).json({ 
+        message: 'Багшид хуваарьт оруулсан хичээл байхгүй байна.',
+      });
+    }
+
+  } catch (error) {
+    console.log("Error: ", error);
+    return res.status(400).json({ message: 'Багшид хичээлийн хуваарь одоогоор байхгүй байна.'});
+  }
+
+});
+

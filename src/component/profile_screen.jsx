@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import UserDetailsUtil from '../utils/userDetails_util';
 import '../styles/profile_screen.css';
-import { RenderSidebar, RenderSidebarRight } from './student/side_bars';
+import { TeacherRenderSidebar, TeacherRenderSidebarRight } from './teacher/teacher_side_bars';
+import { RenderSidebar, RenderSidebarRight } from '../component/student/side_bars';
 import ProfileEdit from '../utils/profileEdit';
+import TeacherProfileEdit from '../utils/teacherProfileEdit';
 import getUserDetailsFromLocalStorage from '../utils/userDetails_util';
+import getUserDetailsTeacherFromLocalStorage from '../utils/userDetailsTeacher_util';
 import moment from 'moment';
 
+const ProfileScreen = () => {
+  const userType = JSON.parse(localStorage.getItem('userDetails')).user.userRole;
+  const [userDetails, setUserDetails] = useState(userType === 'Сурагч' ? getUserDetailsFromLocalStorage() : getUserDetailsTeacherFromLocalStorage());
 
-const ProfileScreen = ( ) => {
   const location = useLocation();
-  const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
   const [refreshSideBar, setRefreshSidebar] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showProfileEditPrompt, setShowProfileEditPrompt] = useState(null); 
@@ -34,11 +37,10 @@ const ProfileScreen = ( ) => {
 
   const handleEditClose = () => {
     localStorage.setItem('showProfileEditPrompt', 'false');
-    setUserDetails(getUserDetailsFromLocalStorage());
+    setUserDetails(userType === 'Сурагч' ? getUserDetailsFromLocalStorage() : getUserDetailsTeacherFromLocalStorage());
     setShowProfileEditPrompt(null);  
   };
 
-  console.log(userDetails)
   if (!userDetails) {
       return <div className="no-data">Хэрэглэгч олдсонгүй.</div>;
   }
@@ -50,36 +52,68 @@ const ProfileScreen = ( ) => {
     </div>
   );
   
-
-const { user, student, major, department } = userDetails;
-
-if (user.userRole === 'Багш') {
-    return (
-      <div className="profile-container-layout">
-        <div className="profile-nav">
-          <div className="nav-container">
-            <h2 className="profile-title">Багш {userDetails.user.fname} -н хувийн мэдээлэл</h2>
-            <div className="profile-card-grid">
-              <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
-              <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
-              <ProfileCard label="Хэрэглэгч / Багшийн код:" value={teacher?.teacherCode} />
-              <ProfileCard label="Хэрэглэгчийн И-мэйл" value={user.email} />
-              <ProfileCard label="Түвшин" value={teacher?.academicDegree} />
-              <ProfileCard label="Салбар сургууль" value={departmentOfEducation?.edDepartmentName} />
-              <ProfileCard label="Төлөв" value={teacher?.isActive ? 'Идэвхтэй' : 'Идэвхгүй'} />
-              <ProfileCard label="Хүйс" value={user.gender} />
-              <ProfileCard label="Регистрийн дугаар" value={user.registryNumber} />
-              <ProfileCard label="Төрсөн өдөр" value={moment(user.birthday).format('YYYY-MM-DD')} />
-              <ProfileCard label="Утасны дугаар" value={user.phoneNumber} />
-              <ProfileCard label="Багшийн И-мэйл" value={teacher?.teacherEmail} />
-              <ProfileCard label="Өмнөх боловсрол" value={user.education} />
-              <ProfileCard label="Created At" value={moment(user.createdAt).local().toString()} />
+if (userDetails.user.userRole === 'Багш') {
+  return (
+      <>
+        
+        <div className="profile-container-layout">
+          <div className="profile-nav">
+            <div className="nav-container">
+              <h2 className="profile-title">Багш {userDetails.user.fname} - н хувийн мэдээлэл</h2>
             </div>
           </div>
+
+          <TeacherRenderSidebar user = {userDetails} />
+          <TeacherRenderSidebarRight user = {userDetails} />
+          <div className="profile-content">
+            
+            {showProfileEditPrompt === 'true' &&
+              <TeacherProfileEdit visibility = {showProfileEditPrompt}
+                editUser = {userDetails.user} 
+                editTeacher = {userDetails.teacher}
+                editDepartment = {userDetails.department}
+                editDepartmentOfEducation = {userDetails.departmentOfEducation}
+                onClose={handleEditClose} 
+              />
+            }
+
+            {showProfileEditPrompt === null 
+              && 
+              <div className="profile-container">
+                <div
+                    className="profile-edit-buttton"
+                    onClick={handleEditButtonClick}
+                >
+                  <p>Хувийн мэдээллийг өөрчлөх</p>
+                </div>
+                <div className="profile-card-grid">
+                <ProfileCard label="Нэр" value={`${userDetails.user.fname} ${userDetails.user.lname}`} />
+                <ProfileCard label="Хэрэглэгч нь:" value={userDetails.user.userRole} />
+                <ProfileCard label="Багшийн код:" value={userDetails.teacher?.teacherCode} />
+                <ProfileCard label="И-мэйл:" value={userDetails.user.email} />
+                <ProfileCard label="Багшийн и-мэйл:" value={userDetails.teacher?.teacherEmail} />
+                <ProfileCard label="Эрдмийн зэрэг:" value={userDetails.teacher?.academicDegree} />
+                <ProfileCard label="Ажил:" value={userDetails.teacher?.jobTitle} />
+                <ProfileCard label="Салбар сургууль:" value={userDetails.departmentOfEducation?.edDepartmentName} />
+                <ProfileCard label="Тэнхим анги:" value={userDetails.department?.departmentName} />
+                <ProfileCard label="Төлөв:" value={userDetails.teacher?.isActive} />
+                <ProfileCard label="Хүйс:" value={userDetails.user.gender} />
+                <ProfileCard label="Регистрийн дугаар:" value={userDetails.user.registryNumber} />
+                <ProfileCard label="Төрсөн өдөр:" value={moment(userDetails.user.birthday).format('YYYY-MM-DD')} />
+                <ProfileCard label="Утасны дугаар:" value={userDetails.user.phoneNumber} />
+                <ProfileCard label="Өмнөх боловсрол:" value={userDetails.user.education} />
+                <ProfileCard label="Created At:" value={moment(userDetails.user.createdAt).local().toString()} />
+                </div>
+              </div>
+
+            }
+            
+          </div>
         </div>
-      </div>
+        
+      </>
     );
-  } else if (user.userRole === 'Сурагч') {
+  } else if (userDetails.user.userRole === 'Сурагч') {
     return (
       <>
         
@@ -96,9 +130,9 @@ if (user.userRole === 'Багш') {
             
             {showProfileEditPrompt === 'true'
               && <ProfileEdit visibility = {showProfileEditPrompt}
-                            editUser = {user} 
-                            editStudent = {student}
-                            editDepartment = {department}
+                            editUser = {userDetails.user} 
+                            editStudent = {userDetails.student}
+                            editDepartment = {userDetails.department}
                             onClose={handleEditClose} />}
 
             {showProfileEditPrompt === null 
@@ -111,22 +145,22 @@ if (user.userRole === 'Багш') {
                   <p>Хувийн мэдээллийг өөрчлөх</p>
                 </div>
                 <div className="profile-card-grid">
-                <ProfileCard label="Нэр" value={`${user.fname} ${user.lname}`} />
-                <ProfileCard label="Хэрэглэгч нь:" value={user.userRole} />
-                <ProfileCard label="Хэрэглэгчийн код:" value={student?.studentCode} />
-                <ProfileCard label="И-мэйл:" value={user.email} />
-                <ProfileCard label="Суралцах Эрдмийн зэрэг:" value={student?.currentAcademicDegree} />
-                <ProfileCard label="Түвшин:" value={student?.yearClassification?.toString()} />
-                <ProfileCard label="" value={student?.semesterSpecification} />
-                <ProfileCard label="Салбар сургууль:" value={department?.departmentName} />
-                <ProfileCard label="Төлөв:" value={student?.isActive} />
-                <ProfileCard label="Хүйс:" value={user.gender} />
-                <ProfileCard label="Регистрийн дугаар:" value={user.registryNumber} />
-                <ProfileCard label="Төрсөн өдөр:" value={moment(user.birthday).format('YYYY-MM-DD')} />
-                <ProfileCard label="Утасны дугаар:" value={user.phoneNumber} />
-                <ProfileCard label="И-мэйл:" value={student?.studentEmail} />
-                <ProfileCard label="Өмнөх боловсрол:" value={user.education} />
-                <ProfileCard label="Created At:" value={moment(user.createdAt).local().toString()} />
+                <ProfileCard label="Нэр" value={`${userDetails.user.fname} ${userDetails.user.lname}`} />
+                <ProfileCard label="Хэрэглэгч нь:" value={userDetails.user.userRole} />
+                <ProfileCard label="Оюутны код:" value={userDetails.student?.studentCode} />
+                <ProfileCard label="И-мэйл:" value={userDetails.user.email} />
+                <ProfileCard label="Оюутны и-мэйл:" value={userDetails.student?.studentEmail} />
+                <ProfileCard label="Суралцах Эрдмийн зэрэг:" value={userDetails.student?.currentAcademicDegree} />
+                <ProfileCard label="Түвшин:" value={userDetails.student?.yearClassification?.toString()} />
+                <ProfileCard label="" value={userDetails.student?.semesterSpecification} />
+                <ProfileCard label="Салбар сургууль:" value={userDetails.department?.departmentName} />
+                <ProfileCard label="Төлөв:" value={userDetails.student?.isActive} />
+                <ProfileCard label="Хүйс:" value={userDetails.user.gender} />
+                <ProfileCard label="Регистрийн дугаар:" value={userDetails.user.registryNumber} />
+                <ProfileCard label="Төрсөн өдөр:" value={moment(userDetails.user.birthday).format('YYYY-MM-DD')} />
+                <ProfileCard label="Утасны дугаар:" value={userDetails.user.phoneNumber} />
+                <ProfileCard label="Өмнөх боловсрол:" value={userDetails.user.education} />
+                <ProfileCard label="Created At:" value={moment(userDetails.user.createdAt).local().toString()} />
                 </div>
               </div>
 

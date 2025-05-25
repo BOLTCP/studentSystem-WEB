@@ -55,8 +55,8 @@ const LoginScreen = () => {
 
         if (user.userRole === 'Сурагч') {
           navigate('/student_dashboard', { state: { user: user }});
-        } else if (userType.userRole === 'Багш') {
-          navigate('/teacher/dashboard/', { state: { user: user }});
+        } else if (user.userRole === 'Багш') {
+          navigate('/teacher_dashboard', { state: { user: user }});
         }
          
       } else if (response.status === 401) {

@@ -39,12 +39,12 @@ class DepartmentsOfEducation {
       }
     }
   
-    toJson() {
+    static toJson(DepartmentsOfEducation) {
       return {
-        departments_of_education_id: this.departmentsOfEducationId,
-        ed_department_name: this.edDepartmentName,
-        ed_department_code: this.edDepartmentCode,
-        teachers: this.teachers,
+        departments_of_education_id: DepartmentsOfEducation.departmentsOfEducationId,
+        ed_department_name: DepartmentsOfEducation.edDepartmentName,
+        ed_department_code: DepartmentsOfEducation.edDepartmentCode,
+        teachers: DepartmentsOfEducation.teachers,
       };
     }
   

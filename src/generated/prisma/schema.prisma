@@ -675,6 +675,7 @@ model teacher {
   departments_of_education_id Int
   department_id               Int?
   is_major_planning_closed    Boolean?
+  is_course_planning_closed   Boolean?
   announcement                announcement[]
   calendar                    calendar[]
   coursematerial              coursematerial[]
@@ -753,6 +754,7 @@ model teachersschedule {
   classroom_type               classroom_type_enum?
   classroom_number             String?                 @db.VarChar(5)
   schedules_timetable_position Int                     @default(0)
+  course_code                  String
   major                        major                   @relation(fields: [major_id], references: [major_id], onDelete: Cascade, map: "fk_major")
   teacher                      teacher                 @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_teacher")
   teacherscourseplanning       teacherscourseplanning  @relation(fields: [course_planning_id], references: [teacher_course_planning_id], onDelete: Cascade, map: "fk_teachers_course_planning")

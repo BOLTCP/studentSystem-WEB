@@ -8,6 +8,7 @@ class UserDetailsTeacher {
       departmentOfEducation = null,
       teachersMajorPlanning = null,
       teachersCoursePlanning = null,
+      teachersSchedule = null,
     }) {
       this.user = user;
       this.userpreferences = userpreferences;
@@ -17,6 +18,7 @@ class UserDetailsTeacher {
       this.departmentOfEducation = departmentOfEducation;
       this.teachersMajorPlanning = teachersMajorPlanning;
       this.teachersCoursePlanning = teachersCoursePlanning;
+      this.teachersSchedule = teachersSchedule;
     }
   }
   

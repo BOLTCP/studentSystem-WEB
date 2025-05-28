@@ -5,12 +5,14 @@ import getApiUrl from '../../../api/get_Api_Url';
 import UserDetailsTeacher from '../../models/userDetailsTeacher'; 
 import TeacherUser from '../../models/teacher_user';
 import TeacherCoursePlanning from '../../models/teacher_course_planning';
+import TeachersMajorPlanning from '../../models/teacher_major_planning';
 import Department from '../../models/department';
 import DepartmentsOfEducation from '../../models/departmentsofeducation';
 import UserPreferences from '../../models/auth_user_preferences';
 import { TeacherRenderSidebar, TeacherRenderSidebarRight } from './teacher_side_bars';
 import './teacher_dashboard.css';
 import '../profile_screen';
+import MajorClass from '../../models/major';
 
 const TeacherDashboard = () => {
   const location = useLocation();
@@ -41,11 +43,13 @@ const TeacherDashboard = () => {
             const userpreferences = UserPreferences.fromJsonUserPreferences(response.data.userpreferences);
             const department = Department.fromJsonDepartment(response.data.department);
             const departmentOfEducation = DepartmentsOfEducation.fromJsonDepartmentsOfEducation(response.data.departmentsofeducation);
+            const teachersMajorPlanning = (Array.from(response.data.teachersmajors)
+              .map((major) => TeachersMajorPlanning.fromJsonPlanning(major)));
             const teachersCoursePlanning = (Array.from(response.data.teacherscourseplanning)
               .map((course) => TeacherCoursePlanning.fromJsonTeacherCoursePlanning(course)));
 
             setTeachersCourses(teachersCoursePlanning);
-            setUserDetails(new UserDetailsTeacher({ user, userpreferences, teacher, department, departmentOfEducation, teachersCoursePlanning }));
+            setUserDetails(new UserDetailsTeacher({ user, userpreferences, teacher, department, departmentOfEducation, teachersCoursePlanning, teachersMajorPlanning }));
             
           } else {
             console.error('Error fetching user details:', response.status, response.data);
@@ -66,7 +70,6 @@ const TeacherDashboard = () => {
     fetchDetails();
   }, []);
 
-  console.log(userDetails);
   const serializedUserDetails = JSON.stringify(userDetails);
   localStorage.setItem('userDetails', serializedUserDetails);
 

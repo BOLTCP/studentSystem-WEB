@@ -1162,12 +1162,15 @@ app.post('/User/Login/Teacher', async (req, res) => {
       where: { departments_of_education_id: department.department_of_edu_id },
     });
 
+    const teachersmajors = await prisma.teachersmajorplanning.findMany({
+      where: { teacher_id: teacher.teacher_id },
+    });
 
     const teacherscourseplanning = await prisma.teacherscourseplanning.findMany({
       where: { teacher_id: teacher.teacher_id }
     });
     
-    res.status(200).json({ teacher: teacher, userpreferences: userpreferences,
+    res.status(200).json({ teacher: teacher, userpreferences: userpreferences, teachersmajors: teachersmajors,
       department: department, departmentsofeducation: departmentsofeducation, teacherscourseplanning: teacherscourseplanning });
       
   } catch (error) {
@@ -1391,6 +1394,439 @@ app.post('/Remove/Major/To/Teacher/', async (req, res) => {
     return res.status(500).json({
       message: "Server Error",
     })
+  }
+
+});
+
+
+//src/component/teacher/university/teachers_courses.jsx
+app.post('/Get/Majors/Courses/', async (req, res) => {
+  const { majorsPlanning, teacher } = req.body;
+  console.log('/Get/Majors/Courses/', majorsPlanning, teacher.teacherCode);
+
+  if (!majorsPlanning || !teacher.teacherId) {
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй.'
+    });
+  }
+  try {
+    let majorsCourses = [];
+    let majors = [];
+    for (let i = 0; i < majorsPlanning.length; i++){
+      const getMajorCourses = await prisma.major.findFirst({
+        where: {
+          major_id: majorsPlanning[i].majorId,
+        },
+      });
+      majorsCourses.push(getMajorCourses);
+      majors.push(getMajorCourses);
+    }
+
+    const teachersCoursePlanning = await prisma.teacherscourseplanning.findMany({
+      where: { 
+        teacher_id: teacher.teacherId, 
+      },
+    });
+
+    const firstYear = majorsCourses[0].recommended_curriculum['first_year'];
+    const secondYear = majorsCourses[0].recommended_curriculum['second_year'];
+    const thirdYear = majorsCourses[0].recommended_curriculum['third_year'];
+    const fourthYear = majorsCourses[0].recommended_curriculum['fourth_year'];
+
+    let firstYearCourses = [];
+    let secondYearCourses = [];
+    let thirdYearCourses = [];
+    let fourthYearCourses = [];
+
+    for (let i = 0; i < firstYear.first_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: firstYear.first_semester[i],
+        }
+      });
+      firstYearCourses.push(getCourse);
+    }
+    firstYearCourses.push('Хавар');
+    for (let i = 0; i < firstYear.second_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: firstYear.second_semester[i],
+        }
+      });
+      firstYearCourses.push(getCourse);
+    }
+
+    
+    for (let i = 0; i < secondYear.first_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: secondYear.first_semester[i],
+        }
+      });
+      secondYearCourses.push(getCourse);
+    }
+    secondYearCourses.push('Хавар');
+    for (let i = 0; i < secondYear.second_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: secondYear.second_semester[i],
+        }
+      });
+      secondYearCourses.push(getCourse);
+    }
+
+    for (let i = 0; i < secondYear.first_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: secondYear.first_semester[i],
+        }
+      });
+      secondYearCourses.push(getCourse);
+    }
+    secondYearCourses.push('Хавар');
+    for (let i = 0; i < secondYear.second_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: secondYear.second_semester[i],
+        }
+      });
+      secondYearCourses.push(getCourse);
+    }
+
+    for (let i = 0; i < thirdYear.first_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: thirdYear.first_semester[i],
+        }
+      });
+      thirdYearCourses.push(getCourse);
+    }
+    thirdYearCourses.push('Хавар');
+    for (let i = 0; i < thirdYear.second_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: thirdYear.second_semester[i],
+        }
+      });
+      thirdYearCourses.push(getCourse);
+    }
+
+    for (let i = 0; i < fourthYear.first_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: fourthYear.first_semester[i],
+        }
+      });
+      fourthYearCourses.push(getCourse);
+    }
+    fourthYearCourses.push('Хавар');
+    for (let i = 0; i < fourthYear.second_semester.length; i++) {
+      const getCourse = await prisma.courses.findFirst({
+        where: { 
+          course_id: fourthYear.second_semester[i],
+        }
+      });
+      fourthYearCourses.push(getCourse);
+    }
+
+    if (majorsCourses.length > 0) {
+      console.log('Хөтөлбөрүүдийн хичээлийг амжилттай татлаа.');
+      return res.status(200).json({
+        message: 'Багшийн хичээлүүдийг таллаа.',
+        majors: majors,
+        teachersCoursePlanning: teachersCoursePlanning,
+        majorsCourses: majorsCourses,
+        firstYearCourses: firstYearCourses,
+        secondYearCourses: secondYearCourses,
+        thirdYearCourses: thirdYearCourses,
+        fourthYearCourses: fourthYearCourses,
+        majorsLength: majorsCourses.length,
+      });
+    } else {
+      return res.status(400).json({
+        message: 'Хэрэглэгчийн мэдээлэл олдсонгүй.'
+      });
+    }
+
+  } catch (error) {
+    console.log("Server error: ", error);
+    return res.status(500).json({
+      message: "Server Error",
+    })
+  }
+
+});
+
+//src/component/teacher/university/teachers_selected_courses.jsx
+app.post('/Get/Teachers/Selected/Courses/', async (req, res) => {
+  const { teacher } = req.body;
+  console.log('/Get/Teachers/Selected/Courses/: ', teacher.teacherCode);
+
+  if (!teacher.teacherId) {
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй. Bad Request!'
+    });
+  }
+
+  try {
+
+    const getTeachersCoursePlanning = await prisma.teacherscourseplanning.findMany({
+      where: { 
+        teacher_id : teacher.teacherId,
+      }, 
+    });
+
+    let totalCredits = [];
+    for ( let i = 0; i < getTeachersCoursePlanning.length; i++ ) {
+      const getTotalCredits = await prisma.courses.findFirst({
+        where: {
+          course_id: getTeachersCoursePlanning[i].course_id,
+        },
+      });
+      totalCredits.push(getTotalCredits);
+    }
+
+    if (getTeachersCoursePlanning) {
+      console.log('Багшийн хичээл оноогдлыг амжилттай татлаа.');
+      return res.status(200).json({
+        teachersCoursePlanning: getTeachersCoursePlanning,
+        totalCredits: totalCredits, 
+      });
+    }
+
+  } catch (error) {
+    console.log("Server Error: ", error);
+    return res.status(500).json({
+      message: 'Server Error has occured',
+    });
+  }
+
+});
+
+
+//src/component/teacher/university/teachers_selected_courses.jsx
+app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
+  const { course, teacher, major } = req.body;
+  console.log('/Add/Course/To/Teachers/Course/Planning/: ', course.courseCode, teacher.teacherCode, major);
+
+  if (!course.courseId || !teacher.teacherId) {
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй. Bad Request!',
+    });
+  }
+
+  try {
+
+    const addCourseToTeacher = await prisma.teacherscourseplanning.create({
+      data: {
+        major_name: major.majorName,
+        major_id: major.majorId,
+        course_name: course.courseName,
+        credit: course.totalCredits,
+        course_code: course.courseCode,
+
+        courses: {
+          connect: {
+            course_id: course.courseId,
+          },
+        },
+
+        department: {
+          connect: {
+            department_id: major.departmentId,
+          }
+        },
+
+        departmentsofeducation: {
+          connect: {
+            departments_of_education_id: major.departmentOfEducationsId,
+          }
+        },
+
+        teacher: {
+          connect: {
+            teacher_id: teacher.teacherId,
+          }
+        },
+
+        teachersmajorplanning: {
+          connect: {
+            teacher_major_id:  major.teacherMajorId,
+          }
+        },
+
+      },
+    });
+    if (addCourseToTeacher) {
+      console.log('Багшид хичээлийг амжилттай нэмлээ.');
+      return res.status(200).json({
+        message: 'Ажилттай нэмлээ.',
+        addCourseToTeacher: addCourseToTeacher,
+      });
+    }
+  } catch (error) {
+    console.log('Server error: ', error);
+    return res.status(500).json({
+      message: 'Server Error',
+    });
+  }
+
+});
+
+//src/component/teacher/university/teachers_selected_courses.jsx
+app.post('/Remove/Course/From/Teachers/Course/Planning/', async (req, res) => {
+  const { course, teacher } = req.body;
+  console.log('/Remove/Course/From/Teachers/Course/Planning/: ', course.courseCode, teacher.teacherCode);
+
+  if (!course.courseId || !teacher.teacherId) {
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй. Bad Request!',
+    });
+  }
+
+  try {
+
+    const removeCourseFromTeacher = await prisma.teacherscourseplanning.delete({
+      where: {
+          teacher_course_planning_id: course.teacherCoursePlanningId,
+      }
+    });
+    if (removeCourseFromTeacher) {
+      console.log('Багшийн хичээлийг амжилттай хаслаа.');
+      return res.status(200).json({
+        message: 'Ажилттай хаслаа.',
+        removeCourseFromTeacher: removeCourseFromTeacher,
+      });
+    }
+  } catch (error) {
+    console.log('Server error: ', error);
+    return res.status(500).json({
+      message: 'Server Error',
+    });
+  }
+
+});
+
+
+app.post('/Get/Available/Classes/For/Timetable/Position/', async (req, res) => {
+  const { teachersScheduleInstance } = req.body;
+  console.log('/Get/Available/Classes/For/Timetable/Position/ :', teachersScheduleInstance);
+  
+  if (!teachersScheduleInstance.teacher_id) {
+    console.log('Хэрэглэгчийн өгөгдөл олдсонгүй.');
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл олдсонгүй. Bad Request.',
+    })
+  } 
+
+  try {
+
+    const getPositionAvailability = await prisma.teachersschedule.findMany({
+      where: {
+        AND: {
+          teacher_id: teachersScheduleInstance.teacher_id,
+          major_id: teachersScheduleInstance.major_id,
+          course_id: teachersScheduleInstance.course_id,
+          schedules_timetable_position: teachersScheduleInstance.schedules_timetable_position,
+        }
+      }
+    });
+
+    const bookedClasses = getPositionAvailability.map((schedule) => schedule.classroom_id);
+
+    const classroomSearchParemeter = teachersScheduleInstance.course_code.slice(0, 3) === 'КОМ' ? 'computerLaboratory' 
+      : 'seminar';
+
+    const getClassroomsForPosition = await prisma.classrooms.findMany({
+      where: {
+        classroom_type: classroomSearchParemeter,
+      },
+    });
+  
+    const availableClassroom = getClassroomsForPosition.filter((classroom) => !bookedClasses.includes(classroom.classroom_id));
+   
+    if (availableClassroom.length === 0) {
+      console.log('Бэлэн анги олголт байхгүй байна.');
+      return res.status(201).json({
+        message: `${teachersScheduleInstance.course_name}, ${teachersScheduleInstance.schedules_timetable_position} боломжит ангийн хуваарь байхгүй байна.`
+      });
+    } else {
+      console.log('Бэлэн анги байна.', availableClassroom.map((classroom) => console.log(classroom)));
+      return res.status(200).json({
+        message: 'Боломжит ангийн хуваарийг татлаа.',
+        availableClassroom: availableClassroom,
+      });
+    }
+
+  } catch (error) {
+    console.log('Server Error: ', error);
+    return res.status(500).json({
+      message: 'Server Error',
+    });
+  }
+
+});
+
+app.post('/Create/Schedule/For/Teachers/Timetable/', async (req, res) => {
+  const scheduleData = req.body.scheduleInstance;
+  console.log('/Create/Schedule/For/Teachers/Timetable/: ', scheduleData);
+
+  if (!scheduleData) {
+    console.log('Хэрэглэгчийн өгөгдөл байхгүй эсвэл дутуу байна.');
+    return res.status(400).json({
+      message: 'Алдаа гарлаа. Bad Request',
+    });
+  }
+
+  try {
+     
+    const createScheduleForTeacher = await prisma.teachersschedule.create({
+      data: {
+        course_id: scheduleData.course_id, 
+        time: scheduleData.time,
+        days: scheduleData.days,
+        schedules_timetable_position: scheduleData.schedules_timetable_position,
+        course_name: scheduleData.course_name,
+        course_code: scheduleData.course_code,
+        classroom_id: scheduleData.classroom_id,
+        students: scheduleData.students,
+        classroom_capacity: scheduleData.classroom_capacity,
+        classroom_type: scheduleData.classroom_type === 'Семинар' ? 'seminar' : 'Laboratory',
+        classroom_number: scheduleData.classroom_number,
+        teacher_name: scheduleData.teacher_name, 
+        teachers_email: scheduleData.teachers_email,
+        schedule_type: scheduleData.schedule_type,
+        created_at: scheduleData.created_at ? new Date(scheduleData.created_at) : undefined, 
+        major: {
+          connect: {
+            major_id: scheduleData.major_id, 
+          }
+        },
+        teacher: {
+          connect: {
+            teacher_id: scheduleData.teacher_id, 
+          }
+        },
+        teacherscourseplanning: {
+          connect: {
+            teacher_course_planning_id: scheduleData.course_planning_id,
+          }
+        }
+      },
+    });
+
+    if (createScheduleForTeacher) {
+      console.log('Багшийн хуваарийг амжилттай нэмлээ.');
+      return res.status(200).json({
+        scheduleData: createScheduleForTeacher,
+      });
+    } 
+
+  } catch (error) {
+    console.log('Server Error: ', error);
+    return res.status(500).json({
+      message: 'Server Error',
+    });
   }
 
 });

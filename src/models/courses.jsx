@@ -30,7 +30,8 @@ class Courses {
       courseId: json.course_id,
       courseName: json.course_name,
       courseCode: json.course_code,
-      courseType: json.course_type,
+      courseType: json.course_type === 'mandatory' ? 'Заавал судлах' :
+        'Сонгон судлах',
       courseYear: json.course_year,
       totalCredits: json.total_credits,
       majorId: json.majorId,

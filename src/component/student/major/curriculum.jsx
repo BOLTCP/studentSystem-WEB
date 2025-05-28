@@ -205,7 +205,7 @@ const Curriculum = ({ user }) => {
 
                         {curriculum
                           .filter(course => course.courseYear === courseYear
-                                    && course.courseType === 'mandatory')
+                                    && course.courseType === 'Заавал судлах')
                           .map((course, index) => (
                             <tr key={index} className="table-row">
                               <td>{index + 1}</td>
@@ -260,7 +260,7 @@ const Curriculum = ({ user }) => {
 
                         {curriculum
                         .filter(course => course.courseYear === courseYear 
-                                  && course.courseType === 'selective')
+                                  && course.courseType === 'Сонгон судлах')
                         .map((course, index) => (
                             <tr key={index} className="table-row">
                               <td>{index + 1}</td>

@@ -13,6 +13,8 @@ import TeacherDashboard from './component/teacher/teacher_dashboard';
 //TEACHER
 import Department from './component/teacher/university/department_of_university';
 import Majors from './component/teacher/university/majors';
+import TeachersCourses from './component/teacher/university/teachers_courses';
+import TeachersSelectedCourses from './component/teacher/university/teachers_selected_courses';
 
 //src\component\university\university.jsx
 
@@ -28,6 +30,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/teacher_dashboard" element={<TeacherDashboard />} />
         <Route path="/department_of_university" element={<Department />} />
         <Route path="/majors" element={<Majors />} />
+        <Route path="/teachers_courses" element={<TeachersCourses />} />
+        <Route path="/teachers_selected_courses" elemetn={<TeachersSelectedCourses />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

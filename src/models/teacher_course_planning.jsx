@@ -29,12 +29,6 @@ class TeacherCoursePlanning {
     this.teacherMajorId = teacherMajorId;
   }
 
-  /**
-   * Creates a TeacherCoursePlanning instance from a JSON object (e.g., from a database response).
-   * Assumes keys are in snake_case as per your PostgreSQL table.
-   * @param {Object} json - The JSON object from the backend.
-   * @returns {TeacherCoursePlanning | null} A new TeacherCoursePlanning instance, or null if parsing fails.
-   */
   static fromJsonTeacherCoursePlanning(json) {
     if (!json) {
       console.warn('TeacherCoursePlanning.fromJson received null or undefined JSON.');
@@ -61,12 +55,6 @@ class TeacherCoursePlanning {
     }
   }
 
-  /**
-   * Converts a TeacherCoursePlanning instance to a JSON object for sending to a backend API.
-   * Assumes the backend expects snake_case keys.
-   * @param {TeacherCoursePlanning} instance - The TeacherCoursePlanning instance.
-   * @returns {Object} A JSON object with snake_case keys.
-   */
   static toJson(instance) {
     if (!instance) {
       console.warn('TeacherCoursePlanning.toJson received null or undefined instance.');
@@ -88,12 +76,6 @@ class TeacherCoursePlanning {
     };
   }
 
-  /**
-   * Converts a TeacherCoursePlanning instance to a JSON object using camelCase keys,
-   * typically for internal app usage if preferred, or for APIs expecting camelCase.
-   * @param {TeacherCoursePlanning} instance - The TeacherCoursePlanning instance.
-   * @returns {Object} A JSON object with camelCase keys.
-   */
   static toJsonButInApp(instance) {
     if (!instance) {
       console.warn('TeacherCoursePlanning.toJsonButInApp received null or undefined instance.');

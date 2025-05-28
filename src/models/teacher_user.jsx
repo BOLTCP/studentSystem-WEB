@@ -15,6 +15,7 @@ class TeacherUser {
     departmentsOfEducation,
     departmentId,
     isMajorPlanningClosed,
+    isCoursePlanningClosed,
   }) {
     this.teacherId = teacherId;
     this.userId = userId;
@@ -29,6 +30,7 @@ class TeacherUser {
     this.departmentsOfEducation = departmentsOfEducation;
     this.departmentId = departmentId;
     this.isMajorPlanningClosed = isMajorPlanningClosed;
+    this.isCoursePlanningClosed = isCoursePlanningClosed;
   }
 
   static fromJsonTeacher(json) {
@@ -48,6 +50,7 @@ class TeacherUser {
       departmentsOfEducation: json.departments_of_education,
       departmentId: json.department_id,
       isMajorPlanningClosed: json.is_major_planning_closed,
+      isCoursePlanningClosed: json.is_course_planning_closed,
     });
   }
 
@@ -68,6 +71,7 @@ class TeacherUser {
       departments_of_education: TeacherUser.departmentsOfEducation,
       department_id: TeacherUser.departmentId,
       is_major_planning_closed: TeacherUser.isMajorPlanningClosed,
+      is_course_planning_closed: TeacherUser.isCoursePlanningClosed,
     };
   }
 
@@ -87,6 +91,7 @@ class TeacherUser {
         departmentsOfEducation: json.departmentsOfEducation,
         departmentId: json.departmentId,
         isMajorPlanningClosed: json.isMajorPlanningClosed,
+        isCoursePlanningClosed: json.isCoursePlanningClosed,
       });
     } catch (error) {
       console.error('Error parsing TeacherUser from JSON string:', error);

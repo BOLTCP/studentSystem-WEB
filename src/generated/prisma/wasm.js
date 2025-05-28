@@ -625,7 +625,8 @@ exports.Prisma.TeacherScalarFieldEnum = {
   job_description: 'job_description',
   departments_of_education_id: 'departments_of_education_id',
   department_id: 'department_id',
-  is_major_planning_closed: 'is_major_planning_closed'
+  is_major_planning_closed: 'is_major_planning_closed',
+  is_course_planning_closed: 'is_course_planning_closed'
 };
 
 exports.Prisma.TeacherscourseplanningScalarFieldEnum = {
@@ -673,7 +674,8 @@ exports.Prisma.TeachersscheduleScalarFieldEnum = {
   classroom_capacity: 'classroom_capacity',
   classroom_type: 'classroom_type',
   classroom_number: 'classroom_number',
-  schedules_timetable_position: 'schedules_timetable_position'
+  schedules_timetable_position: 'schedules_timetable_position',
+  course_code: 'course_code'
 };
 
 exports.Prisma.TransactioninformationScalarFieldEnum = {

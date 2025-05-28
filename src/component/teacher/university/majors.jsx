@@ -14,7 +14,7 @@ import { object } from 'prop-types';
 
 const Majors = () => {
   const location = useLocation();
-  const userDetails = getUserDetailsFromLocalStorage();
+  const [userDetails, setUserDetails] = useState(getUserDetailsFromLocalStorage());
   const hasFetched = useRef(false);
   const [isMajorAddSuccess, setIsMajorAddSuccess] = useState(false);
   const [isMajorRemoveSuccess, setIsMajorRemoveSuccess] = useState(false);
@@ -87,6 +87,11 @@ const Majors = () => {
 
         if (response.status === 200) {
           console.log(response.data.courseAdded);
+          setUserDetails(prevDetails => {
+            let updateDetails = prevDetails;
+            Array.from(updateDetails.teachersMajorPlanning).concat(major);
+            return updateDetails;
+          });
           setResponseCode(200);
           setIsMajorAddSuccess(true);
           setAddedMajor(major);
@@ -247,7 +252,8 @@ const Majors = () => {
                             <th>{majors.academicDegree}</th>
                             <th>{majors.totalYears}</th>
                             <th>{majors.totalCreditsPerYear}</th>
-                            <th onClick={() => {handleAddingMajors(majors)}}>
+                            <th className='min-width'
+                                onClick={() => {handleAddingMajors(majors)}}>
                                 {userDetails.teacher.isMajorPlanningClosed === false 
                                   && Array.from(teachersMajors).filter((addedMajor) => addedMajor.majorId === majors.majorId).length === 0
                                     ?
@@ -268,27 +274,6 @@ const Majors = () => {
 
             
             <div className="curriculum-table">
-              <div className="personal-curriculum-overheader-container">
-                <div className="personal-curriculum-overheader">
-                  Салбар сургууль: {userDetails.departmentOfEducation.edDepartmentName}
-                </div>
-                <div className="personal-curriculum-overheader">
-                  Тэнхим: {userDetails.department.departmentName}
-                </div>  
-                <div className="personal-curriculum-overheader">
-                  Зэрэг: {userDetails.teacher.academicDegree}
-                </div>
-                <div className="personal-curriculum-overheader">
-                  Багшийн код: {userDetails.teacher.teacherCode.toUpperCase()}
-                </div>
-                <div className="personal-curriculum-overheader">
-                  Овог нэр: {`${userDetails.user.fname} ${userDetails.user.lname}`}
-                </div>
-                <div className="personal-curriculum-overheader">
-                  Регистрийн дугаар: {userDetails.user.registryNumber}
-                </div>
-              </div>
-              
               <table>
                 <thead>
                     <tr className="table-header">

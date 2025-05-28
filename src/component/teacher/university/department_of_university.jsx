@@ -4,9 +4,9 @@ import getApiUrl from '../../../../api/get_Api_Url';
 import axios from 'axios';
 import Majors from './majors';
 import StudentCurriculum from '../../../models/student_curriculum';
-import RecommendedCurriculum from './recommended_curriculum';
-import PersonalCurriculum from './personal_curriculum';
-import Timetable from './student_scheduler';
+import TeachersCourses from './teachers_courses';
+import TeachersSelectedCourses from './teachers_selected_courses';
+import Timetable from './teacher_scheduler';
 import { RenderSidebar, RenderSidebarRight } from '../../teacher/university/teacher_university_sidebar';
 import getUserDetailsFromLocalStorage from '../../../utils/userDetailsTeacher_util';
 import './department_of_university.css';
@@ -24,7 +24,6 @@ const Department = () => {
   const hasFetched = useRef(false);
   const condRender = location.state?.condRender;
   const [error, setError] = useState(null);
-  console.log(condRender);
   useEffect(() => {
     if (location.state?.condRender !== condRender) {
       setCondRender(location.state?.condRender);
@@ -44,8 +43,8 @@ const Department = () => {
           {userDetails && <RenderSidebar user = {userDetails} />}
           <div className="dashboard-body">
             {condRender === 0 && <Majors user={userDetails} />}
-            {condRender === 1 && <RecommendedCurriculum user={userDetails} />}
-            {condRender === 2 && <PersonalCurriculum user={userDetails} />}
+            {condRender === 1 && <TeachersCourses user={userDetails} />}
+            {condRender === 2 && <TeachersSelectedCourses user={userDetails} />}
             {condRender === 3 && <Timetable user={userDetails} />}
           </div>
           {userDetails && <RenderSidebarRight user = {userDetails} />}

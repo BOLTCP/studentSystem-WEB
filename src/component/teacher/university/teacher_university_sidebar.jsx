@@ -190,6 +190,15 @@ export const RenderSidebar = () => {
                           setSelectedSubmenu(1);
                           navigate('/department_of_university', { state: { condRender: 2 } })
                           }}>
+                  Багшийн хичээлийн оноогдол
+                </button>
+              </li>
+              <li className="dropdown-item">
+                <button className={`dashboard-submenu-button ${selectedSubmenu === 0 ? 'active' : ''}`} 
+                        onClick={() => {
+                          setSelectedSubmenu(1);
+                          navigate('/department_of_university', { state: { condRender: 3 } })
+                          }}>
                   Хичээл сонголт, хуваарийн бодлого
                 </button>
               </li>

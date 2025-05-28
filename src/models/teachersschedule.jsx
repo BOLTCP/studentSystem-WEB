@@ -20,6 +20,7 @@ class TeachersSchedule {
     classroomType,
     classroomNumber,
     schedulesTimetablePosition,
+    courseCode,
   }) {
     this.classroomId = classroomId;
     this.students = students;
@@ -39,6 +40,7 @@ class TeachersSchedule {
     this.classroomType = classroomType;
     this.classroomNumber = classroomNumber;
     this.schedulesTimetablePosition = schedulesTimetablePosition;
+    this.courseCode = courseCode;
   }
 
   static fromJsonTeachersSchedule(json) {
@@ -62,6 +64,7 @@ class TeachersSchedule {
         classroomType: json.classroom_type,
         classroomNumber: json.classroom_number,
         schedulesTimetablePosition: json.schedules_timetable_position,
+        courseCode: json.course_code,
       });
     } catch (error) {
       console.error('Error parsing TeachersSchedule from JSON:', error);
@@ -72,7 +75,7 @@ class TeachersSchedule {
   static toJson(teachersSchedule) {
     return {
       classroom_id: teachersSchedule.classroomId,
-      students: teachersSchedule.students,
+      students: teachersSchedule.students ?? null,
       teacher_id: teachersSchedule.teacherId,
       course_id: teachersSchedule.courseId,
       major_id: teachersSchedule.majorId,
@@ -82,13 +85,14 @@ class TeachersSchedule {
       time: teachersSchedule.time,
       course_planning_id: teachersSchedule.coursePlanningId,
       days: teachersSchedule.days,
-      teachers_schedule_id: teachersSchedule.teachersScheduleId,
+      teachers_schedule_id: teachersSchedule.teachersScheduleId ?? null,
       created_at: teachersSchedule.createdAt ? teachersSchedule.createdAt.toISOString().split('T')[0] : null,
       course_name: teachersSchedule.courseName,
       classroom_capacity: teachersSchedule.classroomCapacity,
       classroom_type: teachersSchedule.classroomType,
       classroom_number: teachersSchedule.classroomNumber,
       schedules_timetable_position: teachersSchedule.schedulesTimetablePosition,
+      course_code: teachersSchedule.courseCode,
     };
   }
 
@@ -112,6 +116,7 @@ class TeachersSchedule {
       classroom_type: teachersSchedule.classroomType,
       classroom_number: teachersSchedule.classroomNumber,
       schedules_timetable_position: teachersSchedule.schedulesTimetablePosition,
+      course_code: teachersSchedule.courseCode,
     };
   }
 }

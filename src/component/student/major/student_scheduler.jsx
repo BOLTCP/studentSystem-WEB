@@ -93,7 +93,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
     :
-    isLecture === 'Lecture'
+    isLecture === 'Lecture' || isLecture === 'Лекц' 
     ?
     <div
       onDoubleClick={handleDoubleClick}
@@ -101,7 +101,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       ref={drag}
       className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} Лекц{element.courseCode}{showSchedulesData && ``} 
+      {element.courseName} Лекц {element.courseCode}{showSchedulesData && ``} 
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
     :
@@ -111,7 +111,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       ref={drag}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName}{element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {element.courseName} {element.courseCode} {showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
   );
@@ -145,6 +145,7 @@ const makeACoursePopUpLecture = (id) => {
 };
 
 const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragged) => {
+  console.log(teachersScheduleCellsORLecture);
   let popUpStyle = {}; 
   if (courseBeingDragged?.courseId && teachersScheduleCellsORLecture.has(courseBeingDragged.courseId)) {
     const validDropPositions = teachersScheduleCellsORLecture.get(courseBeingDragged.courseId);
@@ -161,11 +162,11 @@ const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragge
 };
 
 const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersScheduleCellsLecture, teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, shouldPopulateWholeData }) => {
-  const availableSchedules = courseBeingDragged?.scheduleType === 'Laboratory' ? 
-    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Laboratory' ? schedule : '')
+  const availableSchedules = courseBeingDragged?.scheduleType === 'Лаборатори' ? 
+    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лаборатори' ? schedule : '')
     :
-    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Lecture' ? schedule : '');
-  const scheduleType = courseBeingDragged?.scheduleType === 'Laboratory' ? 'Laboratory' : 'Lecture';
+    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лекц' ? schedule : '');
+  const scheduleType = courseBeingDragged?.scheduleType === 'Laboratory' ? 'Лаборатори' : 'Лекц';
 
   const position = row * 7 + col;
   const [{ isOver }, drop] = useDrop(() => ({
@@ -178,7 +179,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
     }),
   }), [position, teachersSchedule]);
 
-  const cellStyle = isDragging === true && scheduleType === 'Laboratory' 
+  const cellStyle = isDragging === true && scheduleType === 'Лаборатори' 
     ? getCellStyle(position, teachersScheduleCells, courseBeingDragged, scheduleType)
     : getCellStyle(position, teachersScheduleCellsLecture, courseBeingDragged, scheduleType);
 
@@ -196,7 +197,8 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
           ${shouldPopulate[0].students}/${shouldPopulate[0].classroomCapacity}`: ''}
           `
         ) : (
-          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
+          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
+            courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
         )}
       </td>
     );
@@ -213,7 +215,8 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
           ${shouldPopulate[0].courseName} Лекц ${shouldPopulate[0].teachersEmail}`: ''}
           `
         ) : (
-          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
+          element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
+            courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
         )}
       </td>
     );
@@ -344,11 +347,11 @@ const Timetable = ({ user }) => {
   const timeTablePositions = new Map();
   const timeTablePositionsLecture = new Map();
   for (let i = 0; i < teachersSchedule.length; i++) {
-    const courseId = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].courseId : '';
-    const position = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].schedulesTimetablePosition : '';
+    const courseId = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Лаборатори' ? teachersSchedule[i].courseId : '';
+    const position = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Лаборатори' ? teachersSchedule[i].schedulesTimetablePosition : '';
 
-    const courseIdLecture = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Lecture' ? teachersSchedule[i].courseId : '';
-    const positionLecture = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Lecture' ? teachersSchedule[i].schedulesTimetablePosition : '';
+    const courseIdLecture = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Лекц' ? teachersSchedule[i].courseId : '';
+    const positionLecture = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Лекц' ? teachersSchedule[i].schedulesTimetablePosition : '';
 
     if (timeTablePositions.has(courseId)) {
       timeTablePositions.get(courseId).push(position);

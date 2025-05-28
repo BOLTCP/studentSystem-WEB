@@ -41,7 +41,9 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
           console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
           const teachersSchedule = Array.from(response.data.teachersSchedule).filter((schedule) => schedule[1].days === today)
           setTodaysSchedule(teachersSchedule);
-        } 
+        } else if (response.status === 400) {
+          setTodaysSchedule(null);
+        }
       } catch (err) {
         console.log("Error: ", err);
       }

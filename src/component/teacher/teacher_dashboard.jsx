@@ -6,6 +6,7 @@ import UserDetailsTeacher from '../../models/userDetailsTeacher';
 import TeacherUser from '../../models/teacher_user';
 import TeacherCoursePlanning from '../../models/teacher_course_planning';
 import TeachersMajorPlanning from '../../models/teacher_major_planning';
+import TeachersSchedule from '../../models/teachersschedule';
 import Department from '../../models/department';
 import DepartmentsOfEducation from '../../models/departmentsofeducation';
 import UserPreferences from '../../models/auth_user_preferences';
@@ -47,9 +48,12 @@ const TeacherDashboard = () => {
               .map((major) => TeachersMajorPlanning.fromJsonPlanning(major)));
             const teachersCoursePlanning = (Array.from(response.data.teacherscourseplanning)
               .map((course) => TeacherCoursePlanning.fromJsonTeacherCoursePlanning(course)));
+            const teachersSchedule = (Array.from(response.data.teachersschedule)
+              .map((schedule) => TeachersSchedule.fromJsonTeachersSchedule(schedule)));
 
             setTeachersCourses(teachersCoursePlanning);
-            setUserDetails(new UserDetailsTeacher({ user, userpreferences, teacher, department, departmentOfEducation, teachersCoursePlanning, teachersMajorPlanning }));
+            setUserDetails(new UserDetailsTeacher({ user, userpreferences, teacher, department, 
+                departmentOfEducation, teachersCoursePlanning, teachersMajorPlanning, teachersSchedule }));
             
           } else {
             console.error('Error fetching user details:', response.status, response.data);

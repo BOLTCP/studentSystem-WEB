@@ -858,6 +858,7 @@ enum classroom_type_enum {
   students_dev        @map("students-dev")
   lecture
   tv_classroom        @map("tv-classroom")
+  online
   // Компьютерийн лаборатори анги @map("Компьютерийн лаборатори анги")
   // Оюутны хөгжлийн төв @map("Оюутны хөгжлийн төв")
   // Лекцийн анги @map("Лекцийн анги")

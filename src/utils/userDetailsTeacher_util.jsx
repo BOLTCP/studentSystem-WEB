@@ -5,6 +5,7 @@ import TeacherUser from '../../src/models/teacher_user';
 import MajorClass from '../../src/models/major';
 import TeacherCoursePlanning from '../models/teacher_course_planning';
 import TeachersMajorPlanning from '../models/teacher_major_planning';
+import TeachersSchedule from '../models/teachersschedule';
 import Department from '../../src/models/department';
 import DepartmentsOfEducation from '../models/departmentsofeducation';
 import UserPreferences from '../../src/models/auth_user_preferences';
@@ -36,7 +37,11 @@ const getUserDetailsFromLocalStorage = () => {
       const teachersMajorPlanning = parsedUser?.teachersMajorPlanning ?
         Array.from(parsedUser.teachersMajorPlanning).map((major) => TeachersMajorPlanning.toJsonButInApp(major)): null;
 
-      return new UserDetailsTeacher({ user, userpreferences, teacher, department, departmentOfEducation, teachersCoursePlanning, teachersMajorPlanning });
+      const teachersSchedule = parsedUser?.teachersSchedule ?
+        Array.from(parsedUser.teachersSchedule).map((schedule) => TeachersSchedule.toJsonButInApp(schedule)): null;
+
+      return new UserDetailsTeacher({ user, userpreferences, teacher, department, 
+        departmentOfEducation, teachersCoursePlanning, teachersMajorPlanning, teachersSchedule });
 
     } catch (Err) {
       console.log('UserDetails parse Error:', Err);

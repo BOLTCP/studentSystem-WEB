@@ -66,7 +66,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
 
 
   return (
-    isDoubleClickActive === true && isLecture === 'Laboratory'
+    isDoubleClickActive === true && (isLecture === 'Laboratory' || isLecture === 'Лаборатори')
     ?
     <div
       onDoubleClick={handleDoubleClick}
@@ -78,7 +78,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       {element.courseName} {element.courseYear} {element.courseCode}
     </div>
     :
-    isDoubleClickActive === true && isLecture === 'Lecture'
+    isDoubleClickActive === true && (isLecture === 'Lecture' || isLecture === 'Лекц')
     ?
     <div
       onMouseUp={handleMouseUp} 
@@ -90,7 +90,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
     :
-    isLecture === 'Lecture'
+    isLecture === 'Lecture' || isLecture === 'Лекц'
     ?
     <div
       onMouseUp={handleMouseUp} 
@@ -258,6 +258,7 @@ const Timetable = ({ user }) => {
   const [classroomSelection, setClassroomSelection] = useState(false);
   const [noAvailableClassroom, setNoAvailableClassroom] = useState(false);
   const [failMessage, setFailMessage] = useState(null);
+  const [scheduleDuplicate, setScheduleDuplicate] = useState(null);
   const [scheduleInstance, setScheduleInstance] = useState(null);
   const [scheduleCreateSuccessful, setScheduleCreateSuccessful] = useState(false);
   const [scheduleCreateMessage, setScheduleCreateMessage] = useState(null);
@@ -291,21 +292,22 @@ const Timetable = ({ user }) => {
           }
           setTeachersSchedule(teachersSchedule);
           console.log('Багшийн хичээлийн хуваарийг амжилттай татлаа.');
-          /*
-          const tempScheduleArray = Array.from(response.data.studentsSchedule);
+          const tempScheduleArray = Array.from(userDetails.teachersSchedule);
+
           for ( let i = 0; i < tempScheduleArray.length; i++) {
             setElementsMap(prevMap => {
               const newMap = new Map(prevMap);
-              const schedulesTimetablePosition = tempScheduleArray[i][0];
-              const scheduleOfThePosition = StudentsSchedule.fromJsonStudentsSchedule(tempScheduleArray[i][1]);
+              const schedulesTimetablePosition = tempScheduleArray[i].schedulesTimetablePosition;
+              const scheduleOfThePosition = tempScheduleArray[i];
               
               newMap.set(schedulesTimetablePosition, scheduleOfThePosition);
               return newMap;
             });
           }
-          */  
           setAlreadyHasSchedules(true);
-        } 
+        } else if (response.status === 400) {
+          setElementsMap(null);
+        }
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -313,7 +315,7 @@ const Timetable = ({ user }) => {
     
     fetchTeachersSchedule();
   }, []);
-
+  console.log(elementsMap);
   /*
   const fetchPersonalCurriculum = async () => {
     const userDetails = getUserDetailsFromLocalStorage();
@@ -414,7 +416,7 @@ const Timetable = ({ user }) => {
 */
 
   const showAvailableClasses = async (element) => {
-    let scheduleInstanceToSend = TeachersSchedule.toJsonButInApp(element);
+    let scheduleInstanceToSend = TeachersSchedule.toJson(element);
     scheduleInstanceToSend.schedules_timetable_position = Array.from(elementsMap).filter((schedule) => schedule[1] === element)[0][0];
 
     try {
@@ -496,8 +498,63 @@ const Timetable = ({ user }) => {
     } else {
       handleRejectAction();
     }
-
     setIsDragging(false);
+    if (element.scheduleType === 'Lecture') {
+      createTeachersScheduleLecture(element, position);
+    }
+  };
+
+  const createTeachersScheduleLecture = async (element, position) => {
+    const scheduleOfLecture = TeachersSchedule.toJson(element);
+    const hours = ['firstPeriod', 'secondPeriod', 'thirdPeriod', 'fourthPeriod', 'fifthPeriod',
+      'sixthPeriod', 'seventhPeriod', 'eightPeriod', 'ninthPeriod'];
+    
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    const newScheduleDataToSend = {
+        ...scheduleOfLecture,
+        schedules_timetable_position: position,
+        classroom_capacity: null,
+        classroom_id: null,
+        classroom_number: null,
+        classroom_type: 'Онлайн',
+        days: days[parseInt(position % 7)],
+        teacher_name: userDetails.user.fname,
+        teachers_email: userDetails.teacher.teacherEmail,
+        time: hours[parseInt(position / 7)],
+    };
+    setScheduleInstance(newScheduleDataToSend); 
+
+    try {
+      const response = await axios.post(getApiUrl('/Create/Schedule/For/Teachers/Timetable/'),
+        {
+          scheduleInstance: newScheduleDataToSend, 
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000,
+        });
+
+      if (response.status === 200) {
+
+        setUserDetails(prevDetails => {
+          let userDetails = prevDetails;
+          userDetails.teachersSchedule === null ? userDetails.teachersSchedule = TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData)
+            : Array.from(userDetails.teachersSchedule).push(TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData));
+          return userDetails;
+        });
+
+        setScheduleCreateSuccessful(true);
+        setScheduleCreateMessage(response.data.scheduleData);
+      } else if (response.status === 201) {
+        setScheduleDuplicate(TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData));
+      }
+    } catch (err) {
+        console.error('Error creating schedule:', err);
+        setError('Network error occurred.');
+    } finally {
+        setLoading(false);
+    }
   };
 
   const interactiveSelection = (element, isDragging) => {
@@ -624,10 +681,29 @@ const Timetable = ({ user }) => {
             <h2>
                 {scheduleCreateMessage.course_name}, &nbsp;
                 {scheduleCreateMessage.course_code}, &nbsp;
-                {scheduleCreateMessage.classroom_number} &nbsp;
+                {scheduleCreateMessage.classroom_number} 
                 хичээлийн хуваарийг амжилттай нэмлээ.
             </h2>
             <button onClick={() => {setScheduleCreateSuccessful(false), localStorage.setItem('userDetails', JSON.stringify(userDetails))}}>Хаах</button>
+          </div>
+        </div>
+      )}
+      {scheduleDuplicate && (
+        <div className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '3px solid red',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                {scheduleDuplicate.courseName}, &nbsp;
+                {scheduleDuplicate.courseCode}, &nbsp;
+                {scheduleDuplicate.scheduleType}, &nbsp; 
+                {days[parseInt(scheduleDuplicate.schedulesTimetablePosition / 7)]}, &nbsp;
+                {hours[parseInt(scheduleDuplicate.schedulesTimetablePosition % 7)]} - р цагийн хичээл давхцаж байна.
+            </h2>
+            <button onClick={() => {setScheduleDuplicate(null)}}>Хаах</button>
           </div>
         </div>
       )}

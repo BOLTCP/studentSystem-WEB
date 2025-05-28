@@ -805,7 +805,8 @@ exports.classroom_type_enum = exports.$Enums.classroom_type_enum = {
   seminar: 'seminar',
   students_dev: 'students_dev',
   lecture: 'lecture',
-  tv_classroom: 'tv_classroom'
+  tv_classroom: 'tv_classroom',
+  online: 'online'
 };
 
 exports.projector_enum = exports.$Enums.projector_enum = {

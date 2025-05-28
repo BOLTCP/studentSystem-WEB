@@ -1113,7 +1113,7 @@ app.post('/Get/Students/Made/Schedule/', async (req, res) => {
       },
     });
 
-    if (studentsSchedule) {
+    if (studentsSchedule.length > 0) {
       for (let i = 0; i < studentsSchedule.length; i++) {
         schedulesOntoTimetable.set(studentsSchedule[i].schedules_timetable_position, studentsSchedule[i]);
       }
@@ -1169,8 +1169,12 @@ app.post('/User/Login/Teacher', async (req, res) => {
     const teacherscourseplanning = await prisma.teacherscourseplanning.findMany({
       where: { teacher_id: teacher.teacher_id }
     });
+
+    const teachersschedule = await prisma.teachersschedule.findMany({
+      where: { teacher_id: teacher.teacher_id }
+    });
     
-    res.status(200).json({ teacher: teacher, userpreferences: userpreferences, teachersmajors: teachersmajors,
+    res.status(200).json({ teacher: teacher, userpreferences: userpreferences, teachersmajors: teachersmajors, teachersschedule: teachersschedule,
       department: department, departmentsofeducation: departmentsofeducation, teacherscourseplanning: teacherscourseplanning });
       
   } catch (error) {
@@ -1246,7 +1250,7 @@ app.post('/Get/Teachers/Made/Schedule/', async (req, res) => {
       },
     });
 
-    if (teachersSchedule) {
+    if (teachersSchedule.length > 0) {
       for (let i = 0; i < teachersSchedule.length; i++) {
         schedulesOntoTimetable.set(teachersSchedule[i].schedules_timetable_position, teachersSchedule[i]);
       }
@@ -1255,7 +1259,8 @@ app.post('/Get/Teachers/Made/Schedule/', async (req, res) => {
         teachersSchedule: Array.from(schedulesOntoTimetable), 
       });
     } else {
-      return res.status(400).json({ 
+      console.log('Багшид хичээлийн хуваарь байхгүй байна.');
+      return res.status(201).json({ 
         message: 'Багшид хуваарьт оруулсан хичээл байхгүй байна.',
       });
     }
@@ -1707,7 +1712,6 @@ app.post('/Remove/Course/From/Teachers/Course/Planning/', async (req, res) => {
 
 });
 
-
 app.post('/Get/Available/Classes/For/Timetable/Position/', async (req, res) => {
   const { teachersScheduleInstance } = req.body;
   console.log('/Get/Available/Classes/For/Timetable/Position/ :', teachersScheduleInstance);
@@ -1791,7 +1795,8 @@ app.post('/Create/Schedule/For/Teachers/Timetable/', async (req, res) => {
         classroom_id: scheduleData.classroom_id,
         students: scheduleData.students,
         classroom_capacity: scheduleData.classroom_capacity,
-        classroom_type: scheduleData.classroom_type === 'Семинар' ? 'seminar' : 'Laboratory',
+        classroom_type: scheduleData.classroom_type === 'Семинар' ? 'seminar' :
+          scheduleData.classroom_type === 'Лаборатори' ? 'Laboratory' : 'online',
         classroom_number: scheduleData.classroom_number,
         teacher_name: scheduleData.teacher_name, 
         teachers_email: scheduleData.teachers_email,
@@ -1823,6 +1828,13 @@ app.post('/Create/Schedule/For/Teachers/Timetable/', async (req, res) => {
     } 
 
   } catch (error) {
+    if (error.code === 'P2002'){
+
+      console.log('Хуваарийн байршил давхцаж байна.');
+      return res.status(201).json({
+        scheduleData: scheduleData,
+      });
+    }
     console.log('Server Error: ', error);
     return res.status(500).json({
       message: 'Server Error',

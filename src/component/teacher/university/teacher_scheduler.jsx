@@ -97,8 +97,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       ref={drag}
       className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} Лекц {element.courseCode}{showSchedulesData && ``} 
-      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
+      {element.courseName} Лекц {element.courseCode}
     </div>
     :
     <div
@@ -107,8 +106,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       ref={drag}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
-      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
+      {element.courseName} Лаборатори {element.courseCode}
     </div>
   );
 };
@@ -252,7 +250,6 @@ const Timetable = ({ user }) => {
     }
     return populateLectureAndLaboratory;
   }); 
-
   const [teachersSchedule, setTeachersSchedule] = useState([]);
   const [availableClassroom, setAvailableClassroom] = useState(null);
   const [classroomSelection, setClassroomSelection] = useState(false);
@@ -315,7 +312,7 @@ const Timetable = ({ user }) => {
     
     fetchTeachersSchedule();
   }, []);
-  console.log(elementsMap);
+  console.log(teachersSchedule.size, teachersCourses.length);
   /*
   const fetchPersonalCurriculum = async () => {
     const userDetails = getUserDetailsFromLocalStorage();
@@ -712,7 +709,7 @@ const Timetable = ({ user }) => {
           <div className='column-5fr'>
               <div className='student-schedule-container-window'>
                 <div className={`student-schedule-timetable-container ${handleReject === true ? 'handleReject' : ''} `}>
-                <table className={`student-schedule-timetable ${elementsMap.size === teachersSchedule.length && alreadyHasSchedules === true ? 'locked': ''} `}>
+                <table className={`student-schedule-timetable ${teachersSchedule.size === teachersCourses.length ? 'locked': ''} `}>
                   <thead>
                     <tr>
                       <th style={{ width: 60, border: 'none', visibility: 'hidden' }}></th>
@@ -758,7 +755,7 @@ const Timetable = ({ user }) => {
           </div>
           <div className='column-1fr'>
             <div className='draggable-container-super'>
-              <div className={`draggable-container ${elementsMap.size === teachersSchedule.length && alreadyHasSchedules === true ? 'locked': ''}`} >
+              <div className={`draggable-container ${teachersSchedule.size === teachersCourses.length  ? 'locked': ''}`} >
                     {elementsMap.size === teachersSchedule.length && alreadyHasSchedules === false
                       ? 
                       <div className='has-selected-all-container'

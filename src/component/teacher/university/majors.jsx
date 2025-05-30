@@ -86,11 +86,14 @@ const Majors = () => {
         });
 
         if (response.status === 200) {
-          console.log(response.data.courseAdded);
+          console.log(response.data.addedMajor);
+          const addedMajor = TeachersMajorPlanning.fromJsonPlanning(response.data.addedMajor)[0];
           setUserDetails(prevDetails => {
-            let updateDetails = prevDetails;
-            Array.from(updateDetails.teachersMajorPlanning).concat(major);
-            return updateDetails;
+            const updatedDetails = { ...prevDetails };
+            updatedDetails.teachersMajorPlanning = prevDetails.teachersMajorPlanning.concat(
+              addedMajor
+            );
+            return updatedDetails;
           });
           setResponseCode(200);
           setIsMajorAddSuccess(true);
@@ -107,6 +110,8 @@ const Majors = () => {
       setLoading(false);
     }
   };
+
+  console.log(userDetails.teachersMajorPlanning);
 
   useEffect(() => {
 

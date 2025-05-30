@@ -7,7 +7,9 @@ import TeacherUser from '../models/teacher_user';
 import UserDetails from '../models/user_details';
 import getUserDetailsFromLocalStorage from './userDetailsTeacher_util';
 import '../component/student/student_dashboard.css';
+import TeachersSchedule from '../models/teachersschedule';
 
+const periodsOfSchedules = [1010, 1150, 1330, 1530, 1710, 1850, 2030];
 
 export const TeachersScheduleUtil = ({ user, theme }) => {
   
@@ -15,7 +17,18 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
   const [todaysSchedule, setTodaysSchedule] = useState([]);
   const [hasSchedulesToday, setHasSchedulesToday] = useState(false);
+  const [time, setTime] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(timerId);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchTeachersSchedule = async () => {
@@ -39,7 +52,11 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
             : new Date().getDay() === 6 ? 'Saturday'
             : 'Sunday';
           console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
-          const teachersSchedule = Array.from(response.data.teachersSchedule).filter((schedule) => schedule[1].days === today)
+          const schedules = Array.from(response.data.teachersSchedule)
+            .filter((schedule) => schedule[1].days === today);
+          console.log(schedules);
+          const teachersSchedule = Array.from(schedules)
+            .map((schedule) => TeachersSchedule.fromJsonTeachersSchedule(schedule[1]));
           setTodaysSchedule(teachersSchedule);
         } else if (response.status === 400) {
           setTodaysSchedule(null);
@@ -75,24 +92,26 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   };
 
   const todaysScheduleCourses = (schedule) => {
-  return (
-    <div className="to-do-container" key={schedule.teachers_schedule_id}>
-      <div className="to-do-list-bullets"></div>
-      <div className="to-do-item">
-        { schedule.classroom_number === null 
-         ?
-         (
-            <a href="">{`Лекц: ${schedule.course_name}`}</a>
-         )
-         :
-         (
-            <a>{`Анги: ${schedule.classroom_number}`}</a>
-         ) 
-        }
-      </div>
-    </div>
-  );
-};
+    const schedulesPeriod = periodsOfSchedules[parseInt(schedule.time.slice(0, 1))];
+    const currentTime = `${new Date(time).getHours() < 10 ? `0${new Date(time).getHours()}` : new Date(time).getHours()}${new Date(time).getMinutes() < 10 ? `0${new Date(time).getMinutes()}` : new Date(time).getMinutes()}`;
+
+    if ( parseInt(schedulesPeriod) > parseInt(currentTime) ) {
+      return (
+        <div className="to-do-container" key={schedule.teachersScheduleId}>
+          <div className="to-do-list-bullets"></div>
+          <div className="to-do-item">
+            {
+              schedule.classroomNumber === null ? (
+                <a href="">{`${schedule.courseName} лекц`}</a>
+              ) : (
+                <a>{`${schedule.courseName} ${schedule.classroomNumber}`}</a>
+              )
+            }
+          </div>
+        </div>
+      );
+    } 
+  };
 
   const classroomLocation = () => {
 
@@ -203,7 +222,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
 
             {todaysSchedule.length > 0 ? (
               todaysSchedule.map((schedule) => 
-                  todaysScheduleCourses((schedule[1]))
+                  todaysScheduleCourses((schedule))
               )
             ) : (
               <div className='no-schedule-for-today-assignments'>Багшид өнөөдөр хуваарь байхгүй байна.</div>

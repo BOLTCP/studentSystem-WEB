@@ -1,5 +1,7 @@
 import React from 'react';
 
+const periodsOfSchedules = [1010, 1150, 1330, 1530, 1710, 1850, 2030];
+
 class TeachersSchedule {
   constructor({
     classroomId,
@@ -46,23 +48,32 @@ class TeachersSchedule {
   static fromJsonTeachersSchedule(json) {
     try {
       return new TeachersSchedule({
-        classroomId: json.classroom_id,
-        students: json.students,
+        classroomId: json.classroom_id ?? null,
+        students: json.students ?? null,
         teacherId: json.teacher_id,
         courseId: json.course_id,
         majorId: json.major_id,
         teacherName: json.teacher_name,
         teachersEmail: json.teachers_email,
         scheduleType: json.schedule_type === 'Lecture' ? 'Лекц' : 'Лаборатори',
-        time: json.time,
+        time: json.time === 'firstPeriod' ? '1-р цаг' :
+          json.time === 'secondPeriod' ? '2-р цаг' :
+          json.time === 'thirdPeriod' ? '3-р цаг' :
+          json.time === 'fourthPeriod' ? '4-р цаг' :
+          json.time === 'fifthPeriod' ? '5-р цаг' :
+          json.time === 'sixthPeriod' ? '6-р цаг' :
+          json.time === 'seventhPeriod' ? '7-р цаг' :
+          json.time === 'eightPeriod' ? '8-р цаг' :
+          json.time === 'ninthPeriod' ? '9-р цаг' : 
+          '',
         coursePlanningId: json.course_planning_id,
         days: json.days,
         teachersScheduleId: json.teachers_schedule_id,
         createdAt: json.created_at,
         courseName: json.course_name,
-        classroomCapacity: json.classroom_capacity,
+        classroomCapacity: json.classroom_capacity ?? null,
         classroomType: json.classroom_type,
-        classroomNumber: json.classroom_number,
+        classroomNumber: json.classroom_number ?? null,
         schedulesTimetablePosition: json.schedules_timetable_position,
         courseCode: json.course_code,
       });

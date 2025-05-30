@@ -59,15 +59,15 @@ body.light .student-schedule-timetable-container.handleReject {
 
 @keyframes shake {
   0% { transform: translateX(0); }
-  10% { transform: translateX(-10px); }
-  20% { transform: translateX(10px); }  
-  30% { transform: translateX(-10px); }
-  40% { transform: translateX(10px); }  
-  50% { transform: translateX(-10px); }
-  60% { transform: translateX(10px); }  
-  70% { transform: translateX(-10px); }
-  80% { transform: translateX(10px); }  
-  90% { transform: translateX(-10px); }
+  10% { transform: translateX(-1px); }
+  20% { transform: translateX(1px); }  
+  30% { transform: translateX(-1px); }
+  40% { transform: translateX(1px); }  
+  50% { transform: translateX(-1px); }
+  60% { transform: translateX(1px); }  
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }  
+  90% { transform: translateX(-1px); }
   100% { transform: translateX(0); }   
 }
 
@@ -254,6 +254,9 @@ body.dark .student-header-of-schedules {
 }
 
 .has-selected-all-container {
+  position: sticky;
+  top: 16px; 
+  z-index: 10;
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 1px solid black;
@@ -270,4 +273,76 @@ body.dark .student-header-of-schedules {
 .header-icon {
   height: 32px;
   width: auto;
+}
+
+
+.hovering-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex; 
+  justify-content: center; 
+  align-items: center;  
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.hovering-overlay.hidden {
+  opacity: 0;
+  pointer-events: none; 
+}
+
+.hovering-content {
+  border: 3px solid red;
+  background-color: #fff; 
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 90%; 
+  animation: scaleIn 0.3s ease-out;
+}
+
+.hovering-content h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.5em;
+}
+
+.hovering-content p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.hovering-content button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.hovering-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Simple animation for the content */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

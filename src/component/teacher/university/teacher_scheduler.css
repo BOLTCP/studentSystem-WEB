@@ -11,14 +11,14 @@
 .column-5fr {
   display: flex;
   flex-direction: column;
-  max-height: 750px;
+  max-height: 775px;
   overflow-y: scroll;
 }
 
 .column-1fr {
   display: grid;
   grid-template-rows: 6fr 1fr;
-  height: 675px;
+  max-height: 775px;
   gap: 1rem;
 }
 
@@ -59,15 +59,15 @@ body.light .student-schedule-timetable-container.handleReject {
 
 @keyframes shake {
   0% { transform: translateX(0); }
-  10% { transform: translateX(-10px); }
-  20% { transform: translateX(10px); }  
-  30% { transform: translateX(-10px); }
-  40% { transform: translateX(10px); }  
-  50% { transform: translateX(-10px); }
-  60% { transform: translateX(10px); }  
-  70% { transform: translateX(-10px); }
-  80% { transform: translateX(10px); }  
-  90% { transform: translateX(-10px); }
+  10% { transform: translateX(-1px); }
+  20% { transform: translateX(1px); }  
+  30% { transform: translateX(-1px); }
+  40% { transform: translateX(1px); }  
+  50% { transform: translateX(-1px); }
+  60% { transform: translateX(1px); }  
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }  
+  90% { transform: translateX(-1px); }
   100% { transform: translateX(0); }   
 }
 
@@ -98,6 +98,7 @@ body.dark .student-schedule-timetable-container {
 }
 
 .draggable-container-super {
+  max-height: 775px;
   border: 3px solid #e0e0e0;
   border-radius: 9px;
   background-color: white;
@@ -115,7 +116,7 @@ body.dark .draggable-container-super {
   padding-left: 1rem;
   padding-right: 1rem;
   width: 220px;
-  height: 675px;
+  max-height: 775px;
   overflow-y: scroll;
 }
 

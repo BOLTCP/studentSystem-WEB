@@ -46,7 +46,16 @@ class StudentsSchedule {
         modifiedAt: json.modified_at,
         schedulesTimetablePosition: json.schedules_timetable_position,
         courseName: json.course_name,
-        time: json.time,
+        time: json.time === 'firstPeriod' ? '1-р цаг' :
+          json.time === 'secondPeriod' ? '2-р цаг' :
+          json.time === 'thirdPeriod' ? '3-р цаг' :
+          json.time === 'fourthPeriod' ? '4-р цаг' :
+          json.time === 'fifthPeriod' ? '5-р цаг' :
+          json.time === 'sixthPeriod' ? '6-р цаг' :
+          json.time === 'seventhPeriod' ? '7-р цаг' :
+          json.time === 'eightPeriod' ? '8-р цаг' :
+          json.time === 'ninthPeriod' ? '9-р цаг' : 
+          '',
         teachersEmail: json.teachers_email,
         teachersName: json.teachers_name,
         days: json.days,

@@ -1030,14 +1030,16 @@ app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
           schedule_type: 'desc',
         },
       });
-      teachers_available_courses.push(...courseOfTeachersSchedule);
+      teachers_available_courses.push(Array.from(courseOfTeachersSchedule)[0]);
+      teachers_available_courses.push(Array.from(courseOfTeachersSchedule)[1]);
     }
 
     if (students_scheduled_courses.length > 0) {
+
       return res.status(200).json({  
         message: 'Оюутны хуваарийн хичээлүүдийг татаж авлаа.',
         studentsCourses: students_scheduled_courses,
-        teachersAvailableCourses: teachers_available_courses,
+        teachersAvailableCourses: Array.from(teachers_available_courses),
       });
     } else {
       console.log('Алдаа гарлаа');
@@ -1060,22 +1062,47 @@ app.post('/Create/Students/Schedule/For/Courses/', async (req, res) => {
   try {
     let successful = false;
     for (let i = 0;  i < studentsPickedSchedule.length; i++) {
+      const scheduleType = studentsPickedSchedule[i][1].scheduleType === 'Лаборатори' 
+        ? 'Laboratory'
+        : studentsPickedSchedule[i][1].scheduleType === 'Лекц' 
+        ? 'Lecture'
+        : null;
+        
       const createSchedule = await prisma.studentsschedule.create({ 
         data: { 
-          student_id: student.studentId,
-          course_id: studentsPickedSchedule[i][1].courseId,
           classroom_number: studentsPickedSchedule[i][1].classroomNumber,
-          schedules_timetable_position: studentsPickedSchedule[i][1].schedulesTimetablePosition,
+          schedules_timetable_position: parseInt(studentsPickedSchedule[i][1].schedulesTimetablePosition),
           course_name: studentsPickedSchedule[i][1].courseName,
-          time: studentsPickedSchedule[i][1].time,
+          time: studentsPickedSchedule[i][1].time === '1-р цаг' ? 'firstPeriod' :
+            studentsPickedSchedule[i][1].time === '2-р цаг' ? 'secondPeriod' :
+            studentsPickedSchedule[i][1].time === '3-р цаг' ? 'thirdPeriod' :
+            studentsPickedSchedule[i][1].time === '4-р цаг' ? 'fourthPeriod' :
+            studentsPickedSchedule[i][1].time === '5-р цаг' ? 'fifthPeriod' :
+            studentsPickedSchedule[i][1].time === '6-р цаг' ? 'sixthPeriod' :
+            studentsPickedSchedule[i][1].time === '7-р цаг' ? 'seventhPeriod' :
+            studentsPickedSchedule[i][1].time === '8-р цаг' ? 'eightPeriod' : 
+            'ninthPeriod',
           teachers_email: studentsPickedSchedule[i][1].teachersEmail,
           teachers_name: studentsPickedSchedule[i][1].teacherName,
-          schedule_type: studentsPickedSchedule[i][1].scheduleType,
+          schedule_type: scheduleType,
           days: studentsPickedSchedule[i][1].days,
           student_code: student.studentCode,
-          teacher_code: studentsPickedSchedule[i][1].teachersEmail.split('.')[0],
+          teacher_code: studentsPickedSchedule[i][1].teachersEmail.split('@')[0],
+
+          course: {
+            connect: {
+              course_id: studentsPickedSchedule[i][1].courseId,
+            }
+          },
+          student: {
+            connect: {
+              student_id: student.studentId,
+            }
+          }
+
         },
       });
+
       if (createSchedule) {
         successful = true;
       } else {
@@ -1117,12 +1144,13 @@ app.post('/Get/Students/Made/Schedule/', async (req, res) => {
       for (let i = 0; i < studentsSchedule.length; i++) {
         schedulesOntoTimetable.set(studentsSchedule[i].schedules_timetable_position, studentsSchedule[i]);
       }
+
       return res.status(200).json({ 
         message: 'Оюутны хичээлийн хуваарийг амжилттай татлаа.',
         studentsSchedule: Array.from(schedulesOntoTimetable), 
       });
     } else {
-      return res.status(400).json({ 
+      return res.status(201).json({ 
         message: 'Оюутанд хуваарьт оруулсан хичээл байхгүй байна.',
       });
     }
@@ -1355,6 +1383,7 @@ app.post('/Add/Major/To/Teacher/', async (req, res) => {
       console.log('Хөтөлбөрийг амжилттай оноов.');
       return res.status(200).json({
         message: 'Багшид хуваарийг амжилттай оноолоо.',
+        addedMajor: addMajorToTeacher,
       });
     }
 
@@ -1796,7 +1825,7 @@ app.post('/Create/Schedule/For/Teachers/Timetable/', async (req, res) => {
         students: scheduleData.students,
         classroom_capacity: scheduleData.classroom_capacity,
         classroom_type: scheduleData.classroom_type === 'Семинар' ? 'seminar' :
-          scheduleData.classroom_type === 'Лаборатори' ? 'Laboratory' : 'online',
+          scheduleData.classroom_type === 'Лаборатори' ? 'computerLaboratory' : 'online',
         classroom_number: scheduleData.classroom_number,
         teacher_name: scheduleData.teacher_name, 
         teachers_email: scheduleData.teachers_email,

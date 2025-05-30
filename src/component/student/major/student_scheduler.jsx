@@ -68,7 +68,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
 
 
   return (
-    isDoubleClickActive === true && isLecture === 'Laboratory'
+    isDoubleClickActive === true && (isLecture === 'Laboratory' || isLecture === 'Лаборатори')
     ?
     <div
       onDoubleClick={handleDoubleClick}
@@ -80,7 +80,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       {element.courseName} {element.courseYear} {element.courseCode}
     </div>
     :
-    isDoubleClickActive === true && isLecture === 'Lecture'
+    isDoubleClickActive === true && (isLecture === 'Lecture' || isLecture === 'Лекц')
     ?
     <div
       onDoubleClick={handleDoubleClick}
@@ -145,10 +145,9 @@ const makeACoursePopUpLecture = (id) => {
 };
 
 const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragged) => {
-  console.log(teachersScheduleCellsORLecture);
   let popUpStyle = {}; 
-  if (courseBeingDragged?.courseId && teachersScheduleCellsORLecture.has(courseBeingDragged.courseId)) {
-    const validDropPositions = teachersScheduleCellsORLecture.get(courseBeingDragged.courseId);
+  if (courseBeingDragged?.courseId && parseInt(Array.from(teachersScheduleCellsORLecture)[0][1]) === parseInt(courseBeingDragged.schedulesTimetablePosition)) {
+    const validDropPositions = Array.from(teachersScheduleCellsORLecture).filter((schedule) => schedule[0] === courseBeingDragged?.courseId)[0][1];
     if (Array.isArray(validDropPositions) && validDropPositions.includes(cellKey)) {
       popUpStyle = {
         backgroundColor: 'green',
@@ -166,7 +165,11 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
     (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лаборатори' ? schedule : '')
     :
     (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лекц' ? schedule : '');
-  const scheduleType = courseBeingDragged?.scheduleType === 'Laboratory' ? 'Лаборатори' : 'Лекц';
+  
+  const availablePosition = courseBeingDragged?.scheduleType === 'Лаборатори' ? 
+    Array.from(teachersScheduleCells).filter((schedule) => parseInt(schedule[1]) === availableSchedules[0]?.schedulesTimetablePosition)
+    :
+    Array.from(teachersScheduleCellsLecture).filter((schedule) => parseInt(schedule[1]) === availableSchedules[0]?.schedulesTimetablePosition);
 
   const position = row * 7 + col;
   const [{ isOver }, drop] = useDrop(() => ({
@@ -179,9 +182,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
     }),
   }), [position, teachersSchedule]);
 
-  const cellStyle = isDragging === true && scheduleType === 'Лаборатори' 
-    ? getCellStyle(position, teachersScheduleCells, courseBeingDragged, scheduleType)
-    : getCellStyle(position, teachersScheduleCellsLecture, courseBeingDragged, scheduleType);
+  const cellStyle = isDragging === true ? getCellStyle(position, availablePosition, courseBeingDragged) : null;
 
   if (availableSchedules.length > 1) {
     return (
@@ -212,7 +213,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
         {isDragging === true && Object.keys(cellStyle).length > 0 ? (
           `
           ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, 
-          ${shouldPopulate[0].courseName} Лекц ${shouldPopulate[0].teachersEmail}`: ''}
+          ${shouldPopulate[0].courseName} ${courseBeingDragged.scheduleType} ${shouldPopulate[0].teachersEmail}`: ''}
           `
         ) : (
           element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
@@ -235,6 +236,7 @@ const Timetable = ({ user }) => {
   const [alreadyHasSchedules, setAlreadyHasSchedules] = useState(false);
   const [elementsMap, setElementsMap] = useState(new Map());
   const [handleReject, setHandleReject] = useState(false);
+  const [successful, setSuccessful] = useState(false);
   const [hasSelectedAll, setHasSelectedAll] = useState(false);
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
@@ -254,17 +256,21 @@ const Timetable = ({ user }) => {
 
         if (response.status === 200) {
           console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
+
           const tempScheduleArray = Array.from(response.data.studentsSchedule);
-          for ( let i = 0; i < tempScheduleArray.length; i++) {
-            setElementsMap(prevMap => {
-              const newMap = new Map(prevMap);
-              const schedulesTimetablePosition = tempScheduleArray[i][0];
-              const scheduleOfThePosition = StudentsSchedule.fromJsonStudentsSchedule(tempScheduleArray[i][1]);
-              
-              newMap.set(schedulesTimetablePosition, scheduleOfThePosition);
-              return newMap;
-            });
+          if (tempScheduleArray.length > 0) {
+            for ( let i = 0; i < tempScheduleArray.length; i++) {
+              setElementsMap(prevMap => {
+                const newMap = new Map(prevMap);
+                const schedulesTimetablePosition = tempScheduleArray[i][0];
+                const scheduleOfThePosition = StudentsSchedule.fromJsonStudentsSchedule(tempScheduleArray[i][1]);
+                
+                newMap.set(schedulesTimetablePosition, scheduleOfThePosition);
+                return newMap;
+              });
+            }
           }
+
           setAlreadyHasSchedules(true);
         } 
       } catch (err) {
@@ -279,8 +285,6 @@ const Timetable = ({ user }) => {
     const userDetails = getUserDetailsFromLocalStorage();
     const studentsCurriculum = StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel')));
     let studentsCourses = null;
-    let teachersAvailableCourses = null;
-
     try {
       const response = await axios.post(getApiUrl('/Add/Course/To/Students/Schedule/'), 
         { 
@@ -293,13 +297,11 @@ const Timetable = ({ user }) => {
         }); 
 
         if (response.status === 200) {
-          console.log(response.data.teachersAvailableCourses);
           studentsCourses = (response.data.studentsCourses)
             .map((course) => Courses.fromJsonCourse(course));
-          teachersAvailableCourses = Array.from((response.data.teachersAvailableCourses)
-            .map((teach_schedule) => TeachersSchedule.fromJsonTeachersSchedule(teach_schedule)));
+          setTeachersSchedule(Array.from(response.data.teachersAvailableCourses)
+            .map((schedule) => TeachersSchedule.fromJsonTeachersSchedule(schedule)));
           setStudentsCourses(studentsCourses);
-          setTeachersSchedule(teachersAvailableCourses);
         } else {
           console.log('Error fetching curriculum:', response.status, response.data);
           setError('Failed to fetch curriculum.');
@@ -327,6 +329,7 @@ const Timetable = ({ user }) => {
 
         if (response.status === 200) {
           console.log(response.data.message);
+          setSuccessful(true);
         } else {
           console.log('Error fetching curriculum:', response.message);
           setError('Failed to fetch curriculum.');
@@ -342,35 +345,48 @@ const Timetable = ({ user }) => {
   useEffect(() => {
     fetchPersonalCurriculum();
   }, []);
-
+  
   useEffect(() => {
-  const timeTablePositions = new Map();
-  const timeTablePositionsLecture = new Map();
-  for (let i = 0; i < teachersSchedule.length; i++) {
-    const courseId = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Лаборатори' ? teachersSchedule[i].courseId : '';
-    const position = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Лаборатори' ? teachersSchedule[i].schedulesTimetablePosition : '';
+    const timeTablePositions = new Map();
+    const timeTablePositionsLecture = new Map();
+    for (let i = 0; i < teachersSchedule.length; i++) {
 
-    const courseIdLecture = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Лекц' ? teachersSchedule[i].courseId : '';
-    const positionLecture = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Лекц' ? teachersSchedule[i].schedulesTimetablePosition : '';
+      if (teachersSchedule[i].scheduleType === 'Лаборатори') {
+        const courseLaboratory = teachersSchedule[i];
+        if (timeTablePositions.has(courseLaboratory.courseId)) {
+          timeTablePositions.get(courseLaboratory.courseId).push(courseLaboratory.schedulesTimetablePosition);
+        } else {
+          timeTablePositions.set(courseLaboratory.courseId, [courseLaboratory.schedulesTimetablePosition]);
+        }
+      } else {
+        const courseLecture = teachersSchedule[i];
+        if (timeTablePositionsLecture.has(courseLecture.courseId)) {
+          timeTablePositionsLecture.get(courseLecture.courseId).push(courseLecture.schedulesTimetablePosition);
+        } else {
+          timeTablePositionsLecture.set(courseLecture.courseId, [courseLecture.schedulesTimetablePosition]);
+        }
+      }
+      /*const courseLaboratory = teachersSchedule[i].scheduleType === 'Лаборатори' ? teachersSchedule[i] : '';
 
-    if (timeTablePositions.has(courseId)) {
-      timeTablePositions.get(courseId).push(position);
-    } else {
-      timeTablePositions.set(courseId, [position]);
+      const courseLecture = teachersSchedule[i].scheduleType === 'Лекц' ? teachersSchedule[i] : '';
+
+      if (timeTablePositions.has(courseLaboratory.courseId)) {
+        timeTablePositions.get(courseLaboratory.courseId).push(courseLaboratory.schedulesTimetablePosition);
+      } else {
+        timeTablePositions.set(courseLaboratory.courseId, [courseLaboratory.schedulesTimetablePosition]);
+      }
+
+      if (timeTablePositionsLecture.has(courseLecture.courseId)) {
+        timeTablePositionsLecture.get(courseLecture.courseId).push(courseLecture.schedulesTimetablePosition);
+      } else {
+        timeTablePositionsLecture.set(courseLecture.courseId, [courseLecture.scheduleOfThePosition]);
+      }*/
     }
 
-    if (timeTablePositionsLecture.has(courseIdLecture)) {
-      timeTablePositionsLecture.get(courseIdLecture).push(positionLecture);
-    } else {
-      timeTablePositionsLecture.set(courseIdLecture, [positionLecture]);
-    }
-  }
+    setTeachersScheduleCells(Array.from(timeTablePositions).filter((position) => position[0] !== ""));
+    setTeachersScheduleCellsLecture(Array.from(timeTablePositionsLecture).filter((position) => position[0] !== ""));
 
-  timeTablePositionsLecture.delete("");
-
-  setTeachersScheduleCells(timeTablePositions);
-  setTeachersScheduleCellsLecture(timeTablePositionsLecture);
-}, [teachersSchedule]);
+  }, [teachersSchedule]);
 
   const [isDragging, setIsDragging] = useState(null);
   const [courseBeingDragged, setCourseBeingDragged] = useState(null);
@@ -421,7 +437,6 @@ const Timetable = ({ user }) => {
     } else {
       handleRejectAction();
     }
-
     setIsDragging(false);
   };
 
@@ -438,6 +453,21 @@ const Timetable = ({ user }) => {
   
   return (
     <DndProvider backend={HTML5Backend}>
+      {successful && (
+        <div className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '3px solid green',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                Хуваариудыг амжилттай нэмлээ.
+            </h2>
+            <button onClick={() => {setSuccessful(false)}}>Хаах</button>
+          </div>
+        </div>
+      )}
       <div className='student-schedule-container-viewport'>
         <div className='student-schedule-container'>
           <div className='column-5fr'>

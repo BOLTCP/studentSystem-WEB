@@ -104,6 +104,7 @@ app.post('/User/Login/Student', async (req, res) => {
       },
     });
 
+
     if (studentCurriculum) {
       const yearClassification = student.year_classification === 'freshman' ? 'first_year' 
               : student.year_classification === 'junior' ? 'second_year' 
@@ -129,7 +130,7 @@ app.post('/User/Login/Student', async (req, res) => {
       console.log(`Мэдээллийг амжилттай авлаа.`);
         res.status(200).json({ student: student, userpreferences: userpreferences, department: department, 
           departmentsofeducation: departmentsofeducation, major: major, studentsSchedule: Array.from(schedulesOntoTimetable),
-          studentsCourses: studentsCourses,
+          studentsCourses: studentsCourses, 
         });
     } else {
       res.status(401).json({ error: 'Мэдээлэл олдсонгүй!' });
@@ -1056,63 +1057,69 @@ app.post('/Add/Course/To/Students/Schedule/', async (req, res) => {
 //src/component/university/student_scheduler.jsx
 app.post('/Create/Students/Schedule/For/Courses/', async (req, res) => {
   const { studentsPickedSchedule, student } = req.body;
-
-  console.log('/Create/Students/Schedule/For/Courses: ', studentsPickedSchedule.length, 'хуваарь үүсгэх', student.studentCode);
+  console.log('/Create/Students/Schedule/For/Courses: ', studentsPickedSchedule, 'хуваарь үүсгэх', student.studentCode);
 
   try {
     let successful = false;
-    for (let i = 0;  i < studentsPickedSchedule.length; i++) {
-      const scheduleType = studentsPickedSchedule[i][1].scheduleType === 'Лаборатори' 
-        ? 'Laboratory'
-        : studentsPickedSchedule[i][1].scheduleType === 'Лекц' 
-        ? 'Lecture'
-        : null;
-        
-      const createSchedule = await prisma.studentsschedule.create({ 
-        data: { 
-          classroom_number: studentsPickedSchedule[i][1].classroomNumber,
-          schedules_timetable_position: parseInt(studentsPickedSchedule[i][1].schedulesTimetablePosition),
-          course_name: studentsPickedSchedule[i][1].courseName,
-          time: studentsPickedSchedule[i][1].time === '1-р цаг' ? 'firstPeriod' :
-            studentsPickedSchedule[i][1].time === '2-р цаг' ? 'secondPeriod' :
-            studentsPickedSchedule[i][1].time === '3-р цаг' ? 'thirdPeriod' :
-            studentsPickedSchedule[i][1].time === '4-р цаг' ? 'fourthPeriod' :
-            studentsPickedSchedule[i][1].time === '5-р цаг' ? 'fifthPeriod' :
-            studentsPickedSchedule[i][1].time === '6-р цаг' ? 'sixthPeriod' :
-            studentsPickedSchedule[i][1].time === '7-р цаг' ? 'seventhPeriod' :
-            studentsPickedSchedule[i][1].time === '8-р цаг' ? 'eightPeriod' : 
-            'ninthPeriod',
-          teachers_email: studentsPickedSchedule[i][1].teachersEmail,
-          teachers_name: studentsPickedSchedule[i][1].teacherName,
-          schedule_type: scheduleType,
-          days: studentsPickedSchedule[i][1].days,
-          student_code: student.studentCode,
-          teacher_code: studentsPickedSchedule[i][1].teachersEmail.split('@')[0],
+    const scheduleType = studentsPickedSchedule.scheduleType === 'Лаборатори' 
+      ? 'Laboratory'
+      : studentsPickedSchedule.scheduleType === 'Лекц' 
+      ? 'Lecture'
+      : null;
+      
+    const createSchedule = await prisma.studentsschedule.create({ 
+      data: { 
+        classroom_number: studentsPickedSchedule.classroomNumber,
+        schedules_timetable_position: parseInt(studentsPickedSchedule.schedulesTimetablePosition),
+        course_name: studentsPickedSchedule.courseName,
+        time: studentsPickedSchedule.time === '1-р цаг' ? 'firstPeriod' :
+          studentsPickedSchedule.time === '2-р цаг' ? 'secondPeriod' :
+          studentsPickedSchedule.time === '3-р цаг' ? 'thirdPeriod' :
+          studentsPickedSchedule.time === '4-р цаг' ? 'fourthPeriod' :
+          studentsPickedSchedule.time === '5-р цаг' ? 'fifthPeriod' :
+          studentsPickedSchedule.time === '6-р цаг' ? 'sixthPeriod' :
+          studentsPickedSchedule.time === '7-р цаг' ? 'seventhPeriod' :
+          studentsPickedSchedule.time === '8-р цаг' ? 'eightPeriod' : 
+          'ninthPeriod',
+        teachers_email: studentsPickedSchedule.teachersEmail,
+        teachers_name: studentsPickedSchedule.teacherName,
+        schedule_type: scheduleType,
+        days: studentsPickedSchedule.days,
+        student_code: student.studentCode,
+        teacher_code: studentsPickedSchedule.teachersEmail.split('@')[0],
 
-          course: {
-            connect: {
-              course_id: studentsPickedSchedule[i][1].courseId,
-            }
-          },
-          student: {
-            connect: {
-              student_id: student.studentId,
-            }
+        course: {
+          connect: {
+            course_id: studentsPickedSchedule.courseId,
           }
-
         },
-      });
+        student: {
+          connect: {
+            student_id: student.studentId,
+          }
+        },
+        teachersschedule: {
+          connect: {
+            teachers_schedule_id: studentsPickedSchedule.teachersScheduleId,
+          }
+        },
+      },
+    });
 
-      if (createSchedule) {
-        successful = true;
-      } else {
-        successful = false;
-      }
+    const teachersScheduleId = parseInt(studentsPickedSchedule.teachersScheduleId);
+    const result = await prisma.$queryRaw`SELECT increment_students_of_teachersschedule(${teachersScheduleId});`
+    
+
+    if (createSchedule) {
+      successful = true;
+    } else {
+      successful = false;
     }
 
     if (successful === true) {
       return res.status(200).json({  
         message: 'Оюутны хичээлүүдийн хуваарийг амжилттай хадгаллаа.',
+        createdSchedule: createSchedule,
       });
     } else {
       console.log('Алдаа гарлаа');
@@ -1159,11 +1166,42 @@ app.post('/Get/Students/Made/Schedule/', async (req, res) => {
     console.log("Error: ", error);
     return res.status(400).json({ message: 'Оюутанд хичээлийн хуваарь одоогоор байхгүй байна.'});
   }
+});
+
+//src/component/student/major/student_scheduler.jsx
+app.post('/Remove/Schedule/From/Student/', async (req, res) => {
+  const { scheduleToRemove } = req.body;
+  console.log('/Remove/Schedule/From/Student/: ', scheduleToRemove.studentsScheduleId);
+
+  if (!scheduleToRemove.studentsScheduleId) {
+    console.log('Мэдээлэл олдсонгүй.');
+    return res.status(400).json({
+      message: 'Мэдээлэл олдсонгүй.'
+    });
+  }
+  try {
+    const removeSchedule = await prisma.studentsschedule.delete({
+      where: { 
+        students_schedule_id: scheduleToRemove.studentsScheduleId,
+       },
+    });
+
+    if (removeSchedule) {
+      console.log('Амжилттай хаслаа.');
+      return res.status(200).json({
+        message: 'Амжилттай хаслаа.'
+      });
+    }
+  } catch (error) {
+    console.log('Error: ', error);
+    return res.status(500).json({
+      message: 'Server Error'
+    });
+  }
 
 });
 
-
-//rc/component/teacher/teacher_dashboard.jsx
+//src/component/teacher/teacher_dashboard.jsx
 app.post('/User/Login/Teacher', async (req, res) => {
   const { userId } = req.body;
   console.log("/User/Login/Teacher Received user_id:", userId);
@@ -1822,7 +1860,7 @@ app.post('/Create/Schedule/For/Teachers/Timetable/', async (req, res) => {
         course_name: scheduleData.course_name,
         course_code: scheduleData.course_code,
         classroom_id: scheduleData.classroom_id,
-        students: scheduleData.students,
+        students: 0,
         classroom_capacity: scheduleData.classroom_capacity,
         classroom_type: scheduleData.classroom_type === 'Семинар' ? 'seminar' :
           scheduleData.classroom_type === 'Лаборатори' ? 'computerLaboratory' : 'online',
@@ -1867,6 +1905,43 @@ app.post('/Create/Schedule/For/Teachers/Timetable/', async (req, res) => {
     console.log('Server Error: ', error);
     return res.status(500).json({
       message: 'Server Error',
+    });
+  }
+
+});
+
+//src/component/teacher/university/teacher_scheduler.jsx
+app.post('/Remove/Schedule/From/Teacher/', async (req, res) => {
+  const { scheduleToRemove } = req.body;
+  console.log('/Remove/Schedule/From/Teacher/: ', scheduleToRemove.teachersScheduleId);
+
+  if (!scheduleToRemove.teachersScheduleId) {
+    console.log('Мэдээлэл олдсонгүй.');
+    return res.status(400).json({
+      message: 'Мэдээлэл олдсонгүй.'
+    });
+  }
+  try {
+    const removeSchedule = await prisma.teachersschedule.delete({
+      where: { 
+        teachers_schedule_id: scheduleToRemove.teachersScheduleId,
+       },
+    });
+    if (removeSchedule) {
+      console.log('Амжилттай хаслаа.');
+      return res.status(200).json({
+        message: 'Амжилттай хаслаа.'
+      });
+    }
+  } catch (error) {
+    if (error.code === 'P2003') {
+      return res.status(209).json({
+        failMessage: 'Тухайн хуваарь дээр оюутны хичээлийн хуваарь байрлаж байна.',
+      })
+    }
+    console.log('Error: ', error);
+    return res.status(500).json({
+      message: 'Server Error'
     });
   }
 

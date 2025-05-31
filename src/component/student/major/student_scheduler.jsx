@@ -19,8 +19,15 @@ const ItemTypes = {
   ELEMENT: 'element',
 };
 
-const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, shouldPopulate, position }) => {
-  const showSchedulesData = (shouldPopulate.filter((schedule) => schedule.schedulesTimetablePosition === position)[0]);
+const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, 
+  shouldPopulate, position, studentsSchedule }) => {
+
+  const studentHasSchedule = Array.from(studentsSchedule)
+    .some(schedule => schedule.teachersScheduleId === element.teachersScheduleId);
+
+  const showSchedulesData = Array.from(shouldPopulate)
+    .filter((schedule) => schedule.schedulesTimetablePosition === position)[0];
+
   const isLecture = element.scheduleType;
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.ELEMENT,
@@ -66,6 +73,13 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
     }
   }, [isDoubleClickActive, element.courseName]); 
 
+  const lockSchedule = (studentHasSchedule) => {
+    if (studentHasSchedule === true) {
+      return {
+        'pointerEvents': 'none', 
+      };
+    }
+  }
 
   return (
     isDoubleClickActive === true && (isLecture === 'Laboratory' || isLecture === 'Лаборатори')
@@ -89,31 +103,65 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
       className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
       style={makeACoursePopUpLecture(id)}
     >
-      {element.courseName} Лекц {element.courseCode}{showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
+      {element.courseName} {element.courseCode} Лекц {showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
       {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
     </div>
     :
-    isLecture === 'Lecture' || isLecture === 'Лекц' 
+    isLecture === 'Lecture' || isLecture === 'Лекц'
     ?
     <div
       onDoubleClick={handleDoubleClick}
       onMouseUp={handleMouseUp} 
       ref={drag}
+      style={lockSchedule(studentHasSchedule)}
       className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} Лекц {element.courseCode}{showSchedulesData && ``} 
-      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
+      <>
+        <div>{element.courseName}</div>
+        <div>{element.courseCode}</div>
+        <div style={{ fontSize: '20px' }}
+            >{showSchedulesData === undefined 
+              && Array.from(studentsSchedule)
+                  .some((schedule) => schedule.teachersScheduleId === element.teachersScheduleId)
+                  ?
+                  'Хуваарь сонгосон'
+                  : 
+                  null
+             }</div>
+        <div>{showSchedulesData && showSchedulesData.teacherName}</div> 
+        <div>{showSchedulesData && showSchedulesData.teachersEmail}</div>
+      </>
+     
     </div>
     :
+    isLecture === 'Laboratory' || isLecture === 'Лаборатори'
+    ?
     <div
       onDoubleClick={handleDoubleClick}
       onMouseUp={handleMouseUp} 
       ref={drag}
+      style={lockSchedule(studentHasSchedule)}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} {element.courseCode} {showSchedulesData && `, ${showSchedulesData.classroomNumber}`} 
-      {showSchedulesData && `, ${showSchedulesData.teacherName}`}{showSchedulesData && `, ${showSchedulesData.teachersEmail}`} 
+      <>
+        <div>{element.courseName}</div>
+        <div>{element.courseCode}</div>
+        <div style={{ fontSize: '20px' }}
+            >{showSchedulesData === undefined 
+              && Array.from(studentsSchedule)
+                  .some((schedule) => schedule.teachersScheduleId === element.teachersScheduleId)
+                  ?
+                  'Хуваарь сонгосон'
+                  : 
+                  null
+             }</div>
+        <div>{showSchedulesData && showSchedulesData.classroomNumber}</div>
+        <div>{showSchedulesData && showSchedulesData.teacherName}</div> 
+        <div>{showSchedulesData && showSchedulesData.teachersEmail}</div>
+        <div>{showSchedulesData && showSchedulesData.classroomCapacity !== null ? `Дүүргэлт: ${showSchedulesData.students}/${showSchedulesData.classroomCapacity}` : null}</div> 
+      </>
     </div>
+    : null
   );
 };
 
@@ -149,18 +197,32 @@ const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragge
   if (courseBeingDragged?.courseId && parseInt(Array.from(teachersScheduleCellsORLecture)[0][1]) === parseInt(courseBeingDragged.schedulesTimetablePosition)) {
     const validDropPositions = Array.from(teachersScheduleCellsORLecture).filter((schedule) => schedule[0] === courseBeingDragged?.courseId)[0][1];
     if (Array.isArray(validDropPositions) && validDropPositions.includes(cellKey)) {
-      popUpStyle = {
-        backgroundColor: 'green',
-        color: 'white',
-        fontSize: '14px',
-        overflow: 'auto',     
-      };
+      if (courseBeingDragged.students === courseBeingDragged.classroomCapacity) {
+        popUpStyle = {
+          backgroundColor: 'grey',
+          border: '1px solid grey',
+          color: 'white',
+          fontSize: '14px',
+          overflow: 'auto',     
+        };
+      } else {
+        popUpStyle = {
+          backgroundColor: 'green',
+          border: '1px solid green',
+          color: 'white',
+          fontSize: '14px',
+          overflow: 'auto',     
+        };
+      }
     }
   }
   return popUpStyle; 
 };
 
-const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersScheduleCellsLecture, teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, shouldPopulateWholeData }) => {
+const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersScheduleCellsLecture, 
+  teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, 
+  shouldPopulateWholeData, studentsSchedule}) => {
+
   const availableSchedules = courseBeingDragged?.scheduleType === 'Лаборатори' ? 
     (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лаборатори' ? schedule : '')
     :
@@ -199,7 +261,8 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
           `
         ) : (
           element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
-            courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
+            courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position}
+            studentsSchedule={studentsSchedule} />
         )}
       </td>
     );
@@ -211,13 +274,31 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
         style={cellStyle}
       >
         {isDragging === true && Object.keys(cellStyle).length > 0 ? (
-          `
-          ${shouldPopulate[0].courseId === courseBeingDragged.courseId ? `${shouldPopulate[0].teacherName}, 
-          ${shouldPopulate[0].courseName} ${courseBeingDragged.scheduleType} ${shouldPopulate[0].teachersEmail}`: ''}
-          `
+          shouldPopulate[0].courseId === courseBeingDragged.courseId ? (
+            <>
+              <div>{shouldPopulate[0].teacherName}</div>
+              <div>{shouldPopulate[0].courseName}</div>
+              <div>{courseBeingDragged.scheduleType}</div>
+              <div>{shouldPopulate[0].teachersEmail}</div> 
+              <div>{shouldPopulate[0].classroomCapacity !== null && shouldPopulate[0].classroomCapacity > shouldPopulate[0].students
+                ? 
+                `Дүүргэлт: ${shouldPopulate[0].students}/${shouldPopulate[0].classroomCapacity}` 
+                : shouldPopulate[0].classroomCapacity !== null && shouldPopulate[0].classroomCapacity === shouldPopulate[0].students
+                ?
+                `Хуваарь дүүрсэн: ${shouldPopulate[0].students}/${shouldPopulate[0].classroomCapacity}`
+                :'Лекц'
+                   }
+              </div> 
+            </>
+          ) 
+          :
+          (
+            null
+          )
         ) : (
           element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
-            courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position} />
+            courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position}
+            studentsSchedule={studentsSchedule} />
         )}
       </td>
     );
@@ -227,9 +308,9 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
 
 const Timetable = ({ user }) => {
   
-  const userDetails = new UserDetails(user);
-  const studentsCurriculum = StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel')));
-  const [studentsCourses, setStudentsCourses] = useState([]); 
+  const [userDetails, setUserDetails] = useState(getUserDetailsFromLocalStorage());
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [deleteSchedule, setDeleteSchedule] = useState(null);
   const [teachersSchedule, setTeachersSchedule] = useState([]);
   const [teachersScheduleCells, setTeachersScheduleCells] = useState(new Map());
   const [teachersScheduleCellsLecture, setTeachersScheduleCellsLecture] = useState(new Map());
@@ -237,7 +318,7 @@ const Timetable = ({ user }) => {
   const [elementsMap, setElementsMap] = useState(new Map());
   const [handleReject, setHandleReject] = useState(false);
   const [successful, setSuccessful] = useState(false);
-  const [hasSelectedAll, setHasSelectedAll] = useState(false);
+  const [removeSuccessful, setRemoveSuccessful] = useState(false);
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
   
@@ -256,7 +337,6 @@ const Timetable = ({ user }) => {
 
         if (response.status === 200) {
           console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
-
           const tempScheduleArray = Array.from(response.data.studentsSchedule);
           if (tempScheduleArray.length > 0) {
             for ( let i = 0; i < tempScheduleArray.length; i++) {
@@ -301,37 +381,8 @@ const Timetable = ({ user }) => {
             .map((course) => Courses.fromJsonCourse(course));
           setTeachersSchedule(Array.from(response.data.teachersAvailableCourses)
             .map((schedule) => TeachersSchedule.fromJsonTeachersSchedule(schedule)));
-          setStudentsCourses(studentsCourses);
         } else {
           console.log('Error fetching curriculum:', response.status, response.data);
-          setError('Failed to fetch curriculum.');
-        }
-    } catch (err) {
-      console.error('Error fetching curriculum:', err);
-      setError('Network error occurred.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleScheduleSave = async () => {
-
-    try {
-      const response = await axios.post(getApiUrl('/Create/Students/Schedule/For/Courses/'), 
-        { 
-          studentsPickedSchedule: Array.from(elementsMap),
-          student: StudentUser.fromJsonButInApp(userDetails.student),
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          timeout: 30000,
-        }); 
-
-        if (response.status === 200) {
-          console.log(response.data.message);
-          setSuccessful(true);
-        } else {
-          console.log('Error fetching curriculum:', response.message);
           setError('Failed to fetch curriculum.');
         }
     } catch (err) {
@@ -400,9 +451,15 @@ const Timetable = ({ user }) => {
 
   const handleDrop = (position, element, isDragging, teachersSchedule, handleReject) => {
 
+    if (element.classroomCapacity === element.students) {
+      handleRejectAction();
+      return null;
+    }
+    /*
     console.log(Array.from(teachersSchedule)
       .filter((schedule) => schedule.scheduleType === element.scheduleType && schedule.courseId === element.courseId)
       .map((schedule) => schedule.schedulesTimetablePosition));
+    */
     const isMultiplePositionsValid = Array.from(teachersSchedule)
       .filter((schedule) => schedule.scheduleType === element.scheduleType && schedule.courseId === element.courseId)
       .map((schedule) => schedule.schedulesTimetablePosition);
@@ -434,13 +491,97 @@ const Timetable = ({ user }) => {
         return newMap;
       });
 
+      handleScheduleSave(element);
     } else {
       handleRejectAction();
     }
     setIsDragging(false);
   };
 
-  
+  const handleScheduleSave = async (scheduleOfStudent) => {
+
+    try {
+      const response = await axios.post(getApiUrl('/Create/Students/Schedule/For/Courses/'), 
+        { 
+          studentsPickedSchedule: scheduleOfStudent,
+          student: StudentUser.fromJsonButInApp(userDetails.student),
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000,
+        }); 
+
+        if (response.status === 200) {
+          console.log(response.data.message);
+          const createdSchedule = StudentsSchedule.fromJsonStudentsSchedule(response.data.createdSchedule);
+
+          setUserDetails(prev => {
+            const updatedDetails = { ...prev };
+            if (updatedDetails.studentsSchedule !== undefined) {
+              updatedDetails.studentsSchedule = Array.from(updatedDetails.studentsSchedule).concat({...createdSchedule});
+            } else {
+              const prevSchedules = Array.from(...prev.prevsSchedules).concat({...createdSchedule});
+              updatedDetails.studentsSchedule = prevSchedules;
+            }
+            localStorage.setItem('userDetails', JSON.stringify(userDetails));
+            return updatedDetails;
+          });
+
+          setSuccessful(true);
+        } else {
+          console.log('Error fetching curriculum:', response.message);
+          setError('Failed to fetch curriculum.');
+        }
+    } catch (err) {
+      console.error('Error fetching curriculum:', err);
+      setError('Network error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeSchedule = async () => {
+    try {
+      const response = await axios.post(getApiUrl('/Remove/Schedule/From/Student/'), 
+      { 
+        scheduleToRemove: deleteSchedule,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      }); 
+
+      if (response.status === 200) {
+        console.log('Амжилттай хаслаа.');
+        setUserDetails(prev => {
+          const updatedDetails = { ...prev };
+          const updatedSchedules = Array.from(updatedDetails.studentsSchedule)
+            .filter((schedule) => schedule.studentsScheduleId !== deleteSchedule.studentsScheduleId);
+          updatedDetails.studentsSchedule = updatedSchedules;
+
+          localStorage.setItem('userDetails', JSON.stringify(updatedDetails));
+          return updatedDetails;
+        });
+
+        setElementsMap(prevMap => {
+          const newMap = new Map(prevMap); 
+          newMap.delete(deleteSchedule.schedulesTimetablePosition);
+          return newMap;
+        });
+
+        setShowDeletePrompt(false);
+        setRemoveSuccessful(true);
+      } 
+
+    } catch (error) {
+      console.log('Error has occured: ', error);
+      setError('Network error occurred.');
+    } finally {
+      setLoading(false);
+    }
+    setShowDeletePrompt(false);
+  };
+
   const interactiveSelection = (element, isDragging) => {
     if (isDragging){
       setIsDragging(true);
@@ -454,7 +595,8 @@ const Timetable = ({ user }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       {successful && (
-        <div className="hovering-overlay">
+        <div onClick={() => {setSuccessful(false)}}
+             className="hovering-overlay">
           <div className="hovering-content"
                style={{
                   border: '3px solid green',
@@ -462,9 +604,58 @@ const Timetable = ({ user }) => {
                 }}
           >
             <h2>
-                Хуваариудыг амжилттай нэмлээ.
+                Хуваарийг амжилттай нэмлээ.
             </h2>
             <button onClick={() => {setSuccessful(false)}}>Хаах</button>
+          </div>
+        </div>
+      )}
+      {showDeletePrompt && (
+        <div onClick={() => {setShowDeletePrompt(false)}}
+             className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '9px solid yellow',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                <div>{deleteSchedule.courseName}</div>
+                <div>
+                  {StudentsSchedule.convertDays(deleteSchedule.days)}
+                  &nbsp; {deleteSchedule.time}
+                </div>
+                <div>{deleteSchedule.teachersName}</div>
+            </h2>
+            <div className='button-group-schedule'>
+              <button style={{ fontSize: '18px' }}
+                      onClick={() => {setShowDeletePrompt(false)}}>Хаах</button>
+              <button className='remove-button'
+                      onClick={() => {removeSchedule()}}>Хасах</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {removeSuccessful && (
+        <div onClick={() => {setRemoveSuccessful(false), setDeleteSchedule(null)}}
+             className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '9px solid green',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                <div>{deleteSchedule.courseName}</div>
+                <div>
+                  {StudentsSchedule.convertDays(deleteSchedule.days)}
+                  &nbsp; {deleteSchedule.time}
+                </div>
+                <div>{deleteSchedule.teachersName}</div>
+                <div>Хуваарийг амжилттай хаслаа.</div>
+            </h2>
+              <button style={{ fontSize: '18px' }}
+                onClick={() => {setRemoveSuccessful(false), setDeleteSchedule(null)}}>Хаах</button>
           </div>
         </div>
       )}
@@ -506,6 +697,7 @@ const Timetable = ({ user }) => {
                               courseBeingDragged={courseBeingDragged}
                               shouldPopulate={teachersSchedule.filter((schedule) => schedule.schedulesTimetablePosition === position)}
                               shouldPopulateWholeData={teachersSchedule}
+                              studentsSchedule={userDetails.studentsSchedule}
                             />
                           );
                         })}
@@ -518,27 +710,48 @@ const Timetable = ({ user }) => {
           </div>
           <div className='column-1fr'>
             <div className='draggable-container-super'>
-              <div className={`draggable-container ${elementsMap.size === teachersSchedule.length && alreadyHasSchedules === true ? 'locked': ''}`} >
-                    {elementsMap.size === teachersSchedule.length && alreadyHasSchedules === false
-                      ? 
-                      <div className='has-selected-all-container'
-                           onClick={() => {handleScheduleSave(elementsMap)}}>
-                        {elementsMap.size === teachersSchedule.length ? 'Хичээлийн хуваарийг хадгалах' : 'Хичээлүүдийн хуваарийг сонгоно уу!'}
-                      </div>
-                      :
-                      (<h4 className="student-header-of-schedules">
+              <div className={`draggable-container ${userDetails.student.isCurriculumClosed === true ? 'locked': ''}`} >
+                    <div>
+                      <h4 className="student-header-of-schedules">
                         <span>{userDetails.student?.studentCode} сонгосон хичээлүүд:</span>
                         <img
-                          src={` ${ alreadyHasSchedules === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
+                          src={` ${ userDetails.student.isCurriculumClosed === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
                           alt="Lesson Selection Icon"
                           className="header-icon"
                         />
                       </h4>
-                      )
-                    }
+                    </div>
                     {Array.isArray(teachersSchedule) ? (
                       teachersSchedule.map((item, index) => (
-                        <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} element={item} interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}/>
+                        <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} 
+                          element={item} interactiveSelection={interactiveSelection} 
+                          courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}
+                          studentsSchedule={userDetails.studentsSchedule} 
+                        />
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+              </div>
+            </div>
+            <div className='draggable-container-super'>
+              <div className={`draggable-container ${userDetails.student.isCurriculumClosed === true ? 'locked': ''}`} >
+                    <div>
+                      <h4 className="student-header-of-schedules">
+                        <span>Хуваариас хасалт хийх:</span>
+                        <img
+                          src={` ${ userDetails.student.isCurriculumClosed === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
+                          alt="Lesson Selection Icon"
+                          className="header-icon"
+                        />
+                      </h4>
+                    </div>
+                    {Array.isArray(userDetails.studentsSchedule) ? (
+                      userDetails.studentsSchedule.map((item, index) => (
+                        <div className={`remove-elements ${item.scheduleType}`}
+                             onClick={() => {{setShowDeletePrompt(true), setDeleteSchedule(item)}}}
+                             key={item.studentsScheduleId}
+                        >{item.courseName}</div>
                       ))
                     ) : (
                       <div></div>

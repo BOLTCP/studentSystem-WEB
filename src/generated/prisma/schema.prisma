@@ -607,8 +607,10 @@ model studentsschedule {
   days                         days_type_enum?
   student_code                 String?                  @db.VarChar(8)
   teacher_code                 String?                  @db.VarChar(8)
+  teachers_schedule_id         Int
   course                       courses                  @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
   student                      student                  @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+  teachersschedule             teachersschedule         @relation(fields: [teachers_schedule_id], references: [teachers_schedule_id], onDelete: Cascade)
 
   @@map("studentsschedule")
 }
@@ -758,6 +760,7 @@ model teachersschedule {
   major                        major                   @relation(fields: [major_id], references: [major_id], onDelete: Cascade, map: "fk_major")
   teacher                      teacher                 @relation(fields: [teacher_id], references: [teacher_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_teacher")
   teacherscourseplanning       teacherscourseplanning  @relation(fields: [course_planning_id], references: [teacher_course_planning_id], onDelete: Cascade, map: "fk_teachers_course_planning")
+  studentsschedules            studentsschedule[]
 
   @@unique([classroom_id, teacher_id, time, days], map: "uq_classroom_time_teacher")
 }

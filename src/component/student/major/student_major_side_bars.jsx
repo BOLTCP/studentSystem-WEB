@@ -199,7 +199,7 @@ export const RenderSidebar = () => {
                           setSelectedSubmenu(1);
                           navigate('/major', { state: { condRender: 3 } })
                           }}>
-                  Хичээл сонголт
+                  Хичээл сонголт ба хуваарь
                 </button>
               </li>
             </ul>

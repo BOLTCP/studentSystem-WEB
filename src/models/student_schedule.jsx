@@ -17,13 +17,14 @@ class StudentsSchedule {
     studentCode,
     scheduleType,
     teacherCode,
+    teachersScheduleId,
   }) {
     this.studentsScheduleId = studentsScheduleId;
     this.studentId = studentId;
     this.courseId = courseId;
     this.classroomNumber = classroomNumber;
     this.classGroup = classGroup;
-    this.modifiedAt = modifiedAt ? new Date(modifiedAt) : null;
+    this.modifiedAt = modifiedAt;
     this.schedulesTimetablePosition = schedulesTimetablePosition;
     this.courseName = courseName;
     this.time = time;
@@ -33,6 +34,7 @@ class StudentsSchedule {
     this.studentCode = studentCode;
     this.scheduleType = scheduleType;
     this.teacherCode = teacherCode;
+    this.teachersScheduleId = teachersScheduleId;
   }
 
   static fromJsonStudentsSchedule(json) {
@@ -62,6 +64,7 @@ class StudentsSchedule {
         studentCode: json.student_code,
         scheduleType: json.schedule_type,
         teacherCode: json.teacher_code,
+        teachersScheduleId: json.teachers_schedule_id,
       });
     } catch (error) {
       console.error('Error parsing StudentsSchedule from JSON:', error);
@@ -76,9 +79,7 @@ class StudentsSchedule {
       course_id: studentsSchedule.courseId,
       classroom_number: studentsSchedule.classroomNumber,
       class_group: studentsSchedule.classGroup,
-      modified_at: studentsSchedule.modifiedAt
-        ? studentsSchedule.modifiedAt.toISOString().split('T')[0]
-        : null,
+      modified_at: studentsSchedule.modifiedAt,
       schedules_timetable_position: studentsSchedule.schedulesTimetablePosition,
       course_name: studentsSchedule.courseName,
       time: studentsSchedule.time,
@@ -88,30 +89,42 @@ class StudentsSchedule {
       student_code: studentsSchedule.studentCode,
       schedule_type: studentsSchedule.scheduleType,
       teacher_code: studentsSchedule.teacherCode,
+      teachers_schedule_id: studentsSchedule.teachersScheduleId,
     };
   }
 
   static fromJsonButInApp(studentsSchedule) {
     return {
-      students_schedule_id: studentsSchedule.studentsScheduleId,
-      student_id: studentsSchedule.studentId,
-      course_id: studentsSchedule.courseId,
-      classroom_number: studentsSchedule.classroomNumber,
-      class_group: studentsSchedule.classGroup,
-      modified_at: studentsSchedule.modifiedAt
-        ? studentsSchedule.modifiedAt.toISOString().split('T')[0]
-        : null,
-      schedules_timetable_position: studentsSchedule.schedulesTimetablePosition,
-      course_name: studentsSchedule.courseName,
+      studentsScheduleId: studentsSchedule.studentsScheduleId,
+      studentId: studentsSchedule.studentId,
+      courseId: studentsSchedule.courseId,
+      classroomNumber: studentsSchedule.classroomNumber,
+      classGroup: studentsSchedule.classGroup,
+      modifiedAt: studentsSchedule.modifiedAt,
+      schedulesTimetablePosition: studentsSchedule.schedulesTimetablePosition,
+      courseName: studentsSchedule.courseName,
       time: studentsSchedule.time,
-      teachers_email: studentsSchedule.teachersEmail,
-      teachers_name: studentsSchedule.teachersName,
+      teachersEmail: studentsSchedule.teachersEmail,
+      teachersName: studentsSchedule.teachersName,
       days: studentsSchedule.days,
-      student_code: studentsSchedule.studentCode,
-      schedule_type: studentsSchedule.scheduleType,
-      teacher_code: studentsSchedule.teacherCode,
+      studentCode: studentsSchedule.studentCode,
+      scheduleType: studentsSchedule.scheduleType,
+      teacherCode: studentsSchedule.teacherCode,
+      teachersScheduleId: studentsSchedule.teachersScheduleId,
     };
   }
+
+  static convertDays(days) {
+    const convertedDays = days === 'Monday' ? 'Даваа'
+      : days === 'Tuesday' ? 'Мягмар'
+      : days === 'Wednesday' ? 'Лхагва'
+      : days === 'Thursday' ? 'Пүрэв'
+      : days === 'Friday' ? 'Баасан'
+      : days === 'Saturday' ? 'Бямба'
+      : 'Ням';
+    return convertedDays;
+  }
+
 }
 
 export default StudentsSchedule;

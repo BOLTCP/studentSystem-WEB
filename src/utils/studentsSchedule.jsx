@@ -16,7 +16,7 @@ export const StudentsScheduleUtil = ({ user, theme }) => {
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
   const [todaysSchedule, setTodaysSchedule] = useState([]);
   const [hasSchedulesToday, setHasSchedulesToday] = useState(false);
-  const [time, setTime] = useState(null);
+  const [time, setTime] = useState(new Date());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const StudentsScheduleUtil = ({ user, theme }) => {
             : new Date().getDay() === 6 ? 'Saturday'
             : 'Sunday';
           console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
-          const studentsSchedule = Array.from(response.data.studentsSchedule).filter((schedule) => schedule[1].days === 'Monday')
+          const studentsSchedule = Array.from(response.data.studentsSchedule).filter((schedule) => schedule[1].days === today)
           setTodaysSchedule(studentsSchedule);
         } 
       } catch (err) {

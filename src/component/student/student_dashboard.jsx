@@ -49,7 +49,10 @@ const StudentDashboard = () => {
             const departmentOfEducation = DepartmentsOfEducation.fromJsonDepartmentsOfEducation(response.data.departmentsofeducation);
 
             setStudentsCourses(Array.from(response.data.studentsCourses).map((course) => Courses.fromJsonCourse(course)));
-            let studentsSchedule = new Map();
+            const schedulesData = Array.from(response.data.studentsSchedule).map((schedule) => schedule);
+            const studentsSchedule = schedulesData
+              .map((schedule) => StudentsSchedule.fromJsonStudentsSchedule(schedule[1]));
+            /*
             const tempScheduleArray = Array.from(response.data.studentsSchedule).length > 0 
             ?
             Array.from(response.data.studentsSchedule)
@@ -64,8 +67,11 @@ const StudentDashboard = () => {
                 studentsSchedule.set(schedulesTimetablePosition, scheduleOfThePosition);
               }
             }
+            */
 
-            setUserDetails(new UserDetails({ user, userpreferences, student, studentsSchedule, major, department, departmentOfEducation }));
+            setUserDetails(new UserDetails({ user, userpreferences, student, studentsSchedule, major, 
+              department, departmentOfEducation 
+            }));
             
           } else {
             console.error('Error fetching user details:', response.status, response.data);

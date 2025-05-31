@@ -17,7 +17,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
   const [todaysSchedule, setTodaysSchedule] = useState([]);
   const [hasSchedulesToday, setHasSchedulesToday] = useState(false);
-  const [time, setTime] = useState(null);
+  const [time, setTime] = useState(new Date());
   const navigate = useNavigate();
 
   useEffect(() => {

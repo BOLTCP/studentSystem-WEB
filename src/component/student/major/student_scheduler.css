@@ -18,10 +18,9 @@
 .column-1fr {
   display: grid;
   grid-template-rows: 6fr 1fr;
-  height: 675px;
-  gap: 1rem;
+  height: auto;             
+  gap: 1rem;                
 }
-
 
 body.light .student-schedule-timetable-container {
   max-width: 1200px;
@@ -115,7 +114,7 @@ body.dark .draggable-container-super {
   padding-left: 1rem;
   padding-right: 1rem;
   width: 220px;
-  height: 675px;
+  height: 40vh;
   overflow-y: scroll;
 }
 
@@ -133,7 +132,7 @@ body.dark .draggable-container-super {
   color: #fff;
   border-radius: 4;
   cursor: move;
-  font-size: 12;
+  font-size: 16px;
   border-radius: 9px;
   text-align: center;
   transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
@@ -168,7 +167,7 @@ body.dark .timetable-draggable-element {
   color: black;
   border-radius: 4;
   cursor: move;
-  font-size: 12;
+  font-size: 16px;
   border-radius: 9px;
   text-align: center;
   transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
@@ -206,7 +205,6 @@ body.dark .timetable-draggable-element-yellow {
 }
 
 .placed-course.isOver {
-  width: 120px;
   height: 100px;
   min-width: 120px;
   border: 1px solid #ccc;
@@ -320,6 +318,7 @@ body.dark .student-header-of-schedules {
 }
 
 .hovering-content button {
+  height: 50px;
   margin-top: 10px;
   padding: 10px 20px;
   background-color: #007bff; 
@@ -327,12 +326,28 @@ body.dark .student-header-of-schedules {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 18px;
   transition: background-color 0.2s ease-in-out;
 }
 
 .hovering-content button:hover {
   background-color: #0056b3;
+}
+
+.hovering-content .remove-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: red; 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.hovering-content .remove-button:hover {
+  background-color: rgb(176, 33, 33);
 }
 
 /* Simple animation for the content */
@@ -345,4 +360,43 @@ body.dark .student-header-of-schedules {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+.button-group-schedule {
+  display: grid;
+  grid-template-columns: 5fr 5fr;
+  gap: 5rem;
+}
+
+.remove-elements.Laboratory {
+  cursor: pointer;
+  margin-bottom: 5px;
+  border: 1px solid black;
+  border-radius: 6px;
+  text-align: center;
+  height: 30px;
+  background-color: #4a90e2;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+}
+
+.remove-elements.Lecture {
+  cursor: pointer;
+  margin-bottom: 5px;
+  border: 1px solid black;
+  border-radius: 6px;
+  text-align: center;
+  height: 30px;
+  background-color: #FDE047;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+}
+
+body.light .student-has-schedule {
+  padding-left: 1.5rem;
+  width: 20px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }

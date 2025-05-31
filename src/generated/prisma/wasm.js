@@ -571,7 +571,8 @@ exports.Prisma.StudentsscheduleScalarFieldEnum = {
   schedule_type: 'schedule_type',
   days: 'days',
   student_code: 'student_code',
-  teacher_code: 'teacher_code'
+  teacher_code: 'teacher_code',
+  teachers_schedule_id: 'teachers_schedule_id'
 };
 
 exports.Prisma.StudentstoadviseScalarFieldEnum = {

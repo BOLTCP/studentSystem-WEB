@@ -24,8 +24,9 @@ const getUserDetailsFromLocalStorage = () => {
         StudentUser.fromJsonButInApp(parsedUser.student) : null;
 
       const studentsSchedule = parsedUser?.studentsSchedule ?
-        StudentsSchedule.fromJsonButInApp(parsedUser.studentsSchedule): null;
-        
+        Array.from(parsedUser?.studentsSchedule)
+        .map((schedule) => StudentsSchedule.fromJsonButInApp(schedule)): null;
+
       const major = parsedUser?.major ?
         MajorClass.fromJsonButInApp(parsedUser.major) : null;
 
@@ -34,7 +35,6 @@ const getUserDetailsFromLocalStorage = () => {
 
       const departmentOfEducation = parsedUser?.departmentOfEducation ?
         DepartmentsOfEducation.fromJsonInApp(parsedUser.departmentOfEducation) : null;
-
 
       return new UserDetails({ user, userpreferences, student, studentsSchedule, major, department, departmentOfEducation });
 

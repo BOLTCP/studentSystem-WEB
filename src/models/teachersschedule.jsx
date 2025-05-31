@@ -49,7 +49,7 @@ class TeachersSchedule {
     try {
       return new TeachersSchedule({
         classroomId: json.classroom_id ?? null,
-        students: json.students ?? null,
+        students: json.students,
         teacherId: json.teacher_id,
         courseId: json.course_id,
         majorId: json.major_id,
@@ -130,6 +130,18 @@ class TeachersSchedule {
       courseCode: teachersSchedule.courseCode,
     };
   }
+
+  static convertDays(days) {
+    const convertedDays = days === 'Monday' ? 'Даваа'
+      : days === 'Tuesday' ? 'Мягмар'
+      : days === 'Wednesday' ? 'Лхагва'
+      : days === 'Thursday' ? 'Пүрэв'
+      : days === 'Friday' ? 'Баасан'
+      : days === 'Saturday' ? 'Бямба'
+      : 'Ням';
+    return convertedDays;
+  }
+  
 }
 
 export default TeachersSchedule;

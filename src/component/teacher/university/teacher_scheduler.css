@@ -344,3 +344,30 @@ body.dark .student-header-of-schedules {
     opacity: 1;
   }
 }
+
+.remove-elements.Лаборатори {
+  cursor: pointer;
+  margin-bottom: 5px;
+  border: 1px solid black;
+  border-radius: 6px;
+  text-align: center;
+  height: 30px;
+  background-color: #4a90e2;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+}
+
+.remove-elements.Лекц {
+  cursor: pointer;
+  margin-bottom: 5px;
+  border: 1px solid black;
+  border-radius: 6px;
+  text-align: center;
+  height: 30px;
+  background-color: #FDE047;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+}

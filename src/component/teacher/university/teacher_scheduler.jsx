@@ -16,7 +16,12 @@ const ItemTypes = {
   ELEMENT: 'element',
 };
 
-const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, shouldPopulate, position, showAvailableClasses }) => {
+const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragged, 
+  shouldPopulate, position, showAvailableClasses, showMadeSchedules }) => {
+
+  const teacherHasSchedule = Array.from(showMadeSchedules)
+    .some(schedule => schedule.teachersScheduleId === element.teachersScheduleId);
+
   const showSchedulesData = (Array.from(shouldPopulate).filter((schedule) => schedule.schedulesTimetablePosition === position)[0]);
   const isLecture = element.scheduleType;
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -64,6 +69,13 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
     }
   }, [isDoubleClickActive, element.courseName]); 
 
+  const lockSchedule = (teacherHasSchedule) => {
+    if (teacherHasSchedule === true) {
+      return {
+        'pointerEvents': 'none', 
+      };
+    }
+  }
 
   return (
     isDoubleClickActive === true && (isLecture === 'Laboratory' || isLecture === 'Лаборатори')
@@ -95,18 +107,25 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
     <div
       onMouseUp={handleMouseUp} 
       ref={drag}
+      style={lockSchedule(teacherHasSchedule)}
       className={`timetable-draggable-element-yellow ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} Лекц {element.courseCode}
+      <div>{element.courseName}</div> 
+      <div>Лекц</div> 
+      <div>{element.courseCode}</div>
     </div>
     :
     <div
       onDoubleClick={handleDoubleClick}
       onMouseUp={handleMouseUp} 
       ref={drag}
+      style={lockSchedule(teacherHasSchedule)}
       className={`timetable-draggable-element ${isDragging ? 'isDragging' : ''}`}
     >
-      {element.courseName} Лаборатори {element.courseCode}
+      <div>{element.courseName}</div> 
+      <div>Лаборатори</div> 
+      <div>{element.courseCode}</div>
+      <div>{element.classroomNumber}</div>
     </div>
   );
 };
@@ -155,7 +174,7 @@ const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragge
 
 const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersScheduleCellsLecture, 
     teachersSchedule, isDragging, interactiveSelection, courseBeingDragged, shouldPopulate, 
-    shouldPopulateWholeData, showAvailableClasses }) => {
+    shouldPopulateWholeData, showAvailableClasses, showMadeSchedules }) => {
   const availableSchedules = courseBeingDragged?.scheduleType === 'Laboratory' ? 
     (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Laboratory' ? schedule : '')
     :
@@ -193,7 +212,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
         ) : (
           element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
             courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position}
-            showAvailableClasses={showAvailableClasses} />
+            showAvailableClasses={showAvailableClasses} showMadeSchedules={showMadeSchedules} />
         )}
       </td>
     );
@@ -212,7 +231,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
         ) : (
           element && <DraggableElements id={position} element={element} interactiveSelection={interactiveSelection} 
             courseBeingDragged={courseBeingDragged} shouldPopulate={shouldPopulateWholeData} position={position}
-            showAvailableClasses={showAvailableClasses} />
+            showAvailableClasses={showAvailableClasses} showMadeSchedules={showMadeSchedules}/>
         )}
       </td>
     );
@@ -261,6 +280,11 @@ const Timetable = ({ user }) => {
   const [scheduleCreateMessage, setScheduleCreateMessage] = useState(null);
   const [teachersScheduleCells, setTeachersScheduleCells] = useState(new Map());
   const [teachersScheduleCellsLecture, setTeachersScheduleCellsLecture] = useState(new Map());
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [deleteSchedule, setDeleteSchedule] = useState(null);
+  const [removeSuccessful, setRemoveSuccessful] = useState(false);
+  const [removeFail, setRemoveFail] = useState(false);
+  const [removeFailMessage, setRemoveFailMessage] = useState(null);
   const [alreadyHasSchedules, setAlreadyHasSchedules] = useState(false);
   const [elementsMap, setElementsMap] = useState(new Map());
   const [handleReject, setHandleReject] = useState(false);
@@ -312,105 +336,6 @@ const Timetable = ({ user }) => {
     
     fetchTeachersSchedule();
   }, []);
-  console.log(teachersSchedule.size, teachersCourses.length);
-  /*
-  const fetchPersonalCurriculum = async () => {
-    const userDetails = getUserDetailsFromLocalStorage();
-    const studentsCurriculum = StudentCurriculum.fromJsonButInAppInstance(JSON.parse(localStorage.getItem('studentCurriculumModel')));
-    let studentsCourses = null;
-    let teachersAvailableCourses = null;
-
-    try {
-      const response = await axios.post(getApiUrl('/Add/Course/To/Students/Schedule/'), 
-        { 
-          studentsCurriculum: StudentCurriculum.fromJsonButInAppInstance(studentsCurriculum),
-          student: StudentUser.fromJsonButInApp(userDetails.student),
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          timeout: 30000,
-        }); 
-
-        if (response.status === 200) {
-          console.log(response.data.teachersAvailableCourses);
-          studentsCourses = (response.data.studentsCourses)
-            .map((course) => Courses.fromJsonCourse(course));
-          teachersAvailableCourses = Array.from((response.data.teachersAvailableCourses)
-            .map((teach_schedule) => TeachersSchedule.fromJsonTeachersSchedule(teach_schedule)));
-          setStudentsCourses(studentsCourses);
-          setTeachersSchedule(teachersAvailableCourses);
-        } else {
-          console.log('Error fetching curriculum:', response.status, response.data);
-          setError('Failed to fetch curriculum.');
-        }
-    } catch (err) {
-      console.error('Error fetching curriculum:', err);
-      setError('Network error occurred.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleScheduleSave = async () => {
-
-    try {
-      const response = await axios.post(getApiUrl('/Create/Students/Schedule/For/Courses/'), 
-        { 
-          studentsPickedSchedule: Array.from(elementsMap),
-          student: StudentUser.fromJsonButInApp(userDetails.student),
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          timeout: 30000,
-        }); 
-
-        if (response.status === 200) {
-          console.log(response.data.message);
-        } else {
-          console.log('Error fetching curriculum:', response.message);
-          setError('Failed to fetch curriculum.');
-        }
-    } catch (err) {
-      console.error('Error fetching curriculum:', err);
-      setError('Network error occurred.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPersonalCurriculum();
-  }, []);
-
-  useEffect(() => {
-  const timeTablePositions = new Map();
-  const timeTablePositionsLecture = new Map();
-  for (let i = 0; i < teachersSchedule.length; i++) {
-    const courseId = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].courseId : '';
-    const position = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Laboratory' ? teachersSchedule[i].schedulesTimetablePosition : '';
-
-    const courseIdLecture = teachersSchedule[i].courseId && teachersSchedule[i].scheduleType === 'Lecture' ? teachersSchedule[i].courseId : '';
-    const positionLecture = teachersSchedule[i].schedulesTimetablePosition && teachersSchedule[i].scheduleType === 'Lecture' ? teachersSchedule[i].schedulesTimetablePosition : '';
-
-    if (timeTablePositions.has(courseId)) {
-      timeTablePositions.get(courseId).push(position);
-    } else {
-      timeTablePositions.set(courseId, [position]);
-    }
-
-    if (timeTablePositionsLecture.has(courseIdLecture)) {
-      timeTablePositionsLecture.get(courseIdLecture).push(positionLecture);
-    } else {
-      timeTablePositionsLecture.set(courseIdLecture, [positionLecture]);
-    }
-  }
-
-  timeTablePositionsLecture.delete("");
-
-  setTeachersScheduleCells(timeTablePositions);
-  setTeachersScheduleCellsLecture(timeTablePositionsLecture);
-}, [teachersSchedule]);
-*/
 
   const showAvailableClasses = async (element) => {
     let scheduleInstanceToSend = TeachersSchedule.toJson(element);
@@ -533,12 +458,16 @@ const Timetable = ({ user }) => {
         });
 
       if (response.status === 200) {
+        const createdSchedule = TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData);
+        
+        setUserDetails(prev => {
+          const updatedDetails = { ...prev };
+          updatedDetails.teachersSchedule = Array
+            .from(updatedDetails.teachersSchedule)
+            .concat({ ...createdSchedule }); 
 
-        setUserDetails(prevDetails => {
-          let userDetails = prevDetails;
-          userDetails.teachersSchedule === null ? userDetails.teachersSchedule = TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData)
-            : Array.from(userDetails.teachersSchedule).push(TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData));
-          return userDetails;
+          localStorage.setItem('userDetails', JSON.stringify(updatedDetails));
+          return updatedDetails; 
         });
 
         setScheduleCreateSuccessful(true);
@@ -553,6 +482,54 @@ const Timetable = ({ user }) => {
         setLoading(false);
     }
   };
+  console.log(userDetails.teachersSchedule);
+  const removeSchedule = async () => {
+    try {
+      const response = await axios.post(getApiUrl('/Remove/Schedule/From/Teacher/'), 
+      { 
+        scheduleToRemove: deleteSchedule,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      }); 
+
+      if (response.status === 200) {
+        console.log('Амжилттай хаслаа.');
+        
+        setUserDetails(prev => {
+          const updatedDetails = { ...prev };
+          const updatedSchedules = Array.from(updatedDetails.teachersSchedule)
+            .filter((schedule) => schedule.teachersScheduleId !== deleteSchedule.teachersScheduleId);
+          updatedDetails.teachersSchedule = updatedSchedules;
+
+          localStorage.setItem('userDetails', JSON.stringify(updatedDetails));
+          return updatedDetails;
+        });
+
+        setElementsMap(prevMap => {
+          const newMap = new Map(prevMap); 
+          newMap.delete(deleteSchedule.schedulesTimetablePosition);
+          return newMap;
+        });
+
+        setShowDeletePrompt(false);
+        setRemoveSuccessful(true);
+
+      } else if (response.status === 209) {
+        console.log('Алдаа гарлаа.');
+        setRemoveFailMessage(response.data.failMessage);
+        setRemoveFail(true);
+      }
+
+    } catch (error) {
+      console.log('Error has occured: ', error);
+      setError('Network error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const interactiveSelection = (element, isDragging) => {
     if (isDragging){
@@ -594,12 +571,17 @@ const Timetable = ({ user }) => {
         });
 
       if (response.status === 200) {
+        const createdSchedule = TeachersSchedule
+          .fromJsonTeachersSchedule(response.data.scheduleData);
 
-        setUserDetails(prevDetails => {
-          let userDetails = prevDetails;
-          userDetails.teachersSchedule === null ? userDetails.teachersSchedule = TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData)
-            : Array.from(userDetails.teachersSchedule).push(TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData));
-          return userDetails;
+        setUserDetails(prev => {
+          const updatedDetails = { ...prev };
+          updatedDetails.teachersSchedule = Array
+            .from(updatedDetails.teachersSchedule)
+            .concat({ ...createdSchedule }); 
+
+          localStorage.setItem('userDetails', JSON.stringify(updatedDetails));
+          return updatedDetails; 
         });
 
         setScheduleCreateSuccessful(true);
@@ -612,6 +594,8 @@ const Timetable = ({ user }) => {
         setLoading(false);
     }
   };
+
+  console.log(userDetails.teachersSchedule);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -668,7 +652,8 @@ const Timetable = ({ user }) => {
         </div>
       )}
       {scheduleCreateSuccessful && (
-        <div className="hovering-overlay">
+        <div  onClick={() => {setScheduleCreateSuccessful(false)}}
+             className="hovering-overlay">
           <div className="hovering-content"
                style={{
                   border: '3px solid green',
@@ -681,7 +666,7 @@ const Timetable = ({ user }) => {
                 {scheduleCreateMessage.classroom_number} 
                 хичээлийн хуваарийг амжилттай нэмлээ.
             </h2>
-            <button onClick={() => {setScheduleCreateSuccessful(false), localStorage.setItem('userDetails', JSON.stringify(userDetails))}}>Хаах</button>
+            <button onClick={() => {setScheduleCreateSuccessful(false)}}>Хаах</button>
           </div>
         </div>
       )}
@@ -701,6 +686,78 @@ const Timetable = ({ user }) => {
                 {hours[parseInt(scheduleDuplicate.schedulesTimetablePosition % 7)]} - р цагийн хичээл давхцаж байна.
             </h2>
             <button onClick={() => {setScheduleDuplicate(null)}}>Хаах</button>
+          </div>
+        </div>
+      )}
+      {showDeletePrompt && (
+        <div onClick={() => {setShowDeletePrompt(false)}}
+             className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '9px solid yellow',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                <div>{deleteSchedule.courseName}</div>
+                <div>
+                  {TeachersSchedule.convertDays(deleteSchedule.days)}
+                  &nbsp; {deleteSchedule.time}
+                </div>
+                <div>{deleteSchedule.teachersName}</div>
+                <div>{deleteSchedule.classroomNumber !== null 
+                        ? `Анги: ${deleteSchedule.classroomNumber}`
+                        :
+                        null
+                      }
+                </div>
+            </h2>
+            <div className='button-group-schedule'>
+              <button style={{ fontSize: '18px' }}
+                      onClick={() => {setShowDeletePrompt(false)}}>Хаах</button>
+              <button className='remove-button'
+                      onClick={() => {removeSchedule()}}>Хасах</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {removeSuccessful && (
+        <div onClick={() => {setRemoveSuccessful(false), setDeleteSchedule(null)}}
+             className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '9px solid green',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                <div>{deleteSchedule.courseName}</div>
+                <div>
+                  {TeachersSchedule.convertDays(deleteSchedule.days)}
+                  &nbsp; {deleteSchedule.time}
+                </div>
+                <div>{deleteSchedule.teachersName}</div>
+                <div>Хуваарийг амжилттай хаслаа.</div>
+            </h2>
+              <button style={{ fontSize: '18px' }}
+                onClick={() => {setRemoveSuccessful(false), setDeleteSchedule(null)}}>Хаах</button>
+          </div>
+        </div>
+      )}
+      {removeFail && (
+        <div onClick={() => {setRemoveFail(false), setRemoveFailMessage(null)}}
+             className="hovering-overlay">
+          <div className="hovering-content"
+               style={{
+                  border: '12px solid red',
+                  cursor: 'pointer',
+                }}
+          >
+            <h2>
+                <div>{removeFailMessage}</div>
+            </h2>
+              <button style={{ fontSize: '18px' }}
+                onClick={() => {setRemoveFail(false), setRemoveFailMessage(null)}}>Хаах</button>
           </div>
         </div>
       )}
@@ -743,6 +800,7 @@ const Timetable = ({ user }) => {
                               shouldPopulate={Array.from(teachersSchedule).filter((schedule) => schedule.schedulesTimetablePosition === position)}
                               shouldPopulateWholeData={Array.from(teachersSchedule)}
                               showAvailableClasses={showAvailableClasses}
+                              showMadeSchedules={userDetails.teachersSchedule}
                             />
                           );
                         })}
@@ -755,15 +813,9 @@ const Timetable = ({ user }) => {
           </div>
           <div className='column-1fr'>
             <div className='draggable-container-super'>
-              <div className={`draggable-container ${teachersSchedule.size === teachersCourses.length  ? 'locked': ''}`} >
-                    {elementsMap.size === teachersSchedule.length && alreadyHasSchedules === false
-                      ? 
-                      <div className='has-selected-all-container'
-                           onClick={() => {handleScheduleSave(elementsMap)}}>
-                        {elementsMap.size === teachersSchedule.length ? 'Хичээлийн хуваарийг хадгалах' : 'Хичээлүүдийн хуваарийг сонгоно уу!'}
-                      </div>
-                      :
-                      (<h4 className="student-header-of-schedules">
+              <div className={`draggable-container ${userDetails.teacher.is_course_planning_closed  ? 'locked': ''}`} >
+                    <div>
+                      <h4 className="student-header-of-schedules">
                         <span>{userDetails.teacher?.teacherCode} оноогдсон хичээлүүд:</span>
                         <img
                           src={` ${ alreadyHasSchedules === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
@@ -771,13 +823,38 @@ const Timetable = ({ user }) => {
                           className="header-icon"
                         />
                       </h4>
-                      )
-                    }
+                    </div>
                     {Array.isArray(teachersCourses) ? (
                       Array.from(teachersCourses).map((item, index) => (
                         <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} element={item} 
                           interactiveSelection={interactiveSelection} courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}
-                          showAvailableClasses={showAvailableClasses}/>
+                          showAvailableClasses={showAvailableClasses}
+                           showMadeSchedules={userDetails.teachersSchedule}
+                        />
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+              </div>
+            </div>
+            <div className='draggable-container-super'>
+              <div className={`draggable-container ${userDetails.teacher.is_course_planning_closed  ? 'locked': ''}`} >
+                    <div>
+                      <h4 className="student-header-of-schedules">
+                        <span>{userDetails.teacher?.teacherCode} оноогдсон хичээлүүд:</span>
+                        <img
+                          src={` ${ alreadyHasSchedules === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
+                          alt="Lesson Selection Icon"
+                          className="header-icon"
+                        />
+                      </h4>
+                    </div>
+                    {Array.isArray(userDetails.teachersSchedule) ? (
+                      userDetails.teachersSchedule.map((item, index) => (
+                        <div className={`remove-elements ${item.scheduleType}`}
+                             onClick={() => {{setShowDeletePrompt(true), setDeleteSchedule(item)}}}
+                             key={item.teachersScheduleId}
+                        >{item.courseName}</div>
                       ))
                     ) : (
                       <div></div>

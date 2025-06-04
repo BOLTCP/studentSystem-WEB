@@ -247,6 +247,17 @@ exports.Prisma.ContractsScalarFieldEnum = {
   send_at: 'send_at'
 };
 
+exports.Prisma.CoursemanagementScalarFieldEnum = {
+  course_management_id: 'course_management_id',
+  course_name: 'course_name',
+  description: 'description',
+  course_length: 'course_length',
+  teacher_id: 'teacher_id',
+  teacher_code: 'teacher_code',
+  created_at: 'created_at',
+  teacher_course_planning_id: 'teacher_course_planning_id'
+};
+
 exports.Prisma.CoursematerialScalarFieldEnum = {
   course_material_id: 'course_material_id',
   course_id: 'course_id',
@@ -642,7 +653,8 @@ exports.Prisma.TeacherscourseplanningScalarFieldEnum = {
   created_at: 'created_at',
   department_of_edu_id: 'department_of_edu_id',
   course_code: 'course_code',
-  teacher_major_id: 'teacher_major_id'
+  teacher_major_id: 'teacher_major_id',
+  course_length: 'course_length'
 };
 
 exports.Prisma.TeachersmajorplanningScalarFieldEnum = {
@@ -999,6 +1011,7 @@ exports.Prisma.ModelName = {
   classrooms: 'classrooms',
   clubmembers: 'clubmembers',
   contracts: 'contracts',
+  coursemanagement: 'coursemanagement',
   coursematerial: 'coursematerial',
   courses: 'courses',
   department: 'department',

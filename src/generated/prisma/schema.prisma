@@ -169,6 +169,18 @@ model contracts {
   signedcontracts signedcontracts[]
 }
 
+model coursemanagement {
+  course_management_id       Int                    @id @default(autoincrement())
+  course_name                String                 @db.Char(50)
+  description                String?                @db.Char(100)
+  course_length              Int
+  teacher_id                 Int
+  teacher_code               String                 @db.Char(8)
+  created_at                 DateTime?              @default(now()) @db.Timestamp(6)
+  teacher_course_planning_id Int
+  teacherscourseplanning     teacherscourseplanning @relation(fields: [teacher_course_planning_id], references: [teacher_course_planning_id], onDelete: NoAction, onUpdate: NoAction, map: "teachers_course_planning_fkey")
+}
+
 model coursematerial {
   course_material_id     Int                    @id @default(autoincrement())
   course_id              Int
@@ -709,6 +721,8 @@ model teacherscourseplanning {
   department_of_edu_id       Int
   course_code                String                 @db.VarChar(6)
   teacher_major_id           Int
+  course_length              Int
+  coursemanagement           coursemanagement[]
   courses                    courses                @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
   department                 department             @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_department")
   departmentsofeducation     departmentsofeducation @relation(fields: [department_of_edu_id], references: [departments_of_education_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_departments_of_edu")

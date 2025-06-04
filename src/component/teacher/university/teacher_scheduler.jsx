@@ -459,6 +459,7 @@ const Timetable = ({ user }) => {
 
       if (response.status === 200) {
         const createdSchedule = TeachersSchedule.fromJsonTeachersSchedule(response.data.scheduleData);
+        console.log(createdSchedule);
         
         setUserDetails(prev => {
           const updatedDetails = { ...prev };
@@ -468,6 +469,12 @@ const Timetable = ({ user }) => {
 
           localStorage.setItem('userDetails', JSON.stringify(updatedDetails));
           return updatedDetails; 
+        });
+
+        setElementsMap(prevMap => {
+          const newMap = new Map(prevMap); 
+          newMap.set(createdSchedule.schedulesTimetablePosition, createdSchedule);
+          return newMap;
         });
 
         setScheduleCreateSuccessful(true);
@@ -482,7 +489,7 @@ const Timetable = ({ user }) => {
         setLoading(false);
     }
   };
-  console.log(userDetails.teachersSchedule);
+
   const removeSchedule = async () => {
     try {
       const response = await axios.post(getApiUrl('/Remove/Schedule/From/Teacher/'), 
@@ -584,6 +591,12 @@ const Timetable = ({ user }) => {
           return updatedDetails; 
         });
 
+        setElementsMap(prevMap => {
+          const newMap = new Map(prevMap); 
+          newMap.set(createdSchedule.schedulesTimetablePosition, createdSchedule);
+          return newMap;
+        });
+
         setScheduleCreateSuccessful(true);
         setScheduleCreateMessage(response.data.scheduleData);
       } 
@@ -594,8 +607,6 @@ const Timetable = ({ user }) => {
         setLoading(false);
     }
   };
-
-  console.log(userDetails.teachersSchedule);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -813,12 +824,12 @@ const Timetable = ({ user }) => {
           </div>
           <div className='column-1fr'>
             <div className='draggable-container-super'>
-              <div className={`draggable-container ${userDetails.teacher.is_course_planning_closed  ? 'locked': ''}`} >
+              <div className={`draggable-container ${userDetails.teacher?.isCoursePlanningClosed  === true ? 'locked': ''}`} >
                     <div>
                       <h4 className="student-header-of-schedules">
                         <span>{userDetails.teacher?.teacherCode} оноогдсон хичээлүүд:</span>
                         <img
-                          src={` ${ alreadyHasSchedules === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
+                          src={` ${ userDetails.teacher?.isCoursePlanningClosed  === true  ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
                           alt="Lesson Selection Icon"
                           className="header-icon"
                         />
@@ -838,12 +849,12 @@ const Timetable = ({ user }) => {
               </div>
             </div>
             <div className='draggable-container-super'>
-              <div className={`draggable-container ${userDetails.teacher.is_course_planning_closed  ? 'locked': ''}`} >
+              <div className={`draggable-container ${userDetails.teacher?.isCoursePlanningClosed  === true  ? 'locked': ''}`} >
                     <div>
                       <h4 className="student-header-of-schedules">
-                        <span>{userDetails.teacher?.teacherCode} оноогдсон хичээлүүд:</span>
+                        <span>Хичээлээс хасалт хийх:</span>
                         <img
-                          src={` ${ alreadyHasSchedules === true ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
+                          src={` ${ userDetails.teacher?.isCoursePlanningClosed  === true  ? '/src/assets/schedulesLocked.png' : '/src/assets/schedulesOpen.png'} `}
                           alt="Lesson Selection Icon"
                           className="header-icon"
                         />

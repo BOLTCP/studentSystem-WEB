@@ -202,8 +202,35 @@ export const RenderSidebar = () => {
                   Хичээл сонголт, хуваарийн бодлого
                 </button>
               </li>
+              <li className="dropdown-item">
+                <button className={`dashboard-submenu-button ${selectedSubmenu === 0 ? 'active' : ''}`} 
+                        onClick={() => {
+                          setSelectedSubmenu(1);
+                          navigate('/course_management')
+                          }}>
+                  Хичээлийн удирдлага
+                </button>
+              </li>
             </ul>
           )}
+        </li>
+        <li className="sidebar-item">
+          <button onMouseEnter={() => showAttribution(
+                  "Material icons created by pictranoosa - Flaticon",
+                  " https://www.flaticon.com/free-icon/learning-material_17850624?term=course+materials&page=1&position=1&origin=search&related_id=17850624"
+                  )}      
+                  onMouseLeave={() => hideAttribution()}
+                  onClick={() => navigate('/course_management')} 
+                  className={`sidebar-link ${theme}`}>
+            <img src="/src/assets/learning-material.png"
+            //Icon source from 
+            //https://www.flaticon.com/free-icon/learning-material_17850624?term=course+materials&page=1&position=1&origin=search&related_id=17850624
+            //Material icons created by pictranoosa - Flaticon
+            alt="CourseMaterails"
+            className={`sidebar-list-icon ${theme}`}
+            /> 
+            Хичээлийн материал
+          </button>
         </li>
         <li className="sidebar-item">
           <button onMouseEnter={() => showAttribution(

@@ -224,9 +224,9 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
   shouldPopulateWholeData, studentsSchedule}) => {
 
   const availableSchedules = courseBeingDragged?.scheduleType === 'Лаборатори' ? 
-    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лаборатори' ? schedule : '')
+    (Array.from(teachersSchedule)).filter((schedule) => schedule !== null && schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лаборатори' ? schedule : '')
     :
-    (Array.from(teachersSchedule)).filter((schedule) => schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лекц' ? schedule : '');
+    (Array.from(teachersSchedule)).filter((schedule) => schedule !== null && schedule.courseId === courseBeingDragged?.courseId && schedule.scheduleType === 'Лекц' ? schedule : '');
   
   const availablePosition = courseBeingDragged?.scheduleType === 'Лаборатори' ? 
     Array.from(teachersScheduleCells).filter((schedule) => parseInt(schedule[1]) === availableSchedules[0]?.schedulesTimetablePosition)
@@ -377,10 +377,14 @@ const Timetable = ({ user }) => {
         }); 
 
         if (response.status === 200) {
+          console.log(response.data);
           studentsCourses = (response.data.studentsCourses)
             .map((course) => Courses.fromJsonCourse(course));
-          setTeachersSchedule(Array.from(response.data.teachersAvailableCourses)
-            .map((schedule) => TeachersSchedule.fromJsonTeachersSchedule(schedule)));
+          setTeachersSchedule(Array.from(response.data.teachersAvailableCourses).length > 0 
+            ?
+            Array.from(response.data.teachersAvailableCourses)
+              .map((schedule) => schedule === null ? null : TeachersSchedule.fromJsonTeachersSchedule(schedule))
+            : null);
         } else {
           console.log('Error fetching curriculum:', response.status, response.data);
           setError('Failed to fetch curriculum.');
@@ -402,6 +406,9 @@ const Timetable = ({ user }) => {
     const timeTablePositionsLecture = new Map();
     for (let i = 0; i < teachersSchedule.length; i++) {
 
+      if (teachersSchedule[i] === null) {
+        continue;
+      }
       if (teachersSchedule[i].scheduleType === 'Лаборатори') {
         const courseLaboratory = teachersSchedule[i];
         if (timeTablePositions.has(courseLaboratory.courseId)) {
@@ -695,7 +702,7 @@ const Timetable = ({ user }) => {
                               elementsMap={elementsMap}
                               interactiveSelection={interactiveSelection}
                               courseBeingDragged={courseBeingDragged}
-                              shouldPopulate={teachersSchedule.filter((schedule) => schedule.schedulesTimetablePosition === position)}
+                              shouldPopulate={teachersSchedule.filter((schedule) => schedule === null ? null : schedule.schedulesTimetablePosition === position)}
                               shouldPopulateWholeData={teachersSchedule}
                               studentsSchedule={userDetails.studentsSchedule}
                             />
@@ -723,11 +730,19 @@ const Timetable = ({ user }) => {
                     </div>
                     {Array.isArray(teachersSchedule) ? (
                       teachersSchedule.map((item, index) => (
+                        item !== null 
+                        ?
+                        (
                         <DraggableElements key={`${item.courseId || item.id}-${index}`} id={item.courseId || item.id} 
                           element={item} interactiveSelection={interactiveSelection} 
                           courseBeingDragged={courseBeingDragged} shouldPopulate={teachersSchedule}
                           studentsSchedule={userDetails.studentsSchedule} 
                         />
+                        )
+                        : 
+                        (
+                        null
+                        )
                       ))
                     ) : (
                       <div></div>

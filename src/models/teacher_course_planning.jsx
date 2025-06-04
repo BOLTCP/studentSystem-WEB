@@ -14,6 +14,7 @@ class TeacherCoursePlanning {
     departmentOfEduId,
     courseCode,
     teacherMajorId,
+    courseLength,
   }) {
     this.teacherCoursePlanningId = teacherCoursePlanningId;
     this.teacherId = teacherId;
@@ -27,6 +28,7 @@ class TeacherCoursePlanning {
     this.departmentOfEduId = departmentOfEduId;
     this.courseCode = courseCode;
     this.teacherMajorId = teacherMajorId;
+    this.courseLength = courseLength;
   }
 
   static fromJsonTeacherCoursePlanning(json) {
@@ -48,6 +50,7 @@ class TeacherCoursePlanning {
         departmentOfEduId: json.department_of_edu_id,
         courseCode: json.course_code,
         teacherMajorId: json.teacher_major_id,
+        courseLength: json.course_length,
       });
     } catch (error) {
       console.error('Error parsing TeacherCoursePlanning from JSON:', error);
@@ -73,6 +76,7 @@ class TeacherCoursePlanning {
       department_of_edu_id: instance.departmentOfEduId,
       course_code: instance.courseCode,
       teacher_major_id: instance.teacherMajorId,
+      course_length: instance.courseLength,
     };
   }
 
@@ -94,6 +98,7 @@ class TeacherCoursePlanning {
       departmentOfEduId: instance.departmentOfEduId,
       courseCode: instance.courseCode,
       teacherMajorId: instance.teacherMajorId,
+      courseLength: instance.courseLength,
     };
   }
 }

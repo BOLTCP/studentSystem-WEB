@@ -1696,6 +1696,7 @@ app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
         course_name: course.courseName,
         credit: course.totalCredits,
         course_code: course.courseCode,
+        course_length: 16,
 
         courses: {
           connect: {
@@ -1729,6 +1730,23 @@ app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
 
       },
     });
+
+    const createCourseManagement = await prisma.coursemanagement.create({
+      data: {
+        course_name: course.courseName,
+        course_length: addCourseToTeacher.course_length,
+        teacher_code: teacher.teacherCode,
+        teacher_id: teacher.teacherId,
+
+        teacherscourseplanning: {
+          connect: {
+            teacher_course_planning_id: addCourseToTeacher.teacher_course_planning_id
+          }
+        },
+
+      }
+    });
+
     if (addCourseToTeacher) {
       console.log('Багшид хичээлийг амжилттай нэмлээ.');
       return res.status(200).json({
@@ -1942,6 +1960,44 @@ app.post('/Remove/Schedule/From/Teacher/', async (req, res) => {
     console.log('Error: ', error);
     return res.status(500).json({
       message: 'Server Error'
+    });
+  }
+
+});
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Fetch/Teachers/CourseManagement/', async (req, res) => {
+  const { teacher, teachersCoursePlanning } = req.body;
+  console.log('/Fetch/Teachers/CourseManagement/: ', teacher.teacherCode, teachersCoursePlanning.length);
+
+  if (!teacher.teacherId) {
+    console.log('Хэрэглэгчийн мэдээлэл дутуу байна.');
+    return res.status(400).json({
+      message: 'Хэрэглэгчийн мэдээлэл дутуу байна. Bad Request'
+    });
+  }
+
+  try {
+    let courseManagements = [];
+
+    for (let i = 0; i < teachersCoursePlanning.length; i++){
+      const fetchCourseManagement = await prisma.coursemanagement.findMany({
+        where: { 
+          teacher_course_planning_id: teachersCoursePlanning[i].teacherCoursePlanningId,
+        }
+      });
+      courseManagements.push(fetchCourseManagement);
+    }
+
+    return res.status(200).json({
+      message: 'Багшийн хичээл удирдлагын мэдээллийг амжилттай татлаа.',
+      management: courseManagements,
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: `Server Error: ${error}`
     });
   }
 

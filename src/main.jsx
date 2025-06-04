@@ -16,6 +16,9 @@ import Majors from './component/teacher/university/majors';
 import TeachersCourses from './component/teacher/university/teachers_courses';
 import TeachersSelectedCourses from './component/teacher/university/teachers_selected_courses';
 
+//TEACHER ---> COURSEMANAGEMENT
+import CourseBuilder from './component/teacher/courseManagement/course_management';
+
 //src\component\university\university.jsx
 
 createRoot(document.getElementById('root')).render(
@@ -31,7 +34,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/department_of_university" element={<Department />} />
         <Route path="/majors" element={<Majors />} />
         <Route path="/teachers_courses" element={<TeachersCourses />} />
-        <Route path="/teachers_selected_courses" elemetn={<TeachersSelectedCourses />} />
+        <Route path="/teachers_selected_courses" element={<TeachersSelectedCourses />} />
+        <Route path="/course_management" element={<CourseBuilder />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

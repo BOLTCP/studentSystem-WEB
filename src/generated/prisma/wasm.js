@@ -258,24 +258,27 @@ exports.Prisma.CoursemanagementScalarFieldEnum = {
   teacher_course_planning_id: 'teacher_course_planning_id'
 };
 
+exports.Prisma.CourseweekScalarFieldEnum = {
+  course_week_id: 'course_week_id',
+  course_management_id: 'course_management_id',
+  week: 'week',
+  materials: 'materials',
+  activity_status: 'activity_status',
+  title: 'title',
+  description: 'description'
+};
+
 exports.Prisma.CoursematerialScalarFieldEnum = {
   course_material_id: 'course_material_id',
   course_id: 'course_id',
   week: 'week',
-  material_type: 'material_type',
-  material_name: 'material_name',
-  material_url: 'material_url',
   description: 'description',
-  is_submission_required: 'is_submission_required',
-  submission_url: 'submission_url',
-  points: 'points',
-  allowed_attempts: 'allowed_attempts',
-  due_date: 'due_date',
-  available_from: 'available_from',
-  available_until: 'available_until',
-  major_id: 'major_id',
   teacher_id: 'teacher_id',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  course_management_id: 'course_management_id',
+  course_week_id: 'course_week_id',
+  title: 'title',
+  file: 'file'
 };
 
 exports.Prisma.CoursesScalarFieldEnum = {
@@ -832,17 +835,6 @@ exports.tv_enum = exports.$Enums.tv_enum = {
   no: 'no'
 };
 
-exports.material_type_enum = exports.$Enums.material_type_enum = {
-  assignment: 'assignment',
-  discussion: 'discussion',
-  attendance_question: 'attendance_question',
-  lecture_material: 'lecture_material',
-  exam: 'exam',
-  exam_entry: 'exam_entry',
-  exam_exit: 'exam_exit',
-  exam_final: 'exam_final'
-};
-
 exports.course_type_enum = exports.$Enums.course_type_enum = {
   bachelors: 'bachelors',
   masters: 'masters',
@@ -1012,6 +1004,7 @@ exports.Prisma.ModelName = {
   clubmembers: 'clubmembers',
   contracts: 'contracts',
   coursemanagement: 'coursemanagement',
+  courseweek: 'courseweek',
   coursematerial: 'coursematerial',
   courses: 'courses',
   department: 'department',

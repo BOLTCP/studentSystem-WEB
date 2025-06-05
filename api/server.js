@@ -1747,6 +1747,15 @@ app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
       }
     });
 
+    for (let i = 0; i < addCourseToTeacher.course_length; i++) {
+      const createCourseWeek = await prisma.courseweek.create({
+        data: {
+          course_management_id: createCourseManagement.course_management_id,
+          week: i + 1,
+        }
+      });
+    }
+
     if (addCourseToTeacher) {
       console.log('Багшид хичээлийг амжилттай нэмлээ.');
       return res.status(200).json({
@@ -1966,7 +1975,7 @@ app.post('/Remove/Schedule/From/Teacher/', async (req, res) => {
 });
 
 //src/component/teacher/courseManagement/course_management.jsx
-app.post('/Fetch/Teachers/CourseManagement/', async (req, res) => {
+app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', async (req, res) => {
   const { teacher, teachersCoursePlanning } = req.body;
   console.log('/Fetch/Teachers/CourseManagement/: ', teacher.teacherCode, teachersCoursePlanning.length);
 
@@ -1989,9 +1998,36 @@ app.post('/Fetch/Teachers/CourseManagement/', async (req, res) => {
       courseManagements.push(fetchCourseManagement);
     }
 
+    let courseWeeks = [];
+    for (let i = 0; i < courseManagements.length; i++) {
+      const getCourseWeeks = await prisma.courseweek.findMany({
+        where: {
+          AND: {
+            course_management_id: courseManagements[i].course_management_id,
+            activity_status: true,
+          }
+        }
+      });
+      courseWeeks.push(getCourseWeeks);
+    }
+
+    let courseMaterials = [];
+    for (let i = 0; i < courseWeeks.length; i++) {
+      const getCourseMaterial = await prisma.coursematerial.findMany({
+        where: {
+          AND: {
+            week: courseWeeks[i].week,
+          }
+        }
+      });
+      courseMaterials.push(getCourseMaterial);
+    }
+
     return res.status(200).json({
       message: 'Багшийн хичээл удирдлагын мэдээллийг амжилттай татлаа.',
       management: courseManagements,
+      courseWeeks: courseWeeks,
+      courseMaterials: courseMaterials,
     });
 
   } catch (error) {

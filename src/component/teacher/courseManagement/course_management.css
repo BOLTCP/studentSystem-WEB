@@ -32,164 +32,171 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    width: 100%;
-    background-color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  width: 100%;
+  background-color: #f5f5f5;
 }
 
 .course-builder-layout {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-    min-height: 90vh; /* Adjust as needed */
-    max-height: 100vh;
-    overflow: hidden; /* Important: Prevents root-level scrolling from interfering */
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  min-height: 90vh; /* Adjust as needed */
+  max-height: 100vh;
+  overflow: hidden; /* Important: Prevents root-level scrolling from interfering */
 }
 
 /* --- Material Bank (Left Panel) --- */
 .material-bank {
-    flex: 0 0 280px; /* Fixed width for the material bank */
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    overflow: hidden; /* Ensure this doesn't create extra scroll */
+  flex: 0 0 280px; /* Fixed width for the material bank */
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden; /* Ensure this doesn't create extra scroll */
 }
 
 .material-bank h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 1.4em;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.4em;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
 }
 
 .material-bank-list {
-    flex-grow: 1;
-    overflow-y: auto; /* THIS IS THE SOLE VERTICAL SCROLL FOR AVAILABLE MATERIALS */
-    padding: 10px;
-    background-color: #fdfdfd;
-    border: 1px dashed #c4c4c4;
-    border-radius: 8px;
-    min-height: 250px; /* Ensure drop zone is visible */
+  flex-grow: 1;
+  overflow-y: auto; /* THIS IS THE SOLE VERTICAL SCROLL FOR AVAILABLE MATERIALS */
+  padding: 10px;
+  background-color: #fdfdfd;
+  border: 1px dashed #c4c4c4;
+  border-radius: 8px;
+  min-height: 250px; /* Ensure drop zone is visible */
 }
 
 /* --- Semester View (Right Panel) --- */
 .semester-view {
-    flex-grow: 1;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    background-color: #f8f8f8;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    overflow: hidden; /* Important: Prevents this from being a scroll parent */
+  flex-grow: 1;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #f8f8f8;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden; /* Important: Prevents this from being a scroll parent */
 }
 
 .semester-view h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 1.4em;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.4em;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
 }
 
 .weeks-horizontal-scroll {
-    display: flex;
-    /* THIS IS THE SOLE HORIZONTAL SCROLL FOR THE WEEK CARDS */
-    overflow-x: auto;
-    scroll-snap-type: x mandatory; /* For that 'snappy' feel */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    padding: 10px 0 20px; /* Top/bottom padding for visual clarity and scrollbar space */
-    gap: 30px; /* More space between week cards */
-    align-items: flex-start; /* Align cards to the top */
-    flex-grow: 1; /* Allow it to take up remaining height */
-    height: 100%; /* Important: Must have a defined height for horizontal overflow */
-    box-sizing: border-box; /* Include padding in height calculation */
+  display: flex;
+  /* THIS IS THE SOLE HORIZONTAL SCROLL FOR THE WEEK CARDS */
+  overflow-x: auto;
+  scroll-snap-type: x mandatory; /* For that 'snappy' feel */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  padding: 10px 0 20px; /* Top/bottom padding for visual clarity and scrollbar space */
+  gap: 30px; /* More space between week cards */
+  align-items: flex-start; /* Align cards to the top */
+  flex-grow: 1; /* Allow it to take up remaining height */
+  height: 100%; /* Important: Must have a defined height for horizontal overflow */
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .week-card {
-    flex: 0 0 calc(60% - 30px); /* Adjust to show partial next week */
-    min-width: 320px; /* Minimum width for readability */
-    background-color: #ffffff;
-    border: 1px solid #d0d0d0;
-    border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    padding: 20px;
-    scroll-snap-align: start; /* Snap each week to the start of the scroll area */
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Important: Week card takes full height of its horizontal scroll parent */
-    box-sizing: border-box; /* Include padding in height calculation */
-    overflow: hidden; /* CRITICAL: Prevents week-card itself from becoming a scroll parent */
+  flex: 0 0 calc(60% - 30px); /* Adjust to show partial next week */
+  min-width: 320px; /* Minimum width for readability */
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  padding: 20px;
+  scroll-snap-align: start; /* Snap each week to the start of the scroll area */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Important: Week card takes full height of its horizontal scroll parent */
+  box-sizing: border-box; /* Include padding in height calculation */
+  overflow: hidden; /* CRITICAL: Prevents week-card itself from becoming a scroll parent */
 }
 
 .week-card h4 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #444;
-    font-size: 1.1em;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #f5f5f5;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #444;
+  font-size: 1.1em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .week-materials-list {
-    flex-grow: 1;
-    border: 1px dashed #a8a8a8;
-    background-color: #fafafa;
-    padding: 12px;
-    min-height: 180px; /* Ensure drop zone is visible */
-    /* THIS IS THE SOLE VERTICAL SCROLL FOR MATERIALS WITHIN A WEEK */
-    overflow-y: auto;
-    border-radius: 6px;
-    overflow-x: hidden; /* Explicitly hide horizontal overflow */
+  flex-grow: 1;
+  border: 1px dashed #a8a8a8;
+  background-color: #fafafa;
+  padding: 12px;
+  min-height: 180px; /* Ensure drop zone is visible */
+  /* THIS IS THE SOLE VERTICAL SCROLL FOR MATERIALS WITHIN A WEEK */
+  overflow-y: auto;
+  border-radius: 6px;
+  overflow-x: hidden; /* Explicitly hide horizontal overflow */
 }
 
 /* --- Draggable Item Styles --- */
 .material-item, .material-item-in-week {
-    padding: 12px 18px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    cursor: grab;
-    font-size: 0.95em;
-    color: #333;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  cursor: grab;
+  font-size: 0.95em;
+  color: #333;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .material-item {
-    background-color: #eaf6ff; /* Light blue for bank items */
-    border: 1px solid #b3d9ff;
+  background-color: #eaf6ff; /* Light blue for bank items */
+  border: 1px solid #b3d9ff;
 }
 
 .material-item-in-week {
-    background-color: #e6ffed; /* Light green for week items */
-    border: 1px solid #8ce3a0;
+  background-color: #e6ffed; /* Light green for week items */
+  border: 1px solid #8ce3a0;
 }
 
 .material-item:hover, .material-item-in-week:hover {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .material-item.is-dragging, .material-item-in-week.is-dragging {
-    background-color: #ffe0b3; /* Visual feedback when dragging */
-    border-color: #ffcc80;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-    transform: rotate(2deg); /* A little tilt for fun */
+  background-color: #ffe0b3; /* Visual feedback when dragging */
+  border-color: #ffcc80;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+  transform: rotate(2deg); /* A little tilt for fun */
 }
 
 .placeholder {
-    color: #888;
-    text-align: center;
-    padding: 20px;
-    font-style: italic;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+.course-week-title-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+  align-items: center;
 }

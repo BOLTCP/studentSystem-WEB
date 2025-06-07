@@ -16,6 +16,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
   const [todaysSchedule, setTodaysSchedule] = useState([]);
+  const [lastSchedule, setLastSchedule] = useState(0);
   const [hasSchedulesToday, setHasSchedulesToday] = useState(false);
   const [time, setTime] = useState(new Date());
   const navigate = useNavigate();
@@ -51,13 +52,14 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
             : new Date().getDay() === 5 ? 'Friday'
             : new Date().getDay() === 6 ? 'Saturday'
             : 'Sunday';
-          console.log('Оюутны хичээлийн хуваарийг амжилттай татлаа.');
+          console.log('Багшийн хичээлийн хуваарийг амжилттай татлаа.');
           const schedules = Array.from(response.data.teachersSchedule)
             .filter((schedule) => schedule[1].days === today);
-          console.log(schedules);
           const teachersSchedule = Array.from(schedules)
             .map((schedule) => TeachersSchedule.fromJsonTeachersSchedule(schedule[1]));
           setTodaysSchedule(teachersSchedule);
+          setLastSchedule(teachersSchedule[teachersSchedule.length - 1]);
+
         } else if (response.status === 400) {
           setTodaysSchedule(null);
         }
@@ -95,7 +97,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
     const schedulesPeriod = periodsOfSchedules[parseInt(schedule.time.slice(0, 1))];
     const currentTime = `${new Date(time).getHours() < 10 ? `0${new Date(time).getHours()}` : new Date(time).getHours()}${new Date(time).getMinutes() < 10 ? `0${new Date(time).getMinutes()}` : new Date(time).getMinutes()}`;
 
-    if ( parseInt(schedulesPeriod) > parseInt(currentTime) ) {
+    if ( parseInt(schedulesPeriod) < parseInt(currentTime) ) {
       return (
         <div className="to-do-container" key={schedule.teachersScheduleId}>
           <div className="to-do-list-bullets"></div>
@@ -114,7 +116,6 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   };
 
   const classroomLocation = () => {
-
     return (
       <button onMouseEnter={() => showAttribution(
         "Location icons created by Freepik - Flaticon",
@@ -220,36 +221,30 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
               Багшийн өнөөдрийн &nbsp; хуваарь
             </div>
 
-            {todaysSchedule.length > 0 ? (
-              todaysSchedule.map((schedule) => 
-                  todaysScheduleCourses((schedule))
-              )
-            ) : (
-              <div className='no-schedule-for-today-assignments'>Багшид өнөөдөр хуваарь байхгүй байна.</div>
-            )}
-
-            {/*
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            <div className="today-schedule-container">
-              <div>{classroomLocation()}</div>
-              <div className="today-schedule-item">Хичээл орох ангийн байршиал</div>
-            </div>
-            */}
+            {lastSchedule && periodsOfSchedules[parseInt(lastSchedule.time?.slice(0, 1))] >
+              `
+              ${
+                new Date(time).getHours() < 10 
+                ? 
+                `0${new Date(time).getHours()}` 
+                : 
+                new Date(time).getHours()}${new Date(time).getMinutes() < 10 
+                ? `0${new Date(time).getMinutes()}` 
+                : new Date(time).getMinutes()
+              }
+              `
+              ? <div style={{
+                      textAlign: 'center',
+                      marginTop: '18px',
+                    }}>
+                  Багшийн өнөөдрийн хуваарь дууссан байна.
+                </div>
+              : todaysSchedule.length > 0 ? (
+                todaysSchedule.map((schedule) => 
+                    todaysScheduleCourses((schedule))
+                ))
+              : <div className='no-schedule-for-today-assignments'>Багшид өнөөдөр хуваарь байхгүй байна.</div>
+            }
 
           </div>
         </li>

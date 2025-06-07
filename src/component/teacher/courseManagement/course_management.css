@@ -220,6 +220,18 @@ body {
 }
 
 .description-edit {
-  height: 150px;
+  height: 100px;
   width: 300px;
+}
+
+.week-description {
+  min-width: 80px;
+  max-width: 450px !important;
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+}
+
+.material-type-select {
+  font-size: 18px;
+  margin-bottom: 15px;
 }

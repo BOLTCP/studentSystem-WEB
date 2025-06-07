@@ -26,7 +26,7 @@ const DraggableElements = ({ element, id, interactiveSelection, courseBeingDragg
     .some(schedule => schedule.teachersScheduleId === element.teachersScheduleId);
 
   const showSchedulesData = Array.from(shouldPopulate)
-    .filter((schedule) => schedule.schedulesTimetablePosition === position)[0];
+    .filter((schedule) => schedule?.schedulesTimetablePosition === position)[0];
 
   const isLecture = element.scheduleType;
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -207,9 +207,9 @@ const getCellStyle = (cellKey, teachersScheduleCellsORLecture, courseBeingDragge
         };
       } else {
         popUpStyle = {
-          backgroundColor: 'green',
+          backgroundColor: `${courseBeingDragged.scheduleType === 'Лаборатори' ? 'green' : 'yellow'}`,
           border: '1px solid green',
-          color: 'white',
+          color: `${courseBeingDragged.scheduleType === 'Лаборатори' ? 'white' : 'black'}`,
           fontSize: '14px',
           overflow: 'auto',     
         };
@@ -468,10 +468,10 @@ const Timetable = ({ user }) => {
       .map((schedule) => schedule.schedulesTimetablePosition));
     */
     const isMultiplePositionsValid = Array.from(teachersSchedule)
-      .filter((schedule) => schedule.scheduleType === element.scheduleType && schedule.courseId === element.courseId)
+      .filter((schedule) => schedule?.scheduleType === element.scheduleType && schedule.courseId === element.courseId)
       .map((schedule) => schedule.schedulesTimetablePosition);
     const isPositionValid = Array.from(teachersSchedule)
-      .filter((schedule) => schedule.schedulesTimetablePosition === position)[0]
+      .filter((schedule) => schedule?.schedulesTimetablePosition === position)[0]
       ?.teachersScheduleId === element.teachersScheduleId || 
       Array.from(teachersSchedule)
       .filter((schedule) => schedule.schedulesTimetablePosition === position)[0]

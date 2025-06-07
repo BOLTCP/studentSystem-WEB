@@ -1311,9 +1311,10 @@ app.post('/Get/Teachers/Made/Schedule/', async (req, res) => {
     let schedulesOntoTimetable = new Map();
     const teachersSchedule = await prisma.teachersschedule.findMany({
       where: { teacher_id:  teacher.teacherId },
-      orderBy: {
-        classroom_type: 'asc',
-      },
+      orderBy: [
+        { classroom_type: 'asc' },
+        { time: 'asc' },
+      ],
     });
 
     if (teachersSchedule.length > 0) {

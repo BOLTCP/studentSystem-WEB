@@ -200,3 +200,26 @@ body {
   justify-content: space-between; 
   align-items: center;
 }
+
+.course-week-description-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.course-week-description {
+  width: auto;
+  height: auto;
+}
+
+.buttons-title-description {
+  display: flex;
+  grid-template-columns: auto;
+  gap: 2rem;
+}
+
+.description-edit {
+  height: 150px;
+  width: 300px;
+}

@@ -2005,7 +2005,10 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
           AND: {
             course_management_id: courseManagements[i].course_management_id,
             activity_status: true,
-          }
+          },
+        },
+        orderBy: {
+          week: 'asc',
         }
       });
       courseWeeks.push(getCourseWeeks);
@@ -2035,6 +2038,34 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
     return res.status(500).json({
       message: `Server Error: ${error}`
     });
+  }
+
+});
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Save/Teachers/Edited/CourseWeek/', async (req, res) => {
+  const { editWeek, teacher } = req.body;
+  console.log('/Save/Teachers/Edited/CourseWeek/: ', editWeek, teacher);
+
+  if (!editWeek || !teacher) {
+    return res.status(400).send();
+  }
+  try {
+    const { course_week_id, ...updateWeekData } = editWeek
+    const saveUpdatedWeek = await prisma.courseweek.update({
+      where: {
+        course_week_id: editWeek.course_week_id,
+      },
+      data: updateWeekData,
+    });
+
+    if (saveUpdatedWeek) {
+      console.log('Долоо хоног амжилттай хадгалагдлаа.');
+      return res.status(200).send();
+    }
+
+  } catch (error) {
+    console.error('Error: ', error);
   }
 
 });

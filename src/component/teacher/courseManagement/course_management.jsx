@@ -10,6 +10,7 @@ import CourseMaterial from '../../../models/course_material';
 import getUserDetailsFromLocalStorage from '../../../utils/userDetailsTeacher_util';
 import { RenderSidebar, RenderSidebarRight } from '../../teacher/university/teacher_university_sidebar';
 import './course_management.css'; 
+import e from 'cors';
 
 // --- Initial Data ---
 const availableMaterialsData = [
@@ -41,7 +42,9 @@ export const CourseBuilder = () => {
   const [courseWeeks, setCourseWeeks] = useState([]);
   const [courseMaterials, setCourseMaterials] = useState([]);
   const [editWeekTitle, setEditWeekTitle] = useState(null);
-  const [titleEdited, setTitleEdited] = useState(false);
+  const [editWeekDescription, setEditWeekDescription] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState('');
+  const [currentDescription, setCurrentDescription] = useState('');
   const [availableMaterials, setAvailableMaterials] = useState(availableMaterialsData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(userDetails.teacher ? null : 'Хэрэглэгчийн мэдээлэл олдсонгүй.');
@@ -85,9 +88,7 @@ export const CourseBuilder = () => {
       setLoading(false);
     };
     fetchCourseManagement();
-  }, [titleEdited]);
-
-  console.log(courseWeeks, courseManagement, courseMaterials);
+  }, []);
 
   const onDragEnd = (result) => {
     const { source, destination, draggableId } = result;
@@ -163,8 +164,73 @@ export const CourseBuilder = () => {
     }
   }
 
-  const handleTitleChange = (e) => {
-    console.log(e);
+  const saveEditedTitle = async (week) => {
+    try {
+    const editWeek = { ...week, title: currentTitle };
+    const response = await axios.post(getApiUrl('/Save/Teachers/Edited/CourseWeek/'),
+      {
+        editWeek: CourseWeek.toJson(editWeek),
+        teacher: userDetails.teacher,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      });
+
+      if (response.status === 200) {
+        console.log('herer');
+        let tempTitle;
+        setCourseWeeks(prevWeeks => {
+          const updatedWeeks = prevWeeks.map((cweek) => {
+            if (cweek.courseWeekId === week.courseWeekId) {
+              let editWeek = { ...cweek };  
+              editWeek.title = currentTitle ? currentTitle : editWeek.title;
+              tempTitle = editWeek.title;
+              return new CourseWeek(editWeek);
+            } else return cweek;
+          });
+          return updatedWeeks;
+        });
+        setEditWeekTitle(false);
+        setCurrentTitle(tempTitle);
+      } 
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  }
+
+  const saveEditedDescription = async (week) => {
+    try {
+    const editWeek = { ...week, description: currentDescription };
+    const response = await axios.post(getApiUrl('/Save/Teachers/Edited/CourseWeek/'),
+      {
+        editWeek: CourseWeek.toJson(editWeek),
+        teacher: userDetails.teacher,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      });
+
+      if (response.status === 200) {
+        let tempDesc;
+        setCourseWeeks(prevWeeks => {
+          const updatedWeeks = prevWeeks.map((cweek) => {
+            if (cweek.courseWeekId === week.courseWeekId) {
+              let editWeek = { ...cweek };  
+              editWeek.description = currentDescription ? currentDescription : editWeek.description;
+              tempDesc = editWeek.description;
+              return new CourseWeek(editWeek);
+            } else return cweek;
+          });
+          return updatedWeeks;
+        });
+        setEditWeekDescription(false);
+        setCurrentDescription(tempDesc);
+      } 
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   }
 
   return (
@@ -201,69 +267,37 @@ export const CourseBuilder = () => {
                   <div className="weeks-horizontal-scroll"> 
                       {Array.from(courseWeeks).map((week) => (
                           <div key={week.courseWeekId} className="week-card">
-                              <h4>{week.title && week.title}</h4>
-                              {editWeekTitle && editWeekTitle.courseWeekId !== week.courseWeekId &&
-                                <div className='course-week-title-container'>
-                                <h4>{!week.title && `${week.week} - р долоо хоног`}</h4>
-                                  <img src="/src/assets/edit.png"
-                                    onMouseEnter={() => showAttribution(
-                                          "Edit icons created by Kiranshastry - Flaticon",
-                                          " https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633"
-                                          )}
-                                    onMouseLeave={() => hideAttribution()}
-                                    onClick={() => setEditWeekTitle(week)} 
-                                    //Icon source from 
-                                    //https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633
-                                    //Edit icons created by Kiranshastry - Flaticon
-                                    style={{ width: '30px',
-                                             height: '30px',
-                                             marginBottom: '20px',
-                                          }}
-                                    alt="Edit"
-                                  /> 
-                                </div>
-                              }
-                              {!editWeekTitle &&
-                                <div className='course-week-title-container'>
-                                <h4>{!week.title && `${week.week} - р долоо хоног`}</h4>
-                                  <img src="/src/assets/edit.png"
-                                    onMouseEnter={() => showAttribution(
-                                          "Edit icons created by Kiranshastry - Flaticon",
-                                          " https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633"
-                                          )}
-                                    onMouseLeave={() => hideAttribution()}
-                                    onClick={() => setEditWeekTitle(week)} 
-                                    //Icon source from 
-                                    //https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633
-                                    //Edit icons created by Kiranshastry - Flaticon
-                                    style={{ width: '30px',
-                                             height: '30px',
-                                             marginBottom: '20px',
-                                          }}
-                                    alt="Edit"
-                                  /> 
-                                </div>
-                              }
-                              {editWeekTitle && editWeekTitle.courseWeekId === week.courseWeekId &&
-                                <div className='course-week-title-container'>
-                                <input
-                                  type="text"
-                                  style={{ 
-                                          fontSize: '1.25rem', 
-                                          marginBottom: '16px',
-                                          width: '350px',
-                                        }}
-                                  value={week.title}
-                                  onChange={(e) => handleTitleChange(week.id, e.target.value)} // You'll define handleTitleChange
-                                  placeholder="Хичээлийн долоо хоногийн нэрийг оруулна уу." // Placeholder for when title is empty
-                                />
-                                  <img src="/src/assets/save.png"
+                            
+                            <div className='course-week-title-container'>
+                              <div style={{
+                                    fontWeight: 'bold',
+                                   }}>
+                                  {editWeekTitle && editWeekTitle.courseWeekId === week.courseWeekId ?
+                                  (<input
+                                      type="text"
+                                      style={{ 
+                                              fontSize: '16px', 
+                                            }}
+                                      value={currentTitle}
+                                      onChange={(e) => setCurrentTitle(e.target.value)} 
+                                      placeholder="Долоо хоногийн нэр" 
+                                    /> 
+                                    )
+                                    :
+                                    (
+                                      !week.title ? (`${week.week} - р долоо хоног`) : (week.title)
+                                    )
+                                  }
+                              </div>
+                              <div className='buttons-title-description'>
+                                {editWeekTitle && editWeekTitle.courseWeekId === week.courseWeekId &&
+                                    <img src="/src/assets/save.png"
                                     onMouseEnter={() => showAttribution(
                                           "Save icons created by Yogi Aprelliyanto - Flaticon",
                                           " https://www.flaticon.com/free-icon/diskette_2874091?term=save&page=1&position=5&origin=search&related_id=2874091"
                                           )}
                                     onMouseLeave={() => hideAttribution()}
-                                    onClick={() => setEditWeekTitle(week)} 
+                                    onClick={() => {saveEditedTitle(week)}} 
                                     //Icon source from 
                                     //https://www.flaticon.com/free-icon/diskette_2874091?term=save&page=1&position=5&origin=search&related_id=2874091
                                     //Save icons created by Yogi Aprelliyanto - Flaticon
@@ -273,51 +307,111 @@ export const CourseBuilder = () => {
                                           }}
                                     alt="Edit"
                                   /> 
-                                  <img src="/src/assets/edit.png"
-                                    onMouseEnter={() => showAttribution(
-                                          "Edit icons created by Kiranshastry - Flaticon",
-                                          " https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633"
-                                          )}
-                                    onMouseLeave={() => hideAttribution()}
-                                    onClick={() => handleWeekTitleEdit(week)} 
-                                    //Icon source from 
-                                    //https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633
-                                    //Edit icons created by Kiranshastry - Flaticon
-                                    style={{ width: '30px',
-                                             height: '30px',
-                                             marginBottom: '20px',
-                                          }}
-                                    alt="Edit"
+                                }
+                                <img src="/src/assets/edit.png"
+                                  onMouseEnter={() => showAttribution(
+                                        "Edit icons created by Kiranshastry - Flaticon",
+                                        " https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633"
+                                        )}
+                                  onMouseLeave={() => hideAttribution()}
+                                  onClick={() => setEditWeekTitle(week)} 
+                                  //Icon source from 
+                                  //https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633
+                                  //Edit icons created by Kiranshastry - Flaticon
+                                  style={{ width: '30px',
+                                            height: '30px',
+                                            marginBottom: '20px',
+                                        }}
+                                  alt="Edit"
+                                /> 
+                              </div>
+                            </div>
+                            {/* DESCRIPTION */}
+                            <div className='course-week-description-container'>
+                              <div>
+                                  {editWeekDescription && editWeekDescription.courseWeekId === week.courseWeekId ?
+                                  (<textarea
+                                      className='description-edit'
+                                      type="text"
+                                      style={{ 
+                                              fontSize: '16px', 
+                                            }}
+                                      value={currentDescription}
+                                      onChange={(e) => setCurrentDescription(e.target.value)} 
+                                      placeholder="Долоо хоногийн тайлбар" 
+                                    /> 
+                                    )
+                                    :
+                                    (
+                                      !week.description ? (`Тайлбар`) : (week.description)
+                                    )
+                                  }
+                              </div>
+                              <div className='buttons-title-description'>
+                                {editWeekDescription && editWeekDescription.courseWeekId === week.courseWeekId &&
+                                  <img src="/src/assets/save.png"
+                                  onMouseEnter={() => showAttribution(
+                                        "Save icons created by Yogi Aprelliyanto - Flaticon",
+                                        " https://www.flaticon.com/free-icon/diskette_2874091?term=save&page=1&position=5&origin=search&related_id=2874091"
+                                        )}
+                                  onMouseLeave={() => hideAttribution()}
+                                  onClick={() => {saveEditedDescription(week)}} 
+                                  //Icon source from 
+                                  //https://www.flaticon.com/free-icon/diskette_2874091?term=save&page=1&position=5&origin=search&related_id=2874091
+                                  //Save icons created by Yogi Aprelliyanto - Flaticon
+                                  style={{ width: '30px',
+                                          height: '30px',
+                                          marginBottom: '20px',
+                                        }}
+                                  alt="Edit"
                                   /> 
-                                </div>
-                              }
-                                <Droppable droppableId={`${week.courseWeekId}`} direction="vertical">
-                                    {(provided) => (
-                                        <div
-                                          ref={provided.innerRef}
-                                          {...provided.droppableProps}
-                                          className="week-materials-list"
-                                        >
-                                          {week.materials === null && (
-                                            <p className="placeholder">Сургалтын материалын элементүүдийг зөөж байршуулна уу.</p>
-                                          )}
-                                          {week.materials && week.materials.map((material, index) => (
-                                            <Draggable key={material.id} draggableId={material.id} index={index}>
-                                                {(provided) => (
-                                                  <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    className="material-item-in-week"
-                                                  >
-                                                    {material.title}
-                                                  </div>
-                                                  )}
-                                              </Draggable>
-                                          ))}
-                                          {provided.placeholder}
-                                      </div>
-                                  )}
+                                }
+                                <img src="/src/assets/edit.png"
+                                  onMouseEnter={() => showAttribution(
+                                        "Edit icons created by Kiranshastry - Flaticon",
+                                        " https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633"
+                                        )}
+                                  onMouseLeave={() => hideAttribution()}
+                                  onClick={() => setEditWeekDescription(week)} 
+                                  //Icon source from 
+                                  //https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&origin=search&related_id=1159633
+                                  //Edit icons created by Kiranshastry - Flaticon
+                                  style={{ width: '30px',
+                                            height: '30px',
+                                            marginBottom: '20px',
+                                        }}
+                                  alt="Edit"
+                                /> 
+                              </div>
+                              
+                            </div>
+                              <Droppable droppableId={`${week.courseWeekId}`} direction="vertical">
+                                  {(provided) => (
+                                      <div
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                        className="week-materials-list"
+                                      >
+                                        {week.materials === null && (
+                                          <p className="placeholder">Сургалтын материалын элементүүдийг зөөж байршуулна уу.</p>
+                                        )}
+                                        {week.materials && week.materials.map((material, index) => (
+                                          <Draggable key={material.id} draggableId={material.id} index={index}>
+                                              {(provided) => (
+                                                <div
+                                                  ref={provided.innerRef}
+                                                  {...provided.draggableProps}
+                                                  {...provided.dragHandleProps}
+                                                  className="material-item-in-week"
+                                                >
+                                                  {material.title}
+                                                </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
                               </Droppable>
                           </div>
                       ))}

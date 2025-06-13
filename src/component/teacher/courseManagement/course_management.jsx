@@ -33,6 +33,8 @@ export const CourseBuilder = () => {
   const [courseManagement, setCourseManagement] = useState([]);
   const [courseWeeks, setCourseWeeks] = useState([]);
   const [courseMaterials, setCourseMaterials] = useState([]);
+  const [showMatTitlePropmt, setShowMatTitlePrompt] = useState(false);
+  const [matToCreate, setMatToCreate] = useState(null);
   const [editWeekTitle, setEditWeekTitle] = useState(null);
   const [editWeekDescription, setEditWeekDescription] = useState(null);
   const [currentTitle, setCurrentTitle] = useState('');
@@ -83,15 +85,28 @@ export const CourseBuilder = () => {
     fetchCourseManagement();
   }, []);
 
-  const onDragEnd = (result) => {
-    const { source, destination, draggableId } = result;
-    console.log(source);
-    console.log(destination);
-    console.log(draggableId);
-    if (!destination) {
-      return;
+  const createMaterialForCourseWeek = async () => {
+
+    try {
+      const response = await axios.post(getApiUrl('/Create/CourseMaterial/For/Course/Week/'),
+        {
+          courseManagement: courseManagement,
+          matToCreate: matToCreate,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000,
+        });
+
+        if (response.status === 200) {
+          console.log(response.data);
+        }
+
+    } catch (error) {
+      console.error(error);
     }
 
+    /*
     setCourseWeeks(prevWeeks => {
       const updatedWeeks = prevWeeks.map((cweek) => {
         if (cweek.courseWeekId === parseInt(destination.droppableId)) {
@@ -102,59 +117,24 @@ export const CourseBuilder = () => {
       });
       return updatedWeeks;
     });
-    
-    
-    /*
-    if (source.droppableId === destination.droppableId) {
-      const isWeek = source.droppableId.startsWith('week-');
-      const list = isWeek ? courseWeeks[source.droppableId].materials : availableMaterials;
-      const setList = isWeek ? (newMaterials) => {
-        setCourseWeeks(prev => ({
-          ...prev,
-          [source.droppableId]: { ...prev[source.droppableId], materials: newMaterials }
-        }));
-      } : setAvailableMaterials;
-
-      const newItems = Array.from(list);
-      const [movedItem] = newItems.splice(source.index, 1);
-      newItems.splice(destination.index, 0, movedItem);
-      setList(newItems);
-    }
-
-    else if (source.droppableId === 'available-materials' && destination.droppableId.startsWith('week-')) {
-      const destWeekId = destination.droppableId;
-      const destWeek = courseWeeks[destWeekId];
-      const materialToAdd = availableMaterials.find(mat => mat.id === draggableId);
-
-      if (materialToAdd) {
-        const newWeekMaterials = Array.from(destWeek.materials);
-        const newMaterialInstance = { ...materialToAdd, id: `${materialToAdd.id}-${Date.now()}` };
-        newWeekMaterials.splice(destination.index, 0, newMaterialInstance);
-
-        setCourseWeeks(prev => ({
-          ...prev,
-          [destWeekId]: { ...prev[destWeekId], materials: newWeekMaterials },
-        }));
-      }
-    }
-    else if (source.droppableId.startsWith('week-') && destination.droppableId.startsWith('week-')) {
-      const sourceWeek = courseWeeks[source.droppableId];
-      const destinationWeek = courseWeeks[destination.droppableId];
-
-      const newSourceMaterials = Array.from(sourceWeek.materials);
-      const [itemToMove] = newSourceMaterials.splice(source.index, 1);
-
-      const newDestinationMaterials = Array.from(destinationWeek.materials);
-      newDestinationMaterials.splice(destination.index, 0, itemToMove);
-
-      setCourseWeeks(prev => ({
-        ...prev,
-        [source.droppableId]: { ...sourceWeek, materials: newSourceMaterials },
-        [destination.droppableId]: { ...destinationWeek, materials: newDestinationMaterials },
-      }));
-    }
     */
   };
+
+  const materialNamePropmt = (result) => {
+    return (
+      <>
+        <div>
+          Хичээлийн материалд нэр өгнө үү.
+          <input
+                 type='text'
+                 placeholder='Материалын нэр.'
+          >
+          </input>
+        </div>
+      </>
+    );
+    onDragEnd(result)
+  }
 
   const showAttribution = (attributionComment, attrLink) => {
     const el = document.getElementById("hover-attribution");
@@ -267,8 +247,49 @@ export const CourseBuilder = () => {
                                 verticalAlign: 'center',
                               }}>{error}</div>} 
         {!error && 
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext onDragEnd={(e) => {
+            const { source, destination, draggableId } = e;
+            if (!destination) {
+              return;
+            } else {
+              setShowMatTitlePrompt(true), setMatToCreate((availableMaterials.filter((mat) => mat.id === e.draggableId)[0]))
+            }
+          }}
+        >
             <div className="course-builder-layout">
+
+              {showMatTitlePropmt &&
+                <div className={`material-add-overlay ${showMatTitlePropmt === true ? 'visible' : null}`}>
+                  <div className="add-modal">
+                    <div>
+                      Материалын нэр:
+                    </div>
+                    &nbsp;
+                    <div>
+                      <textarea 
+                        style={{
+                          width: '300px',
+                          height: '2.25rem',
+                          fontSize: '1rem',
+                        }}
+                        type='text'
+                        onChange={(e) => {
+                        setMatToCreate(prev => {
+                          const updatedMat = { ...prev, title: e.target.value };
+                          return updatedMat;
+                        })}
+                        }
+                      >
+                      </textarea>
+                    </div>
+                    <div className='button-group'>
+                      <button onClick={() => {setShowMatTitlePrompt(false)}}>Буцах</button>
+                      <button onClick={() => {createMaterialForCourseWeek()}}
+                              style={{ color: 'white', backgroundColor: '#14b82e'}}>Хадгалах</button>
+                    </div>
+                  </div>
+                </div>
+              }
 
               <div className="semester-view">
                   <h3>Хичээлийн долоо хоногууд</h3>

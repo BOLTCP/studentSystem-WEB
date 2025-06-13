@@ -178,6 +178,7 @@ model coursemanagement {
   teacher_code                  String      @db.Char(8)
   created_at                    DateTime?   @default(now()) @db.Timestamp(6)
   teacher_course_planning_id    Int
+  course_id                     Int
   teacherscourseplanning        teacherscourseplanning  @relation(fields: [teacher_course_planning_id], references: [teacher_course_planning_id], onDelete: NoAction, onUpdate: NoAction, map: "teachers_course_planning_fkey")
   courseweek                    courseweek[]
   coursematerial                coursematerial[]
@@ -206,6 +207,7 @@ model coursematerial {
   course_week_id         Int
   title                  String?
   file                   String?
+  course_mat_type        course_mat_type
   courses                courses                @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_course")
   teacher                teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
   coursemanagement       coursemanagement       @relation(fields: [course_management_id], references: [course_management_id], onDelete: Cascade, onUpdate: Cascade, map: "course_management_fkey")
@@ -874,6 +876,16 @@ enum calendar_purpose_enum {
   important
   statement
   notification
+}
+
+enum course_mat_type {
+  Lecture
+  Laboratory
+  Seminar
+  Quiz
+  Final
+  SemiFinal
+  SemiFinal1
 }
 
 enum classroom_type_enum {

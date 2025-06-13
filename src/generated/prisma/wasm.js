@@ -255,7 +255,8 @@ exports.Prisma.CoursemanagementScalarFieldEnum = {
   teacher_id: 'teacher_id',
   teacher_code: 'teacher_code',
   created_at: 'created_at',
-  teacher_course_planning_id: 'teacher_course_planning_id'
+  teacher_course_planning_id: 'teacher_course_planning_id',
+  course_id: 'course_id'
 };
 
 exports.Prisma.CourseweekScalarFieldEnum = {
@@ -278,7 +279,8 @@ exports.Prisma.CoursematerialScalarFieldEnum = {
   course_management_id: 'course_management_id',
   course_week_id: 'course_week_id',
   title: 'title',
-  file: 'file'
+  file: 'file',
+  course_mat_type: 'course_mat_type'
 };
 
 exports.Prisma.CoursesScalarFieldEnum = {
@@ -833,6 +835,16 @@ exports.projector_enum = exports.$Enums.projector_enum = {
 exports.tv_enum = exports.$Enums.tv_enum = {
   yes: 'yes',
   no: 'no'
+};
+
+exports.course_mat_type = exports.$Enums.course_mat_type = {
+  Lecture: 'Lecture',
+  Laboratory: 'Laboratory',
+  Seminar: 'Seminar',
+  Quiz: 'Quiz',
+  Final: 'Final',
+  SemiFinal: 'SemiFinal',
+  SemiFinal1: 'SemiFinal1'
 };
 
 exports.course_type_enum = exports.$Enums.course_type_enum = {

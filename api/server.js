@@ -1738,6 +1738,7 @@ app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
         course_length: addCourseToTeacher.course_length,
         teacher_code: teacher.teacherCode,
         teacher_id: teacher.teacherId,
+        course_id: course.courseId,
 
         teacherscourseplanning: {
           connect: {
@@ -1753,6 +1754,7 @@ app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
         data: {
           course_management_id: createCourseManagement.course_management_id,
           week: i + 1,
+          activity_status: true,
         }
       });
     }
@@ -2027,6 +2029,8 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
       courseMaterials.push(getCourseMaterial);
     }
 
+    
+
     return res.status(200).json({
       message: 'Багшийн хичээл удирдлагын мэдээллийг амжилттай татлаа.',
       management: courseManagements,
@@ -2041,6 +2045,21 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
     });
   }
 
+});
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
+  const { matToCreate, courseManagement } = req.body;
+  console.log('/Create/CourseMaterial/For/Course/Week/: ', matToCreate, courseManagement);
+
+  try {
+
+
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send();
+  }
 });
 
 //src/component/teacher/courseManagement/course_management.jsx

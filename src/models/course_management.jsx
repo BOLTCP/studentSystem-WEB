@@ -10,6 +10,7 @@ class CourseManagement{
     teacherCode,
     createdAt,
     teacherCoursePlanningId,
+    courseId,
   }) {
     this.courseManagementId = courseManagementId;
     this.courseName = courseName;
@@ -19,6 +20,7 @@ class CourseManagement{
     this.teacherCode = teacherCode;
     this.createdAt = createdAt;
     this.teacherCoursePlanningId = teacherCoursePlanningId;
+    this.courseId = courseId;
   }
 
   static fromJsonCourseManagement(json) {
@@ -32,6 +34,7 @@ class CourseManagement{
         teacherCode: json.teacher_code,
         createdAt: json.created_at,
         teacherCoursePlanningId: json.teacher_course_planning_id,
+        courseId: json.course_id,
       });
     } catch (error) {
       console.error('Error parsing CourseManagement from JSON:', error);
@@ -49,6 +52,7 @@ class CourseManagement{
       teacher_code: CourseManagement.teacherCode,
       created_at: CourseManagement.createdAt,
       teacher_course_planning_id: CourseManagement.teacherCoursePlanningId,
+      course_id: CourseManagement.course_id,
     };
   }
 

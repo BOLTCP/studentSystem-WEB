@@ -838,6 +838,7 @@ exports.tv_enum = exports.$Enums.tv_enum = {
 };
 
 exports.course_mat_type = exports.$Enums.course_mat_type = {
+  Introduction: 'Introduction',
   Lecture: 'Lecture',
   Laboratory: 'Laboratory',
   Seminar: 'Seminar',

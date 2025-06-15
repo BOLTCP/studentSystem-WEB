@@ -202,15 +202,6 @@ export const RenderSidebar = () => {
                   Хичээл сонголт, хуваарийн бодлого
                 </button>
               </li>
-              <li className="dropdown-item">
-                <button className={`dashboard-submenu-button ${selectedSubmenu === 0 ? 'active' : ''}`} 
-                        onClick={() => {
-                          setSelectedSubmenu(1);
-                          navigate('/course_management')
-                          }}>
-                  Хичээлийн удирдлага
-                </button>
-              </li>
             </ul>
           )}
         </li>

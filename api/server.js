@@ -1186,6 +1186,9 @@ app.post('/Remove/Schedule/From/Student/', async (req, res) => {
        },
     });
 
+    const result = await prisma.$queryRaw`SELECT decrement_students_for_schedule(${scheduleToRemove.teachersScheduleId});`
+
+
     if (removeSchedule) {
       console.log('Амжилттай хаслаа.');
       return res.status(200).json({
@@ -1749,6 +1752,15 @@ app.post('/Add/Course/To/Teachers/Course/Planning/', async (req, res) => {
       }
     });
 
+    const createCourseWeek = await prisma.courseweek.create({
+        data: {
+          title: 'Эхлэл',
+          course_management_id: createCourseManagement.course_management_id,
+          week: 0,
+          activity_status: true,
+        }
+      });
+
     for (let i = 0; i < addCourseToTeacher.course_length; i++) {
       const createCourseWeek = await prisma.courseweek.create({
         data: {
@@ -2024,13 +2036,15 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
           AND: {
             week: courseWeeks[i].week,
           }
+        },
+        orderBy: {
+          course_mat_type: 'asc',
         }
       });
+      console.log(getCourseMaterial);
       courseMaterials.push(getCourseMaterial);
     }
-
     
-
     return res.status(200).json({
       message: 'Багшийн хичээл удирдлагын мэдээллийг амжилттай татлаа.',
       management: courseManagements,
@@ -2049,12 +2063,49 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
 
 //src/component/teacher/courseManagement/course_management.jsx
 app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
-  const { matToCreate, courseManagement } = req.body;
-  console.log('/Create/CourseMaterial/For/Course/Week/: ', matToCreate, courseManagement);
+  const { matToCreate, courseManagement, matToCreateWeek } = req.body;
+  console.log('/Create/CourseMaterial/For/Course/Week/: ', matToCreate, courseManagement, matToCreateWeek);
+
+  if (!matToCreate || !courseManagement.teacherId || !matToCreateWeek) {
+    return res.status(400).send();
+  }
 
   try {
+    const getMaterialCount = await prisma.$queryRaw`SELECT COUNT(*) FROM coursematerial WHERE course_week_id = ${matToCreateWeek.courseWeekId}`;
+    
+    if (Number(getMaterialCount[0].count) < 20) {
+
+      const createMaterial = await prisma.coursematerial.create({
+        data: {
+          course_id: courseManagement.courseId,
+          week: matToCreateWeek.week,
+          teacher_id: courseManagement.teacherId,
+          course_management_id: courseManagement.courseManagementId,
+          course_week_id: matToCreateWeek.courseWeekId,
+          title: matToCreate.title,
+          course_mat_type: matToCreate.type === 'Лабораторийн хэсэг' ? 'Laboratory' :
+            matToCreate.type === 'Лекцийн хэсэг' ? 'Lecture' :
+            matToCreate.type === 'Семинарын хэсэг' ? 'Seminar' :
+            matToCreate.type === 'Танилцуулга эхлэлийн хэсэг' ? 'Introduction' : 
+            matToCreate.type === 'Өөрийгөө сорих Quiz хэсэг' ? 'Quiz' :
+            matToCreate.type === 'Явцын шалгалт №1' ? 'SemiFinal' :
+            matToCreate.type === 'Явцын шалгалт №2' ? 'SemiFinal1' :
+            matToCreate.type === 'Сэтгэл ханамжийн судалгаа' ? 'SatisfactionSurvey' :
+            'Final',
+        }
+      });
 
 
+      console.log(createMaterial);
+      if (createMaterial) {
+        console.log('200');
+        return res.status(200).json({createMaterial: createMaterial});
+      }
+    } else {
+      return res.status(201).json({
+        message: `${courseManagement.courseName} хичээлийн ${matToCreateWeek.title ? `${matToCreateWeek.title}, ` : '' }${matToCreateWeek.week} - р долоо хоногийн материал хэмжээ тулсан байна.`
+      });
+    }
 
   } catch (error) {
     console.error(error);

@@ -781,7 +781,3 @@ const Timetable = ({ user }) => {
 };
 
 export default Timetable;
-/*
-<div className='has-selected-all-container'>
-                      {elementsMap.size === teachersSchedule.length ? 'Хичээлийн хуваарийг хадгалах' : 'Хичээлүүдийн хуваарийг сонгоно уу!'}
-                    </div>*/

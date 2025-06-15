@@ -12,6 +12,7 @@ class CourseMaterial {
     courseWeekId,
     title,
     file,
+    courseMatType,
   }) {
     this.courseMaterialId = courseMaterialId;
     this.courseId = courseId;
@@ -23,6 +24,7 @@ class CourseMaterial {
     this.courseWeekId = courseWeekId;
     this.title = title;
     this.file = file;
+    this.courseMatType = courseMatType;
   }
 
   static fromJsonCourseMaterial(json) {
@@ -37,6 +39,15 @@ class CourseMaterial {
       courseWeekId: json.course_week_id,
       title: json.title,
       file: json.file,
+      courseMatType: json.course_mat_type === 'Laboratory' ? 'Лабораторийн хэсэг' :
+        json.course_mat_type === 'Lecture' ? 'Лекцийн хэсэг' :
+        json.course_mat_type === 'Seminar' ? 'Семинарын хэсэг' :
+        json.course_mat_type === 'Introduction' ? 'Танилцуулга Эхлэлийн хэсэг' : 
+        json.course_mat_type === 'Quiz' ? 'Өөрийгөө сорих Quiz хэсэг' :
+        json.course_mat_type === 'SemiFinal' ? 'Явцын шалгалт №1' :
+        json.course_mat_type === 'SemiFinal1' ? 'Явцын шалгалт №2' :
+        json.course_mat_type === 'SatisfactionSurvey' ? 'Сэтгэл ханамжийн судалгаа' :
+        'Улирлын шалгалт',
     });
   }
 
@@ -52,6 +63,15 @@ class CourseMaterial {
       course_week_id: CourseMaterial.courseWeekId,
       title: CourseMaterial.title,
       file: CourseMaterial.file,
+      course_mat_type: CourseMaterial.courseMatType === 'Лабораторийн хэсэг' ? 'Laboratory' :
+        CourseMaterial.courseMatType === 'Лекцийн хэсэг' ? 'Lecture' :
+        CourseMaterial.courseMatType === 'Семинарын хэсэг' ? 'Seminar' :
+        CourseMaterial.courseMatType === 'Танилцуулга Эхлэлийн хэсэг' ? 'Introduction' : 
+        CourseMaterial.courseMatType === 'Өөрийгөө сорих Quiz хэсэг' ? 'Quiz' :
+        CourseMaterial.courseMatType === 'Явцын шалгалт №1' ? 'SemiFinal' :
+        CourseMaterial.courseMatType === 'Явцын шалгалт №2' ? 'SemiFinal1' :
+        CourseMaterial.courseMatType === 'Сэтгэл ханамжийн судалгаа' ? 'SatisfactionSurvey' :
+        'Final',
     }
   }
 

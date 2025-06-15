@@ -1,5 +1,4 @@
-/* CourseBuilder.css */
-.course-management-container-layout {
+html, body, #root, .course-management-container-layout {
   width: 100vw;
   min-height: 100vh;
   display: block;
@@ -41,15 +40,14 @@ body {
 .course-builder-layout {
   display: flex;
   gap: 20px;
-  padding: 20px;
-  min-height: 90vh; /* Adjust as needed */
+  margin: 15px;
+  min-height: 90vh; 
   max-height: 100vh;
-  overflow: hidden; /* Important: Prevents root-level scrolling from interfering */
+  overflow: hidden; 
 }
 
-/* --- Material Bank (Left Panel) --- */
 .material-bank {
-  flex: 0 0 280px; /* Fixed width for the material bank */
+  flex: 0 0 280px; 
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background-color: #ffffff;
@@ -57,7 +55,8 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  overflow: hidden; /* Ensure this doesn't create extra scroll */
+  gap: 1rem;
+  height: 86vh;
 }
 
 .material-bank h3 {
@@ -71,12 +70,12 @@ body {
 
 .material-bank-list {
   flex-grow: 1;
-  overflow-y: auto; /* THIS IS THE SOLE VERTICAL SCROLL FOR AVAILABLE MATERIALS */
-  padding: 10px;
+  overflow-y: auto;
+  padding: 5px;
   background-color: #fdfdfd;
   border: 1px dashed #c4c4c4;
   border-radius: 8px;
-  min-height: 250px; /* Ensure drop zone is visible */
+  min-height: 250px; 
 }
 
 /* --- Semester View (Right Panel) --- */
@@ -89,16 +88,13 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  overflow: hidden; /* Important: Prevents this from being a scroll parent */
+  overflow: hidden; 
+  max-height: 86vh;
 }
 
 .semester-view h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
   color: #333;
-  font-size: 1.4em;
-  border-bottom: 2px solid #e0e0e0;
-  padding-bottom: 10px;
+  font-size: 1.4rem;
 }
 
 .weeks-horizontal-scroll {
@@ -145,11 +141,10 @@ body {
   border: 1px dashed #a8a8a8;
   background-color: #fafafa;
   padding: 12px;
-  min-height: 180px; /* Ensure drop zone is visible */
-  /* THIS IS THE SOLE VERTICAL SCROLL FOR MATERIALS WITHIN A WEEK */
-  overflow-y: auto;
+  min-height: 180px; 
+  overflow-y: scroll;
   border-radius: 6px;
-  overflow-x: hidden; /* Explicitly hide horizontal overflow */
+  overflow-x: hidden; 
 }
 
 /* --- Draggable Item Styles --- */
@@ -168,12 +163,106 @@ body {
 
 .material-item {
   background-color: #eaf6ff; /* Light blue for bank items */
-  border: 1px solid #b3d9ff;
+  border: 1px solid black;
+}
+
+.material-item.material-type-танилцуулга-эхлэлийн-хэсэг {
+  background-color: hsl(210, 5%, 85%);
+  color: black;
+}
+
+/* Лабораторийн хэсэг */
+.material-item.material-type-лабораторийн-хэсэг {
+  background-color: #4a90e2; /* Deep Blue */
+  color: white; /* White text for contrast */
+}
+
+/* Лекцийн хэсэг */
+.material-item.material-type-лекцийн-хэсэг {
+  background-color: #FDE047; /* Yellow */
+  color: black; /* Or a dark color for contrast */
+}
+
+/* Семинарын хэсэг */
+.material-item.material-type-семинарын-хэсэг {
+  background-color: hsl(35, 60%, 65%); /* Lighter Brown */
+  color: black; /* Or default */
+}
+
+/* Өөрийгөө сорих / Quiz хэсэг */
+.material-item.material-type-өөрийгөө-сорих-quiz-хэсэг {
+  background-color: hsl(190, 40%, 45%); /* Muted Teal (your selected quiz color) */
+  color: white; /* White text for contrast */
+}
+
+/* Явцын шалгалт №1 (Light Red) */
+.material-item.material-type-явцын-шалгалт-1 {
+  background-color: hsl(350, 80%, 75%);
+  color: black; /* Or a darker contrasting color */
+}
+
+/* Явцын шалгалт №2 (True Red) */
+.material-item.material-type-явцын-шалгалт-2 {
+  background-color: hsl(350, 100%, 66%);
+  color: white;
+}
+
+/* Улирлын шалгалт (Deep Red) */
+.material-item.material-type-улирлын-шалгалт {
+  background-color: hsl(0, 100%, 50%);
+  color: white;
 }
 
 .material-item-in-week {
   background-color: #e6ffed; /* Light green for week items */
-  border: 1px solid #8ce3a0;
+  border: 1px solid black;
+}
+
+.material-item-in-week.танилцуулга-эхлэлийн-хэсэг {
+  background-color: hsl(210, 5%, 85%);
+  color: black;
+}
+
+/* Лабораторийн хэсэг */
+.material-item-in-week.лабораторийн-хэсэг {
+  background-color: #4a90e2; /* Deep Blue */
+  color: white; /* White text for contrast */
+}
+
+/* Лекцийн хэсэг */
+.material-item-in-week.лекцийн-хэсэг {
+  background-color: #FDE047; /* Yellow */
+  color: black; /* Or a dark color for contrast */
+}
+
+/* Семинарын хэсэг */
+.material-item-in-week.семинарын-хэсэг {
+  background-color: hsl(35, 60%, 65%); /* Lighter Brown */
+  color: black; /* Or default */
+}
+
+/* Өөрийгөө сорих / Quiz хэсэг */
+.material-item-in-week.өөрийгөө-сорих-quiz-хэсэг {
+  background-color: hsl(190, 40%, 45%); /* Muted Teal (your selected quiz color) */
+  color: white; /* White text for contrast */
+}
+
+/* Явцын шалгалт №1 (Light Red) */
+.material-item-in-week.явцын-шалгалт-1 {
+  background-color: hsl(350, 80%, 75%);
+  color: black; /* Or a darker contrasting color */
+}
+
+/* Явцын шалгалт №2 (True Red) */
+.material-item-in-week.явцын-шалгалт-2 {
+  background-color: hsl(350, 100%, 66%);
+  color: white;
+}
+
+/* Улирлын шалгалт (Deep Red) */
+.material-item-in-week.улирлын-шалгалт {
+  background-color: hsl(0, 100%, 50%);
+  color: white;
 }
 
 .material-item:hover, .material-item-in-week:hover {
@@ -310,4 +399,23 @@ body {
 
 .min-width {
   width: 30px;
+}
+
+.course-selection-and-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem; 
+  align-items: center;
+  justify-content: center; 
+  align-content: center;  
+  border-top: 2px solid #e0e0e0;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.please-select-course {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }

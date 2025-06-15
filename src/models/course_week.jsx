@@ -5,7 +5,6 @@ class CourseWeek {
     courseWeekId,
     courseManagementId,
     week,
-    materials,
     activityStatus,
     title, 
     description,
@@ -13,7 +12,6 @@ class CourseWeek {
     this.courseWeekId = courseWeekId;
     this.courseManagementId = courseManagementId;
     this.week = week;
-    this.materials = materials;
     this.activityStatus = activityStatus;
     this.title = title;
     this.description = description;
@@ -24,7 +22,6 @@ class CourseWeek {
       courseWeekId: json.course_week_id,
       courseManagementId: json.course_management_id,
       week: json.week,
-      materials: json.materials,
       activityStatus: json.activity_status,
       title: json.title,
       description: json.description,
@@ -36,7 +33,6 @@ class CourseWeek {
       course_week_id: CourseWeek.courseWeekId,
       course_management_id: CourseWeek.courseManagementId,
       week: CourseWeek.week,
-      materials: CourseWeek.materials,
       activity_status: CourseWeek.activityStatus,
       title: CourseWeek.title,
       description: CourseWeek.description,

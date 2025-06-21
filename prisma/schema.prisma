@@ -208,6 +208,7 @@ model coursematerial {
   title                  String?
   file                   String?
   course_mat_type        course_mat_type
+  material_order         Int
   courses                courses                @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_course")
   teacher                teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
   coursemanagement       coursemanagement       @relation(fields: [course_management_id], references: [course_management_id], onDelete: Cascade, onUpdate: Cascade, map: "course_management_fkey")

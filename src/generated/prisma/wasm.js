@@ -280,7 +280,8 @@ exports.Prisma.CoursematerialScalarFieldEnum = {
   course_week_id: 'course_week_id',
   title: 'title',
   file: 'file',
-  course_mat_type: 'course_mat_type'
+  course_mat_type: 'course_mat_type',
+  material_order: 'material_order'
 };
 
 exports.Prisma.CoursesScalarFieldEnum = {
@@ -845,7 +846,8 @@ exports.course_mat_type = exports.$Enums.course_mat_type = {
   Quiz: 'Quiz',
   Final: 'Final',
   SemiFinal: 'SemiFinal',
-  SemiFinal1: 'SemiFinal1'
+  SemiFinal1: 'SemiFinal1',
+  SatisfactionSurvey: 'SatisfactionSurvey'
 };
 
 exports.course_type_enum = exports.$Enums.course_type_enum = {

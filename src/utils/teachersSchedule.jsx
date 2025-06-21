@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import TeacherUser from '../models/teacher_user';
 import UserDetails from '../models/user_details';
 import getUserDetailsFromLocalStorage from './userDetailsTeacher_util';
-import '../component/student/student_dashboard.css';
+import '../component/teacher/teacher_dashboard.css';
 import TeachersSchedule from '../models/teachersschedule';
 
 const periodsOfSchedules = [1010, 1150, 1330, 1530, 1710, 1850, 2030];
@@ -72,6 +72,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   }, []);
 
   const showAttribution = (attributionComment, attrLink) => {
+    console.log('loll');
     const el = document.getElementById("hover-attribution");
     if (el) {
       el.textContent = attributionComment + attrLink;
@@ -208,10 +209,23 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
           </div>
           
           <br></br>
+          {/**
+           * 
+           onMouseEnter={() => showAttribution(
+                  "Logout icons created by Pixel perfect - Flaticon",
+                  " https://www.flaticon.com/free-icon/logout_1828427?term=log+out&page=1&position=5&origin=search&related_id=1828427"
+                  )}
+                  onMouseLeave={() => hideAttribution()}
+           */}
           
           <div className="today-schedule-list-container">
             <div className="to-do-container">
-              <img src="src/assets/classroom.png"//src/assets/toDoList.png
+              <img onMouseEnter={() => showAttribution(
+                    "Checklist icons created by Freepik - Flaticon",
+                    " https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615"
+                   )}
+                   onMouseLeave={() => hideAttribution()}
+              src="src/assets/classroom.png"//src/assets/toDoList.png
               //Icon source from 
               //https://www.flaticon.com/free-icon/to-do-list_3208615?related_id=3208615
               //Checklist icons created by Freepik - Flaticon
@@ -289,6 +303,8 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
           </button>
         </li>
       </ul>
+      <div id="hover-attribution" className="hover-attribution hidden">
+      </div>
     </div>
   );
 }

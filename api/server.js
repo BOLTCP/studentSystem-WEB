@@ -2033,15 +2033,14 @@ app.post('/Fetch/Teachers/CourseManagement/CourseWeeks/And/CourseMaterials/', as
     for (let i = 0; i < courseWeeks.length; i++) {
       const getCourseMaterial = await prisma.coursematerial.findMany({
         where: {
-          AND: {
+          AND: { 
             week: courseWeeks[i].week,
           }
         },
         orderBy: {
-          course_mat_type: 'asc',
-        }
+          material_order: 'asc',
+        } 
       });
-      console.log(getCourseMaterial);
       courseMaterials.push(getCourseMaterial);
     }
     
@@ -2071,15 +2070,19 @@ app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
   }
 
   try {
-    const getMaterialCount = await prisma.$queryRaw`SELECT COUNT(*) FROM coursematerial WHERE course_week_id = ${matToCreateWeek.courseWeekId}`;
-    
-    if (Number(getMaterialCount[0].count) < 20) {
+    const getMaterialCount = await prisma.coursematerial.count({
+      where: {
+        course_week_id: matToCreateWeek.courseWeekId,
+      }
+    });
+
+    if (getMaterialCount < 20) {
 
       const createMaterial = await prisma.coursematerial.create({
         data: {
           course_id: courseManagement.courseId,
           week: matToCreateWeek.week,
-          teacher_id: courseManagement.teacherId,
+          teacher_id: courseManagement.teacherId,  
           course_management_id: courseManagement.courseManagementId,
           course_week_id: matToCreateWeek.courseWeekId,
           title: matToCreate.title,
@@ -2092,6 +2095,7 @@ app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
             matToCreate.type === 'Явцын шалгалт №2' ? 'SemiFinal1' :
             matToCreate.type === 'Сэтгэл ханамжийн судалгаа' ? 'SatisfactionSurvey' :
             'Final',
+          material_order: getMaterialCount,
         }
       });
 
@@ -2111,6 +2115,35 @@ app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
     console.error(error);
     return res.status(500).send();
   }
+});
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Remove/CourseMaterial/From/CourseWeek/', async (req, res) => {
+  const { matToDelete } = req.body;
+  console.log('/Remove/CourseMaterial/From/CourseWeek/: ', matToDelete);
+
+  if (!matToDelete) {
+    return res.status(400).send();
+  }
+
+  try {
+    const deleteMaterial = await prisma.coursematerial.delete({
+      where: {
+        course_material_id: matToDelete.course_material_id,
+      },
+    });
+    
+    if (deleteMaterial) {
+      return res.status(200).json({
+        message: `${matToDelete.title} хичээлийн материалыг амжилттай устаглаа.`
+      });
+    }
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+
 });
 
 //src/component/teacher/courseManagement/course_management.jsx
@@ -2138,5 +2171,83 @@ app.post('/Save/Teachers/Edited/CourseWeek/', async (req, res) => {
   } catch (error) {
     console.error('Error: ', error);
   }
+
+});
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Save/Edited/CourseMaterial/Position/Up/', async (req, res) => {
+  const { materialToMoveUp, materialToMoveDown } = req.body;
+  console.log('/Save/Edited/CourseMaterial/Position/Up/: ', materialToMoveUp.material_order, materialToMoveDown.material_order);
+
+  if (!materialToMoveUp.course_material_id || !materialToMoveDown.course_material_id) {
+    return res.status(400).send();
+  }
+
+  try {
+    const { course_material_id, ...updateMaterial } = materialToMoveUp;
+    const moveMaterialUp = await prisma.coursematerial.update({
+      where: {
+        course_material_id: course_material_id,
+      },
+      data: 
+        { ...updateMaterial, material_order: updateMaterial.material_order - 1 },
+    });
+    
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    const { course_material_id, ...updateMaterialDown } = materialToMoveDown;
+    const moveMaterialDown = await prisma.coursematerial.update({
+      where: {
+        course_material_id: course_material_id,
+      },
+      data: 
+        { ...updateMaterialDown, material_order: updateMaterialDown.material_order + 1 },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return res.status(200).send();
+
+});
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Save/Edited/CourseMaterial/Position/Down/', async (req, res) => {
+  const { materialToMoveUp, materialToMoveDown } = req.body;
+  console.log('/Save/Edited/CourseMaterial/Position/Down/: ', materialToMoveUp.material_order, materialToMoveDown.material_order);
+
+  if (!materialToMoveUp.course_material_id || !materialToMoveDown.course_material_id) {
+    return res.status(400).send();
+  }
+
+  try {
+    const { course_material_id, ...updateMaterial } = materialToMoveDown;
+    const moveMaterialDown = await prisma.coursematerial.update({
+      where: {
+        course_material_id: course_material_id,
+      },
+      data: 
+        { ...updateMaterial, material_order: updateMaterial.material_order - 1 },
+    });
+    
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    const { course_material_id, ...updateMaterialUp } = materialToMoveUp;
+    const moveMaterialUp = await prisma.coursematerial.update({
+      where: {
+        course_material_id: course_material_id,
+      },
+      data: 
+        { ...updateMaterialUp, material_order: updateMaterialUp.material_order + 1 },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return res.status(200).send();
 
 });

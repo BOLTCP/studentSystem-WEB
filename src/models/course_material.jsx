@@ -13,6 +13,7 @@ class CourseMaterial {
     title,
     file,
     courseMatType,
+    materialOrder,
   }) {
     this.courseMaterialId = courseMaterialId;
     this.courseId = courseId;
@@ -25,6 +26,7 @@ class CourseMaterial {
     this.title = title;
     this.file = file;
     this.courseMatType = courseMatType;
+    this.materialOrder = materialOrder;
   }
 
   static fromJsonCourseMaterial(json) {
@@ -48,6 +50,7 @@ class CourseMaterial {
         json.course_mat_type === 'SemiFinal1' ? 'Явцын шалгалт №2' :
         json.course_mat_type === 'SatisfactionSurvey' ? 'Сэтгэл ханамжийн судалгаа' :
         'Улирлын шалгалт',
+      materialOrder: json.material_order,
     });
   }
 
@@ -72,6 +75,7 @@ class CourseMaterial {
         CourseMaterial.courseMatType === 'Явцын шалгалт №2' ? 'SemiFinal1' :
         CourseMaterial.courseMatType === 'Сэтгэл ханамжийн судалгаа' ? 'SatisfactionSurvey' :
         'Final',
+      material_order: CourseMaterial.materialOrder,
     }
   }
 

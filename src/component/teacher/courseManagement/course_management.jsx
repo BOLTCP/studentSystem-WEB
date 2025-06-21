@@ -16,24 +16,37 @@ import e from 'cors';
 
 export const CourseBuilder = () => {
   const [userDetails, setUserDetails] = useState(getUserDetailsFromLocalStorage());
+
   const [courseManagement, setCourseManagement] = useState([]);
   const [selectedCourseManagement, setSelectedCourseManagement] = useState(null);
+
   const [courseWeeks, setCourseWeeks] = useState([]);
+  const [editWeekTitle, setEditWeekTitle] = useState(null);
+  const [editWeekDescription, setEditWeekDescription] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState('');
+  const [currentDescription, setCurrentDescription] = useState('');
   const [courseMaterials, setCourseMaterials] = useState([]);
+
+  const [availableMaterials, setAvailableMaterials] = useState(availableMaterialsData);
+  const [selectedMaterialType, setSelectedMaterialType] = useState('Танилцуулга эхлэлийн хэсэг');
   const [showMatTitlePropmt, setShowMatTitlePrompt] = useState(false);
   const [matToCreate, setMatToCreate] = useState(null);
   const [matToCreateWeek, setMatToCreateWeek] = useState(null);
   const [matCreateError, setMatCreateError] = useState(null);
   const [matCreateMessage, setMatCreateMessage] = useState(null);
-  const [editWeekTitle, setEditWeekTitle] = useState(null);
-  const [editWeekDescription, setEditWeekDescription] = useState(null);
-  const [currentTitle, setCurrentTitle] = useState('');
-  const [currentDescription, setCurrentDescription] = useState('');
-  const [availableMaterials, setAvailableMaterials] = useState(availableMaterialsData);
-  const [selectedMaterialType, setSelectedMaterialType] = useState('Танилцуулга эхлэлийн хэсэг');
+
+  const [showMatDeletePrompt, setShowMatDeletePrompt] = useState(null);
+  const [matDeleteMessage, setMatDeleteMessage] = useState(null);
+
+  const [introWeekException, setIntroWeekException] = useState(null);
+  const [introToCourseWeekException, setIntroToCourseWeekException] = useState(null);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(userDetails.teacher ? null : 'Хэрэглэгчийн мэдээлэл олдсонгүй.');
 
+  //Долоо хоногийн материалын дараалал болон хасах 
+  const [enableMaterialPositionEdit, setEnableMaterialPositionEdit] = useState(false);
+  
   useEffect(() => {
     const fetchCourseManagement = async () => {
 
@@ -76,7 +89,6 @@ export const CourseBuilder = () => {
     fetchCourseManagement();
   }, []);
 
-  console.log(courseMaterials);
   const createMaterialForCourseWeek = async () => {
 
     try {
@@ -111,6 +123,28 @@ export const CourseBuilder = () => {
     }
   };
 
+  const handleRemoveCourseMaterial = async (material) => {
+    try {
+      const response = await axios.post(getApiUrl('/Remove/CourseMaterial/From/CourseWeek/'),
+        {
+          matToDelete: CourseMaterial.toJson(material)
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000,
+        });
+      if (response.status === 200) {
+        setMatDeleteMessage(response.data.message);
+        setCourseMaterials(prev => {
+          const updatedCourseMaterials = prev.filter((courseMat) => courseMat.courseMaterialId !== material.courseMaterialId);
+          return updatedCourseMaterials;
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }   
+    setShowMatDeletePrompt(null);
+  }
 
   const showAttribution = (attributionComment, attrLink) => {
     const el = document.getElementById("hover-attribution");
@@ -202,13 +236,81 @@ export const CourseBuilder = () => {
       return ''; 
     }
     const cleanedString = typeString.replace(/[' ']/g, '-').replace(/[№]/g, '').toLowerCase();
-    console.log(cleanedString);
     return cleanedString;
   };
 
+  const handleMaterialMoveUp = async (materialToMove) => {
+
+    if (materialToMove.materialOrder !== 0) {
+    const courseMaterialsToSend = courseMaterials.filter((courseMat) => courseMat.courseWeekId === materialToMove.courseWeekId)[materialToMove.materialOrder - 1];
+
+    const response = await axios.post(getApiUrl('/Save/Edited/CourseMaterial/Position/Up'), 
+      {
+        materialToMoveUp: CourseMaterial.toJson(materialToMove),
+        materialToMoveDown:  CourseMaterial.toJson(courseMaterialsToSend),
+      }, 
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      });
+
+      if (response.status === 200) {
+        setCourseMaterials(prev => {
+          let prevCourseMaterials = prev;
+          const matsOfCourseWeek = prevCourseMaterials.filter((courseMat) => courseMat.courseWeekId === materialToMove.courseWeekId);
+
+          let temp = matsOfCourseWeek[materialToMove.materialOrder - 1];
+          temp = new CourseMaterial({ ...temp, materialOrder: materialToMove.materialOrder });
+
+          matsOfCourseWeek[materialToMove.materialOrder - 1] = new CourseMaterial({ ...materialToMove, materialOrder: materialToMove.materialOrder - 1});;
+          matsOfCourseWeek[materialToMove.materialOrder] = temp;
+
+          const updatedCourseMaterials = prev.filter((courseMat) => courseMat.courseWeekId !== materialToMove.courseWeekId).concat(matsOfCourseWeek);
+          return updatedCourseMaterials;
+        });
+      }
+    }
+    setEnableMaterialPositionEdit(false);
+  };
+
+  const handleMaterialMoveDown = async (materialToMove) => {
+
+    if (materialToMove.materialOrder !== courseMaterials
+                                          .filter((courseMat) => courseMat.courseWeekId === materialToMove.courseWeekId).length - 1) 
+    {            
+      const courseMaterialsToSend = courseMaterials.filter((courseMat) => courseMat.courseWeekId === materialToMove.courseWeekId)[materialToMove.materialOrder + 1];
+      console.log(courseMaterialsToSend);
+      const response = await axios.post(getApiUrl('/Save/Edited/CourseMaterial/Position/Down/'), 
+      {
+        materialToMoveUp: CourseMaterial.toJson(materialToMove),
+        materialToMoveDown:  CourseMaterial.toJson(courseMaterialsToSend),
+      }, 
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      });
+
+      if (response.status === 200) {
+        setCourseMaterials(prev => {
+          let prevCourseMaterials = prev;
+          const matsOfCourseWeek = prevCourseMaterials.filter((courseMat) => courseMat.courseWeekId === materialToMove.courseWeekId);
+
+          let temp = matsOfCourseWeek[materialToMove.materialOrder + 1];
+          temp = new CourseMaterial({ ...temp, materialOrder: materialToMove.materialOrder });
+
+          matsOfCourseWeek[materialToMove.materialOrder + 1] = new CourseMaterial({ ...materialToMove, materialOrder: materialToMove.materialOrder + 1});;
+          matsOfCourseWeek[materialToMove.materialOrder] = temp;
+
+          const updatedCourseMaterials = prev.filter((courseMat) => courseMat.courseWeekId !== materialToMove.courseWeekId).concat(matsOfCourseWeek);
+          return updatedCourseMaterials;
+        });
+      }
+    }
+    setEnableMaterialPositionEdit(false);
+  }
+
   return (
     <>
-
     <div className="course-management-container-layout">
         <nav className="course-management-nav">
           <div className="course-management-nav-container">
@@ -234,18 +336,20 @@ export const CourseBuilder = () => {
         {!error && 
         <DragDropContext onDragEnd={(e) => {
             const { source, destination, draggableId } = e;
-            if (!parseInt(destination?.droppableId)) {
+            console.log(e);
+            if (!parseInt(destination?.droppableId) || destination.droppableId === 'available-materials') {
               return;
             } else if (courseWeeks
                 .filter((week) => parseInt(destination?.droppableId) === week.courseWeekId)[0].week === 0 
                 && 
-                availableMaterials.filter((mat) => mat.id === draggableId)[0].type !== 'Танилцуулга эхлэлийн хэсэг') {
+                availableMaterials.filter((mat) => mat.id === draggableId)[0]?.type !== 'Танилцуулга эхлэлийн хэсэг') {
+              setIntroWeekException(true);
               return;
             } else if (courseWeeks
                 .filter((week) => parseInt(destination?.droppableId) === week.courseWeekId)[0].week !== 0 
                 && 
                 availableMaterials.filter((mat) => mat.id === draggableId)[0].type === 'Танилцуулга эхлэлийн хэсэг') {
-
+              setIntroToCourseWeekException(true);
             } else {
               setMatToCreateWeek(courseWeeks.filter((week) => week.courseWeekId === parseInt(destination.droppableId))[0]);
               setShowMatTitlePrompt(true), setMatToCreate((availableMaterials.filter((mat) => mat.id === e.draggableId)[0]));
@@ -288,6 +392,38 @@ export const CourseBuilder = () => {
                 </div>
               }
 
+              {showMatDeletePrompt &&
+                <div className={`material-add-overlay ${showMatDeletePrompt && 'visible'}`}>
+                  <div className="add-modal">
+                    <div>
+                      Материалын нэр: {showMatDeletePrompt.title} устгах уу?
+                    </div>
+                    <div>
+                    </div>
+                    <div className='button-group'>
+                      <button onClick={() => {setShowMatDeletePrompt(null)}}>Буцах</button>
+                      <button onClick={() => {handleRemoveCourseMaterial(showMatDeletePrompt)}}
+                              style={{ color: 'white', backgroundColor: '#14b82e'}}>Хадгалах</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              {matDeleteMessage &&
+                <div className={`material-add-overlay ${matDeleteMessage && 'visible'}`}>
+                  <div className="add-modal">
+                    <div>
+                      {matDeleteMessage} 
+                    </div>
+                    <div>
+                    </div>
+                    <div className='button-group'>
+                      <button style={{ backgroundColor: 'green' }}onClick={() => {setMatDeleteMessage(null)}}>Буцах</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
               {matCreateMessage &&
                 <div onClick={() => {setMatCreateMessage(null)}} className={`material-add-overlay ${matCreateMessage ? 'visible' : null}`}>
                   <div className="add-modal">
@@ -310,6 +446,34 @@ export const CourseBuilder = () => {
                     </div>
                     <div className='button-group'>
                       <button onClick={() => {setMatCreateError(null)}}
+                              style={{ color: 'white', backgroundColor: 'red'}}>Буцах</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              {introWeekException && 
+                <div onClick={() => {setIntroWeekException(null)}} className={`material-add-overlay ${setIntroWeekException ? 'visible' : null}`}>
+                  <div className="add-modal">
+                    <div>
+                      <strong>Долоо хоногт буруу материал оруулсан байна.</strong>
+                    </div>
+                    <div className='button-group'>
+                      <button onClick={() => {setIntroWeekException(null)}}
+                              style={{ color: 'white', backgroundColor: 'red'}}>Буцах</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              {introToCourseWeekException && 
+                <div onClick={() => {setIntroToCourseWeekException(null)}} className={`material-add-overlay ${setIntroToCourseWeekException ? 'visible' : null}`}>
+                  <div className="add-modal">
+                    <div>
+                      <strong>Долоо хоногт буруу материал оруулсан байна.</strong>
+                    </div>
+                    <div className='button-group'>
+                      <button onClick={() => {setIntroToCourseWeekException(null)}}
                               style={{ color: 'white', backgroundColor: 'red'}}>Буцах</button>
                     </div>
                   </div>
@@ -455,40 +619,133 @@ export const CourseBuilder = () => {
                                 /> 
                               </div>
 
-
+                            
                             </div>
-                              <Droppable droppableId={`${week.courseWeekId}`} direction="vertical">
-                                  {(provided) => (
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.droppableProps}
-                                        className="week-materials-list"
-                                      >
-                                        {courseMaterials.filter((material) => material.courseWeekId === week.courseWeekId).length === 0 && (
-                                          <p className="placeholder">Сургалтын материалын элементүүдийг зөөж байршуулна уу.</p>
-                                        )}
-                                        {courseMaterials.filter((material) => material.courseWeekId === week.courseWeekId) && 
-                                          courseMaterials.filter((material) => material.courseWeekId === week.courseWeekId).map((material, index) => {
-                                            return(
-                                              <Draggable key={`${material.courseMaterialId}`} draggableId={`${material.courseMaterialId}`} index={index}>
-                                              {(provided) => (
-                                                <div
-                                                  ref={provided.innerRef}
-                                                  {...provided.draggableProps}
-                                                  {...provided.dragHandleProps}
-                                                  className={`material-item-in-week ${getMaterialTypeClass(material.courseMatType)}`}
-                                                >
-                                                  {material.title}
-                                                </div>
-                                                )}
-                                            </Draggable>
-                                            )
-                                          })
-                                        }
-                                        {provided.placeholder}
-                                    </div>  
-                                )}
-                              </Droppable>
+                            <Droppable droppableId={`${week.courseWeekId}`} direction="vertical">
+                              {(providedDroppable) => ( 
+                                <div
+                                    ref={providedDroppable.innerRef} 
+                                    {...providedDroppable.droppableProps} 
+                                    className="week-materials-list"
+                                >
+                                    {courseMaterials.filter((material) => material.courseWeekId === week.courseWeekId).length === 0 && (
+                                        <p className="placeholder">Сургалтын материалын элементүүдийг зөөж байршуулна уу.</p>
+                                    )}
+                                    {courseMaterials
+                                        .filter((material) => material.courseWeekId === week.courseWeekId)
+                                        .map((material, index) => {
+                                            return (
+                                                <Draggable key={material.courseMaterialId} draggableId={`${material.courseMaterialId}`} index={index}>
+                                                    {(providedDraggable) => ( 
+                                                        <div
+                                                          ref={providedDraggable.innerRef} 
+                                                          {...providedDraggable.draggableProps} 
+                                                          {...providedDraggable.dragHandleProps} 
+                                                          className={`material-item-in-week ${getMaterialTypeClass(material.courseMatType)}`}
+                                                          style={{
+                                                            justifyContent: 'space-between',
+                                                          }}
+                                                        >
+                                                          {material.title}
+                                                          <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'space-between',
+                                                            gap: '1rem',
+                                                          }}>
+                                                          <div>
+                                                            <img
+                                                              src='/src/assets/trash.png'
+                                                              onClick={() => {setShowMatDeletePrompt(material)}}
+                                                              onMouseEnter={() => showAttribution(
+                                                                "Delete icons created by bqlqn - Flaticon",
+                                                                " https://www.flaticon.com/free-icon/trash_3096673?term=trash&page=1&position=3&origin=search&related_id=3096673"
+                                                              )}
+                                                              onMouseLeave={() => hideAttribution()}
+                                                              style={{
+                                                                width: '30px',
+                                                                height: '30px',
+                                                              }}
+                                                            />
+                                                            </div>
+                                                            <div style={enableMaterialPositionEdit.courseMaterialId === material.courseMaterialId ?
+                                                              {
+                                                                display: 'flex',
+                                                                flexDirection: 'row',
+                                                                width: '80px',
+                                                                justifyContent: 'space-between'
+                                                              }
+                                                              :
+                                                              null
+                                                            }
+                                                            >
+                                                              <img src={!enableMaterialPositionEdit
+                                                                ?
+                                                                '/src/assets/up-and-down-options.png'
+                                                                :
+                                                                enableMaterialPositionEdit.courseMaterialId === material.courseMaterialId
+                                                                    ?
+                                                                    '/src/assets/up-and-down-arrow.png'
+                                                                    :
+                                                                    '/src/assets/up-and-down-options.png'
+                                                                }
+                                                                onMouseEnter={() => showAttribution(
+                                                                    "Up and down arrow icons created by Rahul Kaklotar - Flaticon",
+                                                                    " https://www.flaticon.com/free-icon/unfold_7693521?term=up+and+down&page=1&position=2&origin=search&related_id=7693521"
+                                                                )}
+                                                                onMouseLeave={() => hideAttribution()}
+                                                                onClick={() => {
+                                                                    !enableMaterialPositionEdit
+                                                                        ?
+                                                                          setEnableMaterialPositionEdit(material)
+                                                                          :
+                                                                          enableMaterialPositionEdit.courseMaterialId === material.courseMaterialId
+                                                                              ?
+                                                                              handleMaterialMoveUp(material)
+                                                                              : null
+                                                                      }}
+                                                                  style={{
+                                                                    width: '30px',
+                                                                    height: '30px',
+                                                                    }}
+                                                                  alt="Save"
+                                                                  />
+                                                                  {enableMaterialPositionEdit.courseMaterialId === material.courseMaterialId
+                                                                    ?
+                                                                    <img src='/src/assets/up-and-down-arrow.png'
+                                                                          onMouseEnter={() => showAttribution(
+                                                                            "Up and down arrow icons created by Rahul Kaklotar - Flaticon",
+                                                                            " https://www.flaticon.com/free-icon/unfold_7693521?term=up+and+down&page=1&position=2&origin=search&related_id=7693521"
+                                                                          )}
+                                                                          onMouseLeave={() => hideAttribution()}
+                                                                          onClick={() => {
+                                                                            !enableMaterialPositionEdit
+                                                                                ?
+                                                                                setEnableMaterialPositionEdit(material)
+                                                                                :
+                                                                                handleMaterialMoveDown(material)
+                                                                          }}
+                                                                          style={{
+                                                                            width: '30px',
+                                                                            height: '30px',
+                                                                            transform: 'rotate(180deg)',
+                                                                          }}
+                                                                          alt="Save"
+                                                                    />
+                                                                    :
+                                                                    null
+                                                                  }
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      )}
+                                                </Draggable>
+                                              );
+                                          })}
+                                      {providedDroppable.placeholder} 
+                                  </div>
+                              )}
+                            </Droppable>
                             </div>
                       ))}
                   </div>
@@ -513,7 +770,7 @@ export const CourseBuilder = () => {
                       <option>Улирлын шалгалт</option>
                     </select>
                   </div>
-                  <Droppable droppableId="available-materials" direction="vertical">
+                  <Droppable droppableId="available-materials" direction="vertical" >
                       {(provided) => (
                           <div
                             ref={provided.innerRef}
@@ -580,6 +837,8 @@ export const CourseBuilder = () => {
         </DragDropContext>
         }
       </div>
+    </div>
+    <div id="hover-attribution" className="hover-attribution hidden">
     </div>
     </>
   );

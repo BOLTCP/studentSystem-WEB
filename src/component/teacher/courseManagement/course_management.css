@@ -145,6 +145,7 @@ body {
   overflow-y: scroll;
   border-radius: 6px;
   overflow-x: hidden; 
+  border: 1px solid red;
 }
 
 /* --- Draggable Item Styles --- */

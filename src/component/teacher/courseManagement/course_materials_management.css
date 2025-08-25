@@ -1,0 +1,223 @@
+.course-material-management-overlay {   
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.course-material-management-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.front-stage {
+  background-color: #E3F2FD;
+  color: black;
+  padding: 2rem;
+  border: 1px solid white;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px gba(0, 0, 0, 0.25);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dnd-field {
+  width: 80vw;
+  height: 70vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.course-material-view {
+  width: 50%;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  background-color: #fdfdfd;
+  border: 2px solid #c4c4c4;  
+}
+
+.course-materials-files {
+  width: 90%;
+  height: 85%;
+  background-color: #fdfdfd;
+  border: 2px dashed #c4c4c4;  
+  overflow-y: scroll;
+}
+
+.course-file-creation-view {
+  width: 50%;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  background-color: #fdfdfd;
+  border: 2px solid #c4c4c4;  
+}
+
+.upload-files-table-container {
+  margin-bottom: 10px;
+  width: 100%;
+  border: 5px solid red;
+}
+
+.to-upload-files-table {
+  max-width: inherit;
+}
+
+.text-input-area {
+  max-height: 350px;
+  width: 99%;
+  font-family: BlinkMacSystemFont, Arial, sans-serif; 
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  resize: none;
+  text-align: justify;
+  overflow-y: scroll;
+}
+
+.text-input-area.textNullException {
+  max-height: 350px; 
+  width: 99%;
+  font-family: BlinkMacSystemFont, Arial, sans-serif; 
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  resize: none;
+  text-align: justify;
+  animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both,
+           border-light 1s linear infinite alternate;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(-1px); }
+  20% { transform: translateX(1px); }  
+  30% { transform: translateX(-1px); }
+  40% { transform: translateX(1px); }  
+  50% { transform: translateX(-1px); }
+  60% { transform: translateX(1px); }  
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }  
+  90% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }   
+}
+
+@keyframes border-light {
+  0% { border-color: #e0e0e0; box-shadow: 0 0 5px #e0e0e0; }
+  100% { border-color: red; box-shadow: 0 0 15px red; }
+}
+
+.material-add-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+  
+.material-add-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.add-modal {
+  background-color: #E3F2FD;
+  color: black;
+  padding: 2rem;
+  border: 1px solid white;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.button-group {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.button-group button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-group button:first-child {
+  background-color: crimson;
+  color: white;
+}
+
+.button-group button:last-child {
+  background-color: #ccc;
+}
+
+.success-message {
+  padding: 20px;
+  text-align: center;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+}
+
+.success-message p {
+  font-weight: bold;
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.text-file-name {
+  height: 35px;
+  width: 400px; 
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.course-file-name-and-options {
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+

@@ -11,9 +11,9 @@ import Department from '../../models/department';
 import DepartmentsOfEducation from '../../models/departmentsofeducation';
 import UserPreferences from '../../models/auth_user_preferences';
 import { TeacherRenderSidebar, TeacherRenderSidebarRight } from './teacher_side_bars';
+import { showAttribution, hideAttribution } from '../../utils/attributer';
 import './teacher_dashboard.css';
 import '../profile_screen';
-import MajorClass from '../../models/major';
 
 const TeacherDashboard = () => {
   const location = useLocation();
@@ -78,10 +78,23 @@ const TeacherDashboard = () => {
   localStorage.setItem('userDetails', serializedUserDetails);
 
   const buildDashboardCourses = (course) => (
-    <div className="dashboard-courses-card">
-      <img src="src/assets/curriculum.png" alt="courses-picture" className="dashboard-courses-picture" />
-      <h6 className="dashboard-courses-card-label">{course.courseName} {course.courseCode}</h6>
-      <p className="dashboard-courses-card-value">{course.majorName}</p> 
+    <div className="teacher-dashboard-courses-card">
+      <div className="teacher-dashboard-courses-picture">
+        <img src="src/assets/curriculum.png" className='teacher-courses-picture' />
+      </div>
+      <div className="teachers-major-and-course-group">
+        <h1 className="teacher-dashboard-courses-card-label">{course.courseName} {course.courseCode}</h1>
+        <div className="major-and-add-students-button-group">
+          <div className="teacher-dashboard-courses-card-value">{course.majorName}</div> 
+          <img onMouseEnter={() => showAttribution(
+                'Add icons created by Freepik - Flaticon',
+                ' https://www.flaticon.com/free-icon/add-user_748137?term=add+person&page=1&position=1&origin=search&related_id=748137'
+               )}
+                onMouseLeave={() => hideAttribution()}
+               src="src/assets/addStudentToCourse.png" alt="courses-picture" style={{ width: '25px', height: '25px'}} />
+        </div>
+      </div>
+
     </div>
   );
 
@@ -97,7 +110,7 @@ const TeacherDashboard = () => {
     if (userDetails) {
       return (
         <div className="dashboard-content">
-          <div className="dashboard-courses-card-grid">
+          <div className="teacher-dashboard-courses-card-grid">
             {Array.from(teachersCourses).map((course) => 
               <React.Fragment key={course.courseId || course.courseCode}>
                 {buildDashboardCourses(course)}

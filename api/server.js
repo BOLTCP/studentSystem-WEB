@@ -1,11 +1,13 @@
 import 'dotenv/config';
 import express from 'express';
 import { PrismaClient } from '../src/generated/prisma/index.js';
-import cors from 'cors'
+import cors from 'cors';
+import multer from 'multer';
 import bcrypt from 'bcrypt';
 import pkg from 'prop-types';
+import path from 'path';
+import fs from 'fs';
 const { array } = pkg;
-
 
 const prisma = new PrismaClient();
 const app = express();
@@ -13,7 +15,6 @@ const port = 5001;
 
 app.use(express.json());
 app.use(cors());
-
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -1204,6 +1205,21 @@ app.post('/Remove/Schedule/From/Student/', async (req, res) => {
 
 });
 
+//src/component/student/course/course.jsx
+app.post('/Get/Students/Courses/&/Materials', async (req, res) => {
+  const { studentsCourse } = req.body;
+  console.log('/Get/Students/Courses/&/Materials', studentsCourse);
+
+
+});
+
+
+
+
+
+
+
+
 //src/component/teacher/teacher_dashboard.jsx
 app.post('/User/Login/Teacher', async (req, res) => {
   const { userId } = req.body;
@@ -2096,6 +2112,7 @@ app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
             matToCreate.type === 'Сэтгэл ханамжийн судалгаа' ? 'SatisfactionSurvey' :
             'Final',
           material_order: getMaterialCount,
+          max_files_count: 10,
         }
       });
 
@@ -2115,6 +2132,34 @@ app.post('/Create/CourseMaterial/For/Course/Week/', async (req, res) => {
     console.error(error);
     return res.status(500).send();
   }
+});
+
+
+//src/component/teacher/courseManagement/course_management.jsx
+app.post('/Change/CourseMaterials/Title/', async (req, res) => {
+  const { changedTitle, matToChange } = req.body;
+  console.log('/Change/CourseMaterials/Title/: ', changedTitle, matToChange);
+
+  if (!changedTitle || !matToChange) {
+    return res.status(400).send();
+  }
+  try {
+    const { course_material_id, ...titleToChange } = matToChange;
+    const updateTitle = await prisma.coursematerial.update({
+      where: {
+        course_material_id: course_material_id,
+      },
+      data: { ...titleToChange, title: changedTitle },
+    });
+
+    if (updateTitle) {
+      return res.status(200).send();
+    }
+    
+  } catch (error) {
+    return res.status(500).send();
+  }
+
 });
 
 //src/component/teacher/courseManagement/course_management.jsx
@@ -2251,3 +2296,353 @@ app.post('/Save/Edited/CourseMaterial/Position/Down/', async (req, res) => {
   return res.status(200).send();
 
 });
+
+const uploadDir = '/Users/ariunbold/desktop/studentSystem-WEB-FileUploads'; 
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const fileExtension = path.extname(file.originalname);
+    const newFileName = file.fieldname + '-' + uniqueSuffix + fileExtension;
+    cb(null, newFileName);
+  }
+
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 100 * 1024 * 1024 }
+});
+
+//src/component/teacher/courseManagement/course_materials_management.jsx
+app.post('/Fetch/Files/Of/CourseMaterial/', async (req, res) => {
+  const { courseMaterial } = req.body;
+  console.log('line larala');
+  console.log('/Fetch/Files/Of/CourseMaterial/: ', courseMaterial);
+  
+  if (!courseMaterial || !courseMaterial.course_material_id) {
+    return res.status(400).send();
+  }
+
+  try {
+
+    const getFilesOfMaterial = await prisma.coursematerialsfiles.findMany({
+      where: {
+        course_material_id: courseMaterial.course_material_id,
+      }
+    });
+    
+
+    return res.status(200).json({ courseMaterialFiles: getFilesOfMaterial });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+
+});
+
+//src/utils/fileUploads/textFileUpload.jsx
+app.post('/Save/TextFile/For/CourseMaterial/', upload.single('text_content_file'), async (req, res) => {
+
+  try {
+    const courseMaterialId = req.body.courseMaterialId;
+    const textFileName = req.body.fileName; 
+    const fileCreationType = req.body.fileCreationType;
+    const textFile = req.file; 
+
+    if (!textFile) {
+      return res.status(400).send();
+    }
+
+    if (fileCreationType === 'TextFile') {
+      try {
+        const getCount = await prisma.coursematerialsfiles.count({
+          where: {
+            course_material_id: parseInt(courseMaterialId),
+          }
+        });
+        const fileOrder = getCount === 0 ? 0 : getCount;
+
+        const createFile = await prisma.coursematerialsfiles.create({
+          data: {
+            files_type: fileCreationType,
+            status: true,
+            course_material_id: parseInt(courseMaterialId),
+            file_order: fileOrder,
+            shared_file: false,
+            file_path: textFile.path,
+            mime_type: fileCreationType === 'TextFile' ? 'textPlain' :
+                       fileCreationType === 'Videos' ? 'videoMp4' :
+                       'imageJpeg',
+            file_name: textFile.filename,
+            file_size: textFile.size,
+          }
+        });
+        
+        if (createFile) {
+          return res.status(200).send();
+        }
+
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send();
+      }
+    }
+
+    res.status(200).json({
+      message: 'File received and processed successfully!',
+      data: {
+        courseMaterialId: courseMaterialId,
+        fileNameFromClient: textFileName,
+        savedFileName: textFile.filename,
+        filePath: textFile.path,
+        fileSize: textFile.size,
+      }
+    });
+
+  } catch (error) {
+    console.error('Error during file upload and processing:', error);
+
+    if (error instanceof multer.MulterError) {
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ message: 'File too large. Maximum size allowed is 10MB.' });
+      }
+      return res.status(400).json({ message: `Multer error: ${error.message}` });
+    }
+    res.status(500).json({
+      message: 'Failed to process file upload.',
+      error: error.message
+    });
+
+    res.status(500).json({
+      message: 'Failed to process file upload.',
+      error: error.message
+    });
+  }
+
+});
+
+//src/component/teacher/courseManagement/course_materials_management.jsx
+app.get('/Fetch/Files/Of/CourseMaterial/From/SysDir/:file', async (req, res) => {
+  const { file } = req.params; 
+  console.log(file);
+  try { 
+      const fileRecord = await prisma.coursematerialsfiles.findFirst({ 
+        where: {
+          materials_files_id: parseInt(file),
+        }
+      });
+      if (!fileRecord) {
+          console.warn(`File record for ${savedFileName} not found in DB.`);
+          return res.status(404).json({ message: 'Файл байхгүй эсвэл зөвшөөрөл байхгүй байна.' });
+      }
+      const fullSecurePath = fileRecord.file_path; 
+
+      if (!fs.existsSync(fullSecurePath)) {
+          console.error(`File not found on disk at: ${fullSecurePath}`);
+          return res.status(404).json({ message: 'Файл байсан боловч олдсонгүй.' });
+      }
+
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+
+      if (fileRecord.mime_type) {
+        res.setHeader('Content-Type', fileRecord.mime_type);
+      } else {
+        res.setHeader('Content-Type', 'application/octet-stream');
+        console.warn(`Mime type not found for file ID ${file}. Defaulting to application/octet-stream.`);
+      }
+
+      res.setHeader('Content-Disposition', `attachment; filename="${fileRecord.file_name}"`);
+
+      res.sendFile(fullSecurePath, (err) => {
+          if (err) {
+              console.error(`Error sending file ${fullSecurePath}:`, err);
+              if (err.code === 'ECONNABORTED' || err.code === 'EPIPE') {
+                  console.log('Client disconnected during file transfer.');
+              } else if (!res.headersSent) {
+                  res.status(500).json({ message: 'Could not send file content.' });
+              }
+          } else {
+              console.log(`File sent successfully: ${fullSecurePath}`);
+          }
+      });
+
+  } catch (error) {
+      console.error('Internal server error when trying to serve file:', error);
+      if (!res.headersSent) {
+          res.status(500).json({ message: 'Internal server error while retrieving file.' });
+      }
+  }
+});
+
+//src/utils/fileUploads/ImageFileUpload.jsx
+app.post('/Save/FileUpload/For/CourseMaterial/', upload.single('courseFile'), async (req, res) => {
+  try {
+    const courseMaterialId = req.body.courseMaterialId;
+    const textFileName = req.body.fileName; 
+    const courseFile = req.file; 
+
+    console.log(courseFile.mimetype);
+
+    if (!courseFile) {
+      return res.status(400).send();
+    }
+
+      try {
+        const getCount = await prisma.coursematerialsfiles.count({
+          where: {
+            course_material_id: parseInt(courseMaterialId),
+          }
+        });
+        const fileOrder = getCount === 0 ? 0 : getCount;
+
+        const createFile = await prisma.coursematerialsfiles.create({
+          data: {
+            files_type: courseFile.mimetype === 'text/plain' ? 'TextFile' :
+                        courseFile.mimetype.startsWith('video/') ? 'Videos' :
+                        'OtherFiles',
+            status: true,
+            course_material_id: parseInt(courseMaterialId),
+            file_order: fileOrder,
+            shared_file: false,
+            file_path: courseFile.path,
+            mime_type: courseFile.mimetype === 'text/plain' ? 'textPlain' :
+                       courseFile.mimetype.startsWith('video/') ? 'videoMp4' :
+                       courseFile.mimetype.startsWith('image') ? 'imageJpeg' :
+                       courseFile.mimetype === 'application/pdf' ? 'applicationPdf' :
+                      'applicationMsword',
+            file_name: courseFile.filename,
+            file_size: courseFile.size,
+          }
+        });
+        
+        if (createFile) {
+          return res.status(200).send();
+        }
+
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send();
+      }
+
+    res.status(200).json({
+      message: 'File received and processed successfully!',
+      data: {
+        courseMaterialId: courseMaterialId,
+        fileNameFromClient: textFileName,
+        savedFileName: textFile.filename,
+        filePath: textFile.path,
+        fileSize: textFile.size,
+      }
+    });
+
+  } catch (error) {
+    console.error('Error during file upload and processing:', error);
+
+    if (error instanceof multer.MulterError) {
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ message: 'File too large. Maximum size allowed is 10MB.' });
+      }
+      return res.status(400).json({ message: `Multer error: ${error.message}` });
+    }
+    res.status(500).json({
+      message: 'Failed to process file upload.',
+      error: error.message
+    });
+
+    res.status(500).json({
+      message: 'Failed to process file upload.',
+      error: error.message
+    });
+  }
+
+});
+
+//src/utils/fileUploads/removeFileFromMaterial.jsx
+app.post('/Remove/File/From/CourseMaterials/', async (req, res) => {
+  const { fileToRemove } = req.body;
+  console.log('/Remove/File/From/CourseMaterials/', fileToRemove.materialsFilesId);
+
+  prisma.coursematerialsfiles.findFirst({
+    where: {
+      materials_files_id: fileToRemove.materialsFilesId,
+    }
+  })
+  .then(exists => {
+    if (exists) {
+      return prisma.coursematerialsfiles.delete({
+        where: {
+          materials_files_id: fileToRemove.materialsFilesId
+        }
+      });
+    } else {
+      return Promise.resolve(null);
+    }
+  })
+  .then(deletedRecord => {
+    if (deletedRecord) {
+      console.log('Материалын файлыг өгөгдлийн сангаас амжилттай устаглаа.', deletedRecord);
+
+      if (!deletedRecord.file_path.startsWith(uploadDir)) {
+        console.error(`Security alert: Attempt to delete file outside upload directory: ${deletedRecord.file_path}`);
+        return res.status(403).json({ message: 'Зөвшөөрөгдөөгүй хандалт.' }); 
+      } 
+
+      const normalizedFilePath = path.normalize(deletedRecord.file_path);
+      if (path.dirname(normalizedFilePath) !== uploadDir) {
+        console.error(`Security alert: Directory traversal attempt detected: ${filePathOnDisk}`);
+        return res.status(403).json({ message: 'Зөвшөөрөгдөөгүй хандалт.' });
+      }
+
+      if (fs.existsSync(deletedRecord.file_path)) {
+        fs.unlinkSync(deletedRecord.file_path); 
+        console.log(`Системээс файлыг амжилттай устаглаа: ${deletedRecord.file_path}`);
+        return res.status(200).send();
+      } else {
+        console.warn(`File with ID ${fileId} not found on disk at: ${filePathOnDisk}. Deleting DB record only.`);
+      }
+
+    } else {
+      console.log('Устгах материалын файлын олсонгүй.');
+      return res.status(404).send();
+    }
+  })
+  .catch(error => {
+    console.error(`Error during Prisma operation for file ID ${fileToRemove.materialsFilesId}:`, error);
+  });
+
+});
+
+/*
+const uploadDir = '/Users/ariunbold/desktop/studentSystem-WEB-FileUploads'; 
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const fileExtension = path.extname(file.originalname);
+    const newFileName = file.fieldname + '-' + uniqueSuffix + fileExtension;
+    cb(null, newFileName);
+  }
+
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 }
+});*/
+

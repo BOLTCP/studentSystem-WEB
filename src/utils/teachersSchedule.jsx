@@ -11,7 +11,7 @@ import TeachersSchedule from '../models/teachersschedule';
 
 const periodsOfSchedules = [1010, 1150, 1330, 1530, 1710, 1850, 2030];
 
-export const TeachersScheduleUtil = ({ user, theme }) => {
+export const TeachersScheduleUtil = ({ user, theme, schedulesRefresh, schedulesRefreshCleanUp }) => {
   
   const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
   const [themeIcon, setThemeIcon] = useState("/src/assets/lightMode.png");
@@ -71,8 +71,9 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
     fetchTeachersSchedule();
   }, []);
 
+  schedulesRefresh && location.reload();
+
   const showAttribution = (attributionComment, attrLink) => {
-    console.log('loll');
     const el = document.getElementById("hover-attribution");
     if (el) {
       el.textContent = attributionComment + attrLink;
@@ -95,10 +96,12 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
   };
 
   const todaysScheduleCourses = (schedule) => {
-    const schedulesPeriod = periodsOfSchedules[parseInt(schedule.time.slice(0, 1))];
+    const schedulesEndPeriod = periodsOfSchedules[parseInt(schedule.time.slice(0, 1))];
+    console.log(schedulesEndPeriod);
     const currentTime = `${new Date(time).getHours() < 10 ? `0${new Date(time).getHours()}` : new Date(time).getHours()}${new Date(time).getMinutes() < 10 ? `0${new Date(time).getMinutes()}` : new Date(time).getMinutes()}`;
+        console.log(currentTime);
 
-    if ( parseInt(schedulesPeriod) < parseInt(currentTime) ) {
+    if ( parseInt(schedulesEndPeriod) >= parseInt(currentTime) ) {
       return (
         <div className="to-do-container" key={schedule.teachersScheduleId}>
           <div className="to-do-list-bullets"></div>
@@ -235,7 +238,7 @@ export const TeachersScheduleUtil = ({ user, theme }) => {
               Багшийн өнөөдрийн &nbsp; хуваарь
             </div>
 
-            {lastSchedule && periodsOfSchedules[parseInt(lastSchedule.time?.slice(0, 1))] >
+            {lastSchedule && periodsOfSchedules[parseInt(lastSchedule.time?.slice(0, 1))] <
               `
               ${
                 new Date(time).getHours() < 10 

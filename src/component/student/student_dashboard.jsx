@@ -95,11 +95,34 @@ const StudentDashboard = () => {
   const serializedUserDetails = JSON.stringify(userDetails);
   localStorage.setItem('userDetails', serializedUserDetails);
 
+  /*
   const buildDashboardCourses = (course) => (
-    <div className="dashboard-courses-card">
+    <div className="dashboard-courses-card" onClick={() => navigate('/students_course', { state: { studentsCourse: course } })}>
       <img src="src/assets/curriculum.png" alt="courses-picture" className="dashboard-courses-picture" />
       <h6 className="dashboard-courses-card-label">{course.courseName} {course.courseCode}</h6>
       <p className="dashboard-courses-card-value">{userDetails.student.yearClassification}, 1-р семестэр</p> 
+    </div>
+  );
+  */
+
+  const buildDashboardCourses = (course) => (
+    <div className="student-dashboard-courses-card">
+      <div className="student-dashboard-courses-picture">
+        <img src="src/assets/curriculum.png" className='student-courses-picture' />
+      </div>
+      <div className="students-major-and-course-group">
+        <h1 className="student-dashboard-courses-card-label">{course.courseName} {course.courseCode}</h1>
+        <div className="major-and-add-students-button-group">
+          <div className="student-dashboard-courses-card-value">{course.majorName}</div> 
+          <img onMouseEnter={() => showAttribution(
+                'Add icons created by Freepik - Flaticon',
+                ' https://www.flaticon.com/free-icon/add-user_748137?term=add+person&page=1&position=1&origin=search&related_id=748137'
+                )}
+                onMouseLeave={() => hideAttribution()}
+                src="src/assets/addStudentToCourse.png" alt="courses-picture" style={{ width: '25px', height: '25px'}} />
+        </div>
+      </div>
+
     </div>
   );
 

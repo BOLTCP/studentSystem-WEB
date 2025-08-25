@@ -9,6 +9,9 @@ import StudentDashboard from '../src/component/student/student_dashboard';
 import Major from '/src/component/student/major/Major';
 import Curriculum from '/src/component/student/major/curriculum';
 import TeacherDashboard from './component/teacher/teacher_dashboard';
+//STUDENT ---> COURSE
+import Course from './component/student/course/course';
+
 
 //TEACHER
 import Department from './component/teacher/university/department_of_university';
@@ -36,6 +39,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/teachers_courses" element={<TeachersCourses />} />
         <Route path="/teachers_selected_courses" element={<TeachersSelectedCourses />} />
         <Route path="/course_management" element={<CourseBuilder />} />
+        <Route path="/students_course" element={<Course />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

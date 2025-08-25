@@ -112,7 +112,7 @@ body {
 }
 
 .week-card {
-  flex: 0 0 calc(60% - 30px); /* Adjust to show partial next week */
+  flex: 0 0 calc(50% - 20px); /* Adjust to show partial next week */
   min-width: 320px; /* Minimum width for readability */
   background-color: #ffffff;
   border: 1px solid #d0d0d0;
@@ -145,7 +145,6 @@ body {
   overflow-y: scroll;
   border-radius: 6px;
   overflow-x: hidden; 
-  border: 1px solid red;
 }
 
 /* --- Draggable Item Styles --- */

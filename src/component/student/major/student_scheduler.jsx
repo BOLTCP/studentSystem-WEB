@@ -575,9 +575,9 @@ const Timetable = ({ user }) => {
           newMap.delete(deleteSchedule.schedulesTimetablePosition);
           return newMap;
         });
-
         setShowDeletePrompt(false);
         setRemoveSuccessful(true);
+        console.log(fetchDetails(userDetails.user));
       } 
 
     } catch (error) {
@@ -613,7 +613,7 @@ const Timetable = ({ user }) => {
             <h2>
                 Хуваарийг амжилттай нэмлээ.
             </h2>
-            <button onClick={() => {setSuccessful(false)}}>Хаах</button>
+            <button onClick={() => {setSuccessful(false), localStorage.setItem('userDetails', serializedUserDetails)}}>Хаах</button>
           </div>
         </div>
       )}
@@ -761,7 +761,7 @@ const Timetable = ({ user }) => {
                         />
                       </h4>
                     </div>
-                    {Array.isArray(userDetails.studentsSchedule) ? (
+                    {(Array.isArray(userDetails.studentsSchedule) && true) ? (
                       userDetails.studentsSchedule.map((item, index) => (
                         <div className={`remove-elements ${item.scheduleType}`}
                              onClick={() => {{setShowDeletePrompt(true), setDeleteSchedule(item)}}}

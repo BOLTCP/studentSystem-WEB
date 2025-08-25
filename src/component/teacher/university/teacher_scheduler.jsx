@@ -239,7 +239,7 @@ const Cell = ({ row, col, onDrop, element, teachersScheduleCells, teachersSchedu
 };
 
 
-const Timetable = ({ user }) => {
+const Timetable = ({ user, refresh }) => {
   
   const [userDetails, setUserDetails] = useState(getUserDetailsFromLocalStorage());
   const [teachersCourses, setStudentsCourses] = useState(() => {
@@ -677,7 +677,7 @@ const Timetable = ({ user }) => {
                 {scheduleCreateMessage.classroom_number} 
                 хичээлийн хуваарийг амжилттай нэмлээ.
             </h2>
-            <button onClick={() => {setScheduleCreateSuccessful(false)}}>Хаах</button>
+            <button onClick={() => {setScheduleCreateSuccessful(false), refresh()}}>Хаах</button>
           </div>
         </div>
       )}
@@ -751,7 +751,7 @@ const Timetable = ({ user }) => {
                 <div>Хуваарийг амжилттай хаслаа.</div>
             </h2>
               <button style={{ fontSize: '18px' }}
-                onClick={() => {setRemoveSuccessful(false), setDeleteSchedule(null)}}>Хаах</button>
+                onClick={() => {setRemoveSuccessful(false), setDeleteSchedule(null), refresh() }}>Хаах</button>
           </div>
         </div>
       )}

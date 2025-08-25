@@ -14,6 +14,7 @@ class CourseMaterial {
     file,
     courseMatType,
     materialOrder,
+    maxFilesCount,
   }) {
     this.courseMaterialId = courseMaterialId;
     this.courseId = courseId;
@@ -27,6 +28,7 @@ class CourseMaterial {
     this.file = file;
     this.courseMatType = courseMatType;
     this.materialOrder = materialOrder;
+    this.maxFilesCount = maxFilesCount;
   }
 
   static fromJsonCourseMaterial(json) {
@@ -51,6 +53,7 @@ class CourseMaterial {
         json.course_mat_type === 'SatisfactionSurvey' ? 'Сэтгэл ханамжийн судалгаа' :
         'Улирлын шалгалт',
       materialOrder: json.material_order,
+      maxFilesCount: json.max_files_count,
     });
   }
 
@@ -76,8 +79,9 @@ class CourseMaterial {
         CourseMaterial.courseMatType === 'Сэтгэл ханамжийн судалгаа' ? 'SatisfactionSurvey' :
         'Final',
       material_order: CourseMaterial.materialOrder,
+      max_files_count: CourseMaterial.maxFilesCount,
     }
   }
-
+  static titleLength = 200;
 }
 export default CourseMaterial;

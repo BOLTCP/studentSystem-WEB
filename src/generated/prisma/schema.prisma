@@ -209,6 +209,7 @@ model coursematerial {
   file                 String?
   course_mat_type      course_mat_type
   material_order       Int
+  max_files_count      Int
   courses              courses                @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_course")
   teacher              teacher                @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher")
   coursemanagement     coursemanagement       @relation(fields: [course_management_id], references: [course_management_id], onDelete: Cascade, onUpdate: Cascade, map: "course_management_fkey")
@@ -216,6 +217,28 @@ model coursematerial {
   notificationstudents notificationstudents[]
   studentattendance    studentattendance[]
   submission           submission[]
+  coursematerialsfiles coursematerialsfiles[]
+}
+
+model coursematerialsfiles {
+  materials_files_id Int                       @id @default(autoincrement())
+  files_type         materials_files_type_enum
+  available_from     DateTime?
+  available_until    DateTime?
+  attempts           Int?
+  status             Boolean?
+  open_date          DateTime?
+  close_date         DateTime?
+  created_at         DateTime?
+  course_material_id Int?
+  file_order         Int
+  points             Int?
+  shared_file        Boolean?
+  file_path          String
+  mime_type          mime_types_enum
+  file_name          String
+  file_size          Int
+  coursematerial     coursematerial?           @relation(fields: [course_material_id], references: [course_material_id], onDelete: Cascade, onUpdate: Cascade, map: "course_materials_files_pkey")
 }
 
 model courses {
@@ -889,6 +912,30 @@ enum course_mat_type {
   SemiFinal
   SemiFinal1
   SatisfactionSurvey
+}
+
+enum materials_files_type_enum {
+  submissionFiles
+  videos
+  discussions
+  rubricks
+  comments
+  file
+  TextFile
+  SubmissionFiles
+  Videos
+  Discussions
+  Rubricks
+  Comments
+  OtherFiles
+}
+
+enum mime_types_enum {
+  textPlain         @map("text/plain")
+  imageJpeg         @map("image/jpeg")
+  videoMp4          @map("video/mp4")
+  applicationPdf    @map("application/pdf")
+  applicationMsword @map("application/msword")
 }
 
 enum classroom_type_enum {

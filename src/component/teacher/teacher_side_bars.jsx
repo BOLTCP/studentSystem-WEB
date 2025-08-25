@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import UserDetails from '../../models/user_details';
 import getUserDetailsFromLocalStorage from '../../utils/userDetails_util';
 import { TeachersScheduleUtil } from '../../utils/teachersSchedule';
+import { showAttribution, hideAttribution } from '../../utils/attributer';
 import './teacher_dashboard.css';
 import '../profile_screen';
 
@@ -80,22 +81,6 @@ export const TeacherRenderSidebar = ({ user }) => {
   };
 
   
-  const showAttribution = (attributionComment, attrLink) => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.textContent = attributionComment + attrLink;
-      el.classList.remove("hidden");
-      el.classList.add("visible");
-    }
-  }
-  const hideAttribution = () => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.classList.remove("visible");
-      el.classList.add("hidden");
-    }
-  }
-
   return (
     <div className={`dashboard-sidebar ${theme}`}>
       <div className="sidebar-header">
@@ -306,6 +291,5 @@ export const TeacherRenderSidebarRight = ({ user, theme }) => {
   );
   
 }
-
 
 

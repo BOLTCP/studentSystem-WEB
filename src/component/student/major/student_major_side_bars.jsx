@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import UserDetails from '../../../models/user_details';
 import { StudentsScheduleUtil } from '../../../utils/studentsSchedule';
 import getUserDetailsFromLocalStorage from '../../../utils/userDetails_util';
+import { showAttribution, hideAttribution } from '../../../utils/attributer';
 import './major.css';
 import '../../profile_screen';
 
@@ -83,24 +84,6 @@ export const RenderSidebar = () => {
       console.log("User not found");
     }
   };
-
-  
-  const showAttribution = (attributionComment, attrLink) => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.textContent = attributionComment + attrLink;
-      el.classList.remove("hidden");
-      el.classList.add("visible");
-    }
-  }
-  
-  const hideAttribution = () => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.classList.remove("visible");
-      el.classList.add("hidden");
-    }
-  }
 
   return (
     <div className={`uni-dashboard-sidebar ${theme}`}>

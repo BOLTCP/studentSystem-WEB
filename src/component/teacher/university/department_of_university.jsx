@@ -15,13 +15,8 @@ import '../../profile_screen';
 const Department = () => {
   const location = useLocation();
   const [userDetails, setUserDetails] = useState(() => getUserDetailsFromLocalStorage());
+  const [schedulesRefresh, setSchedulesRefresh] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [firstYear, setFirstYear] = useState();
-  const [secondYear, setSecondYear] = useState(null);
-  const [thirdYear, setThirdYear] = useState(null);
-  const [fourthYear, setFourthYear] = useState(null);
-  const [responseCode, setResponseCode] = useState(null);
-  const hasFetched = useRef(false);
   const condRender = location.state?.condRender;
   const [error, setError] = useState(null);
   useEffect(() => {
@@ -29,6 +24,10 @@ const Department = () => {
       setCondRender(location.state?.condRender);
     }
   }, []);
+
+  const refresh = () => {
+    setSchedulesRefresh(true);
+  }
 
   return (
     
@@ -45,9 +44,9 @@ const Department = () => {
             {condRender === 0 && <Majors user={userDetails} />}
             {condRender === 1 && <TeachersCourses user={userDetails} />}
             {condRender === 2 && <TeachersSelectedCourses user={userDetails} />}
-            {condRender === 3 && <Timetable user={userDetails} />}
+            {condRender === 3 && <Timetable user={userDetails} refresh={refresh} />}
           </div>
-          {userDetails && <RenderSidebarRight user = {userDetails} />}
+          {userDetails && <RenderSidebarRight user = {userDetails} schedulesRefresh={schedulesRefresh} setSchedulesRefresh={setSchedulesRefresh}/>}
           
         </div>
 

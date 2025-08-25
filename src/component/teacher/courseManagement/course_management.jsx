@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import getApiUrl from '../../../../api/get_Api_Url';
+
 import TeacherUser from '../../../models/teacher_user';
 import TeacherCoursePlanning from '../../../models/teacher_course_planning';
 import CourseManagement from '../../../models/course_management';
 import CourseWeek from '../../../models/course_week';
 import CourseMaterial from '../../../models/course_material';
 import availableMaterialsData from '../../../models/course_week_materials';
+import CourseMaterialManagement from './course_materials_management';
 import getUserDetailsFromLocalStorage from '../../../utils/userDetailsTeacher_util';
 import { RenderSidebar, RenderSidebarRight } from '../../teacher/university/teacher_university_sidebar';
 import './course_management.css'; 
 import e from 'cors';
-
 
 export const CourseBuilder = () => {
   const [userDetails, setUserDetails] = useState(getUserDetailsFromLocalStorage());
@@ -34,6 +36,8 @@ export const CourseBuilder = () => {
   const [matToCreateWeek, setMatToCreateWeek] = useState(null);
   const [matCreateError, setMatCreateError] = useState(null);
   const [matCreateMessage, setMatCreateMessage] = useState(null);
+  const [matsTitleToChange, setMatsTitleToChange] = useState(null);
+  const [saveChangedTitle, setSaveChangedTitle] = useState(null);
 
   const [showMatDeletePrompt, setShowMatDeletePrompt] = useState(null);
   const [matDeleteMessage, setMatDeleteMessage] = useState(null);
@@ -41,6 +45,8 @@ export const CourseBuilder = () => {
   const [introWeekException, setIntroWeekException] = useState(null);
   const [introToCourseWeekException, setIntroToCourseWeekException] = useState(null);
   
+  const [showCourseMatManagement, setShowCourseMatManagement] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(userDetails.teacher ? null : 'Хэрэглэгчийн мэдээлэл олдсонгүй.');
 
@@ -122,6 +128,32 @@ export const CourseBuilder = () => {
       console.error(error);
     }
   };
+
+  const handleMaterialTitleChange = async () => {
+    try { 
+      const response = await axios.post(getApiUrl('/Change/CourseMaterials/Title/'),
+        {
+          changedTitle: saveChangedTitle,
+          matToChange: CourseMaterial.toJson(matsTitleToChange),
+        },
+        {
+          headers: { 'Content-type': 'application/json' },
+          timeout: 30000,
+        });
+        
+        if (response.status === 200) {
+          setCourseMaterials(prev => {
+            const matToUpdate = prev.find((mat) => mat.courseMaterialId === matsTitleToChange.courseMaterialId);
+            const updatedMat = { ...matToUpdate, title: saveChangedTitle };
+            return prev.map((mat) => mat.courseMaterialId === matsTitleToChange.courseMaterialId ?  new CourseMaterial(updatedMat) : mat);
+          });
+        }
+    } catch (error) {
+      console.log(error);
+    }
+    setMatsTitleToChange(null);
+    setSaveChangedTitle(null);
+  }
 
   const handleRemoveCourseMaterial = async (material) => {
     try {
@@ -309,6 +341,11 @@ export const CourseBuilder = () => {
     setEnableMaterialPositionEdit(false);
   }
 
+  const handleClose = () => {
+    setShowCourseMatManagement(null);
+  }
+
+
   return (
     <>
     <div className="course-management-container-layout">
@@ -358,6 +395,14 @@ export const CourseBuilder = () => {
         >
             <div className="course-builder-layout">
 
+              {showCourseMatManagement &&
+                <CourseMaterialManagement 
+                  courseMaterial={showCourseMatManagement}
+                  courseManagement={selectedCourseManagement}
+                  onClose={handleClose}
+                />
+              }
+
               {showMatTitlePropmt &&
                 <div className={`material-add-overlay ${showMatTitlePropmt === true ? 'visible' : null}`}>
                   <div className="add-modal">
@@ -392,6 +437,38 @@ export const CourseBuilder = () => {
                 </div>
               }
 
+              {matsTitleToChange &&
+                <div className={`material-add-overlay ${matsTitleToChange && 'visible'}`}>
+                  <div className="add-modal">
+                    <div>
+                      Материалын нэр:
+                    </div>
+                    &nbsp;
+                    <div>
+                      <textarea 
+                        maxLength={CourseMaterial.titleLength}
+                        style={{
+                          width: '300px',
+                          height: '2.25rem',
+                          fontSize: '1rem',
+                        }}
+                        type='text'
+                        value={saveChangedTitle}
+                        onChange={(e) => {
+                        setSaveChangedTitle(e.target.value)}
+                        }
+                      >
+                      </textarea>
+                    </div>
+                    <div className='button-group'>
+                      <button onClick={() => {setMatsTitleToChange(false)}}>Буцах</button>
+                      <button onClick={() => {handleMaterialTitleChange()}}
+                              style={{ color: 'white', backgroundColor: '#14b82e'}}>Хадгалах</button>
+                    </div>
+                  </div>
+                </div>
+              }
+
               {showMatDeletePrompt &&
                 <div className={`material-add-overlay ${showMatDeletePrompt && 'visible'}`}>
                   <div className="add-modal">
@@ -403,7 +480,7 @@ export const CourseBuilder = () => {
                     <div className='button-group'>
                       <button onClick={() => {setShowMatDeletePrompt(null)}}>Буцах</button>
                       <button onClick={() => {handleRemoveCourseMaterial(showMatDeletePrompt)}}
-                              style={{ color: 'white', backgroundColor: '#14b82e'}}>Хадгалах</button>
+                              style={{ color: 'white', backgroundColor: '#14b82e'}}>Устгах</button>
                     </div>
                   </div>
                 </div>
@@ -644,29 +721,52 @@ export const CourseBuilder = () => {
                                                           className={`material-item-in-week ${getMaterialTypeClass(material.courseMatType)}`}
                                                           style={{
                                                             justifyContent: 'space-between',
+                                                            gap: '1.5rem',
                                                           }}
                                                         >
-                                                          {material.title}
+                                                          <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+                                                            <p style={{ maxWidth: '275px', }}>
+                                                              {material.title}
+                                                            </p>
+                                                            <img src='/src/assets/edit.png' 
+                                                                 onClick={() => {{setMatsTitleToChange(material), setSaveChangedTitle(material.title)}}}
+                                                                 style={{ height: '16px', width: '16px', }} />
+                                                          </div>
                                                           <div style={{
                                                             display: 'flex',
                                                             flexDirection: 'row',
                                                             justifyContent: 'space-between',
                                                             gap: '1rem',
                                                           }}>
-                                                          <div>
-                                                            <img
-                                                              src='/src/assets/trash.png'
-                                                              onClick={() => {setShowMatDeletePrompt(material)}}
-                                                              onMouseEnter={() => showAttribution(
-                                                                "Delete icons created by bqlqn - Flaticon",
-                                                                " https://www.flaticon.com/free-icon/trash_3096673?term=trash&page=1&position=3&origin=search&related_id=3096673"
-                                                              )}
-                                                              onMouseLeave={() => hideAttribution()}
-                                                              style={{
-                                                                width: '30px',
-                                                                height: '30px',
-                                                              }}
-                                                            />
+                                                            <div>
+                                                              <img
+                                                                src='/src/assets/settings.png'
+                                                                onClick={() => {setShowCourseMatManagement(material)}}
+                                                                onMouseEnter={() => showAttribution(
+                                                                  "Settings icons created by Freepik - Flaticon",
+                                                                  " https://www.flaticon.com/free-icon/settings_2099058?term=settings&page=1&position=2&origin=search&related_id=2099058"
+                                                                )}
+                                                                onMouseLeave={() => hideAttribution()}
+                                                                style={{
+                                                                  width: '30px',
+                                                                  height: '30px',
+                                                                }}
+                                                              />
+                                                            </div>
+                                                            <div>
+                                                              <img
+                                                                src='/src/assets/trash.png'
+                                                                onClick={() => {setShowMatDeletePrompt(material)}}
+                                                                onMouseEnter={() => showAttribution(
+                                                                  "Delete icons created by bqlqn - Flaticon",
+                                                                  " https://www.flaticon.com/free-icon/trash_3096673?term=trash&page=1&position=3&origin=search&related_id=3096673"
+                                                                )}
+                                                                onMouseLeave={() => hideAttribution()}
+                                                                style={{
+                                                                  width: '30px',
+                                                                  height: '30px',
+                                                                }}
+                                                              />
                                                             </div>
                                                             <div style={enableMaterialPositionEdit.courseMaterialId === material.courseMaterialId ?
                                                               {

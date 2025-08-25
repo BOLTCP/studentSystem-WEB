@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import UserDetails from '../../../models/user_details';
 import { TeachersScheduleUtil } from '../../../utils/teachersSchedule';
 import getUserDetailsFromLocalStorage from '../../../utils/userDetailsTeacher_util';
+import { showAttribution, hideAttribution } from '../../../utils/attributer';
 import './department_of_university';
 import '../../profile_screen';
 
@@ -83,24 +84,6 @@ export const RenderSidebar = () => {
       console.log("User not found");
     }
   };
-
-  
-  const showAttribution = (attributionComment, attrLink) => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.textContent = attributionComment + attrLink;
-      el.classList.remove("hidden");
-      el.classList.add("visible");
-    }
-  }
-  
-  const hideAttribution = () => {
-    const el = document.getElementById("hover-attribution");
-    if (el) {
-      el.classList.remove("visible");
-      el.classList.add("hidden");
-    }
-  }
 
   return (
     <div className={`uni-dashboard-sidebar ${theme}`}>
@@ -285,10 +268,10 @@ export const RenderSidebar = () => {
   );
 }
 
-export const RenderSidebarRight = ({ user, theme }) => {
+export const RenderSidebarRight = ({ user, theme, schedulesRefresh, setSchedulesRefresh }) => {
 
   return (
-    <TeachersScheduleUtil />
+    <TeachersScheduleUtil schedulesRefresh={schedulesRefresh} setSchedulesRefresh={setSchedulesRefresh}/>
   );
   
 }
